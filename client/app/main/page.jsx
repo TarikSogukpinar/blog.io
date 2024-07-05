@@ -4,7 +4,9 @@ import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Dialog, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
+import Link from "next/link";
 
 const user = {
   name: "Tom Cook",
@@ -94,66 +96,153 @@ const navigation = {
 export default function MainPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   return (
-    <div className="relative isolate overflow-hidden bg-gray-900 flex items-center justify-center min-h-screen">
-      <div className="mx-auto max-w-7xl px-6 py-10 sm:py-20 lg:flex lg:px-8 lg:py-20">
-        <div className="mx-auto max-w-2xl flex-shrink-0 lg:mx-0 lg:max-w-xl text-center lg:text-left">
-          <div className="relative overflow-hidden bg-gray-900">
-            <div className="px-6 py-10 sm:px-6 sm:py-20 lg:px-8">
-              <div className="mx-auto max-w-2xl text-center">
-                <Image
-                  className="mx-auto h-80 w-80"
-                  src="/public/next.svg"
-                  width={200}
-                  height={200}
-                  alt="Vault Cloud"
-                />
-                <h2 className="text-4xl font-bold tracking-tight text-white sm:text-4xl">
-                  Open Source Blog Platform for Developers
-                  <br />
-                </h2>
-                {/* <p className="mx-auto mt-6 max-w-xl text-3xl leading-8 text-gray-300">
-                  Yönetilebilir Ölçeklenebilir Güvenli
-                  <br />
-                  Yazılım Hizmetleri
-                </p> */}
-                <div className="mt-10 flex items-center justify-center gap-x-6">
-                  <a
-                    href="#"
-                    className="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                  >
-                    Login
-                  </a>
-                  <a
-                    href="#"
-                    className="text-sm font-semibold leading-6 text-white"
-                  >
-                    Contact <span aria-hidden="true">→</span>
-                  </a>
+    <div className="bg-white">
+      <header className="absolute inset-x-0 top-0 z-50">
+        <Dialog
+          className="lg:hidden"
+          open={mobileMenuOpen}
+          onClose={setMobileMenuOpen}
+        >
+          <div className="fixed inset-0 z-50" />
+          <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-black px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+            <div className="flex items-center justify-between">
+              <a href="#" className="-m-1.5 p-1.5">
+                <span className="sr-only">Igniter</span>
+              </a>
+              <button
+                type="button"
+                className="-m-2.5 rounded-md p-2.5 text-gray-700"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <span className="sr-only">Close menu</span>
+                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
+          </DialogPanel>
+        </Dialog>
+      </header>
+      <main>
+        <div className="relative isolate">
+          <svg
+            className="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
+            aria-hidden="true"
+          >
+            <defs>
+              <pattern
+                id="1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84"
+                width={200}
+                height={200}
+                x="50%"
+                y={-1}
+                patternUnits="userSpaceOnUse"
+              >
+                <path d="M.5 200V.5H200" fill="none" />
+              </pattern>
+            </defs>
+
+            <rect
+              width="100%"
+              height="100%"
+              strokeWidth={0}
+              fill="url(#1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84)"
+            />
+          </svg>
+          <div
+            className="absolute left-1/2 right-0 top-0 -z-10 -ml-24 transform-gpu overflow-hidden blur-3xl lg:ml-24 xl:ml-48"
+            aria-hidden="true"
+          ></div>
+          <div className="overflow-hidden">
+            <div className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32">
+              <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
+                <div className="relative w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
+                  <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+                    Open Source Blog Application
+                  </h1>
+                  <p className="mt-6 text-lg leading-8 text-gray-600 sm:max-w-md lg:max-w-none italic">
+                    Just a simple opensource blog application built with
+                    Nest.js, Next.js
+                    <br />
+                    <small className="font-bold">Latest version 1.0.0</small>
+                  </p>
+                  <div className="mt-10 flex items-center gap-x-6">
+                    <Link
+                      href="/login"
+                      className="rounded-md bg-gray-950 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="https://igniter.tebex.io/"
+                      className="text-sm font-semibold leading-6 text-gray-900"
+                      target="_blank"
+                    >
+                      Contact <span aria-hidden="true">→</span>
+                    </Link>
+                  </div>
+                </div>
+                <div className="mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">
+                  <div className="ml-auto w-44 flex-none space-y-8 pt-32 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-none xl:pt-80">
+                    <div className="relative">
+                      <Image
+                        src="/assets/gta3.jpg"
+                        alt="Michael De Santa"
+                        className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg subpixel-antialiased transition-all duration-300 ease-in-out transform group-hover:translate-y-[-5px] group-hover:opacity-20"
+                        width={1920}
+                        height={1080}
+                      />
+                      <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
+                    </div>
+                  </div>
+                  <div className="mr-auto w-44 flex-none space-y-8 sm:mr-0 sm:pt-52 lg:pt-36">
+                    <div className="relative">
+                      <Image
+                        src="/assets/gta4.jpg"
+                        alt=""
+                        className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg subpixel-antialiased transition-all duration-300 ease-in-out transform group-hover:translate-y-[-5px] group-hover:opacity-20"
+                        width={1920}
+                        height={1080}
+                      />
+                      <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
+                    </div>
+                    <div className="relative">
+                      <Image
+                        src="/assets/gta5.jpg"
+                        alt=""
+                        className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg subpixel-antialiased transition-all duration-300 ease-in-out transform group-hover:translate-y-[-5px] group-hover:opacity-20"
+                        width={1920}
+                        height={1080}
+                      />
+                      <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
+                    </div>
+                  </div>
+                  <div className="w-44 flex-none space-y-8 pt-32 sm:pt-0">
+                    <div className="relative">
+                      <Image
+                        src="/assets/gta6.jpg"
+                        alt=""
+                        className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg subpixel-antialiased transition-all duration-300 ease-in-out transform group-hover:translate-y-[-5px] group-hover:opacity-20"
+                        width={1920}
+                        height={1080}
+                      />
+                      <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
+                    </div>
+                    <div className="relative">
+                      <Image
+                        src="/assets/gta7.jpg"
+                        alt=""
+                        className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg subpixel-antialiased transition-all duration-300 ease-in-out transform group-hover:translate-y-[-5px] group-hover:opacity-20"
+                        width={1920}
+                        height={1080}
+                      />
+                      <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            <svg
-              viewBox="0 0 1024 1024"
-              className="absolute left-1/2 top-1/2 -z-10 h-[64rem] w-[64rem] -translate-x-1/2 [mask-image:radial-gradient(closest-side,white,transparent)]"
-              aria-hidden="true"
-            >
-              <circle
-                cx={512}
-                cy={512}
-                r={512}
-                fill="url(#8d958450-c69f-4251-94bc-4e091a323369)"
-                fillOpacity="0.7"
-              />
-              <defs>
-                <radialGradient id="8d958450-c69f-4251-94bc-4e091a323369">
-                  <stop stopColor="#7775D6" />
-                  <stop offset={1} stopColor="#E935C1" />
-                </radialGradient>
-              </defs>
-            </svg>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

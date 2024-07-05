@@ -77,7 +77,7 @@ export default function FooterPage() {
   };
   
   return (
-    <footer className="bg-gray-900">
+    <footer className="bg-white">
       <div className="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:py-24 lg:px-8">
         <nav
           className="-mb-6 columns-2 sm:flex sm:justify-center sm:space-x-12"

@@ -9,7 +9,7 @@ function classNames(...classes) {
 
 export default function NavbarPage() {
   return (
-    <Disclosure as="nav" className="bg-gray-900">
+    <Disclosure as="nav" className="bg-gray-950">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
@@ -24,7 +24,7 @@ export default function NavbarPage() {
                 </div>
                 <a
                   href="#"
-                  className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
+                  className="rounded-md bg-transparent px-3 py-2 text-sm font-medium text-white"
                 >
                   Blog.io
                 </a>

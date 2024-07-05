@@ -3,7 +3,6 @@ import "./globals.css";
 import Navbar from "./components/navbar/NavbarPage";
 import FooterPage from "./components/footer/FooterPage";
 
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -14,7 +13,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <head>
+        <meta name="description" content="Your site description" />
+        <meta name="keywords" content="keyword1, keyword2, keyword3" />
+        <meta name="robots" content="index, follow" />
+      </head>
+      <body className={inter.className} >
         <Navbar /> {/* Navbar bileşenini buraya ekleyin */}
         <main>{children}</main> {/* Ana içerik alanı */}
         <FooterPage /> {/* Footer bileşenini buraya ekleyin */}
