@@ -16,15 +16,6 @@ export class RegisterUserDto {
   @Length(2, 100, { message: 'Name too long' })
   name: string;
 
-  @IsOptional()
-  @IsString({ message: 'Server Name must be string' })
-  @Length(2, 100, { message: 'Server Name to long' })
-  serverName: string;
-
-  @IsOptional()
-  @IsString({ message: 'Server Description must be string' })
-  @Length(2, 100, { message: 'Server Description to long' })
-  serverDescription: string;
 
 
 }

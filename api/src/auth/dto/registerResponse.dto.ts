@@ -1,6 +1,5 @@
 export interface RegisterResponseDto {
-    id: number;
-    email: string;
-    role: string;
-  }
-  
+  id: string;
+  email: string;
+  role: string;
+}

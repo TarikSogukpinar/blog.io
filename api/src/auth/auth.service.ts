@@ -5,11 +5,7 @@ import {
 } from '@nestjs/common';
 import { ConflictException } from '@nestjs/common';
 import { PrismaService } from '../database/database.service';
-// import { HashingService } from '../utils/hashing/hashing.service';
-// import { ErrorCodes } from '../core/handlers/error/error-codes';
 import { TokenService } from '../core/token/token.service';
-// import { RegisterUserDto } from './dto/registerUser.dto';
-// import { LoginResponseDto } from './dto/loginUserDto.dto';
 import { ConfigService } from '@nestjs/config';
 import { RegisterResponseDto } from './dto/registerResponse.dto';
 import { User } from '@prisma/client';
@@ -44,17 +40,19 @@ export class AuthService {
         registerUserDto.password,
       );
 
-      await this.prismaService.user.create({
+      const user = await this.prismaService.user.create({
         data: {
           name: registerUserDto.name,
           email: registerUserDto.email,
           password: hashedPassword,
         },
       });
+
+      return { id: user.id, email: user.email, role: user.role };
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(
-        'An error occurred, please try again laterrrr',
+        'An error occurred, please try again later',
       );
     }
   }
@@ -63,15 +61,15 @@ export class AuthService {
     loginUserDto: LoginUserDto,
   ): Promise<LoginResponseDto> {
     try {
-      const users = await this.validateUserService(loginUserDto);
-      const accessToken = await this.tokenService.createAccessToken(users);
-      const refreshToken = await this.tokenService.createRefreshToken(users);
-      await this.tokenService.updateRefreshToken(users, refreshToken);
+      const user = await this.validateUserService(loginUserDto);
+      const accessToken = await this.tokenService.createAccessToken(user);
+      const refreshToken = await this.tokenService.createRefreshToken(user);
+      await this.tokenService.updateRefreshToken(user, refreshToken);
 
       return {
         accessToken,
         refreshToken,
-        email: users.email,
+        email: user.email,
       };
     } catch (error) {
       console.log(error);
@@ -79,7 +77,7 @@ export class AuthService {
     }
   }
 
-  async logoutUserService(userId: number, token: string): Promise<void> {
+  async logoutUserService(userId: string, token: string): Promise<void> {
     try {
       await this.prismaService.user.update({
         where: { id: userId },
