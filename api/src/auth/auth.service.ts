@@ -33,8 +33,6 @@ export class AuthService {
         where: { email: registerUserDto.email },
       });
 
-      console.log(registerUserDto.password, 'registerUserDto.password');
-
       if (existingUser) {
         throw new ConflictException(ErrorCodes.UserAlreadyExists);
       }

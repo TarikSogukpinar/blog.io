@@ -9,7 +9,17 @@ import { SwaggerModule } from './core/swagger/swagger.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env'],
+      envFilePath: (() => {
+        const env = process.env.NODE_ENV;
+        const envFilePath =
+          env === 'production'
+            ? '.env.production'
+            : env === 'staging'
+              ? '.env.staging'
+              : '.env.development';
+        console.log(`Loading environment variables from ${envFilePath}`);
+        return envFilePath;
+      })(),
     }),
     ThrottlerModule.forRoot([
       {

@@ -6,7 +6,7 @@ import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/20/solid";
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         {/* <div>
           <Image
@@ -21,11 +21,11 @@ export default function LoginPage() {
           </h2>
         </div> */}
 
-        <h2 className="flex text-white text-4xl justify-center items-center ">
+        <h2 className="flex text-black text-4xl justify-center items-center ">
           Sign in to your account
         </h2>
 
-        <div className="bg-gray-900 px-6 py-5 shadow sm:rounded-lg sm:px-12">
+        <div className="bg-white px-6 py-5 shadow sm:rounded-lg sm:px-12">
           <form className="space-y-6" action="#" method="POST">
             <div>
               <div>
