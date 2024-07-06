@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { PrismaModule } from './database/database.module';
+import { AuthModule } from './auth/auth.module';
+import { SwaggerModule } from './core/swagger/swagger.module';
 
 @Module({
   imports: [
@@ -18,8 +18,14 @@ import { PrismaModule } from './database/database.module';
       },
     ]),
     PrismaModule,
+    AuthModule,
+    SwaggerModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private configService: ConfigService) {
+    console.log('Database URL:', this.configService.get('DATABASE_URL'));
+  }
+}

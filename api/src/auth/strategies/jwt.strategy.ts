@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly prismaService: PrismaService,
-    private configService: ConfigService,
+    private readonly configService: ConfigService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: { id: string }) {
+  async validate(payload: { id: number }) {
     try {
       const users = await this.prismaService.user.findUnique({
         where: {

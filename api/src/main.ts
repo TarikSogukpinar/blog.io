@@ -6,10 +6,10 @@ import { ConfigService } from '@nestjs/config';
 
 //pnpm packages
 import helmet from 'helmet';
-// import * as hpp from 'hpp';
+import * as hpp from 'hpp';
 import * as compression from 'compression';
 import * as cookieParser from 'cookie-parser';
-// import { SwaggerService } from './core/swagger/swagger.service';
+import { SwaggerService } from './core/swagger/swagger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,12 +20,12 @@ async function bootstrap() {
   );
   app.enableShutdownHooks();
   app.use(helmet());
-  // app.use(hpp());
+  app.use(hpp());
   app.use(compression());
   app.use(cookieParser());
 
-  // const swaggerService = app.get(SwaggerService);
-  // swaggerService.setupSwagger(app);
+  const swaggerService = app.get(SwaggerService);
+  swaggerService.setupSwagger(app);
   const PORT = configService.get<string>('API_PORT', { infer: true });
 
   app.enableCors({

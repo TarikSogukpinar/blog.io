@@ -19,7 +19,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migrate:postgres": "npx prisma migrate dev --name init"
+    "migrate:postgres": "npx prisma migrate dev --name init",
+    "seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -37,6 +38,7 @@
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "helmet": "^7.1.0",
+    "hpp": "^0.2.3",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
@@ -50,6 +52,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie-parser": "^1.4.7",
     "@types/express": "^4.17.17",
+    "@types/hpp": "^0.2.6",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.14.9",
     "@types/passport-local": "^1.0.38",

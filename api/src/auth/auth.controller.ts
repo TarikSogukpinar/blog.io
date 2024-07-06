@@ -20,7 +20,6 @@ import { JwtAuthGuard } from './auth.guard';
 import { CustomRequest } from '../core/request/customRequest';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { LogoutDto } from './dto/logout.dto';
-import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 
