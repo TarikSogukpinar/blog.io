@@ -1,4 +1,6 @@
 {
-  "welcome": "Welcome",
-  "hello": "Hello"
+  "LoginPage": {
+    "welcome": "Welcome",
+    "hello": "Hello"
+  }
 }

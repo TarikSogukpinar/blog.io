@@ -1,5 +1,6 @@
 {
+  "LoginPage": {
     "welcome": "Hoşgeldin",
-    "hello": "merhaba"
+    "hello": "Merhaba"
   }
-  
+}

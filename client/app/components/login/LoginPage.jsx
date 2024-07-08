@@ -3,8 +3,10 @@ import React from "react";
 // import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/20/solid";
+import { useTranslations } from "next-intl";
 
 export default function LoginPage() {
+  const t = useTranslations('LoginPage');
   return (
     <div className="flex min-h-screen items-center justify-center bg-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
@@ -22,7 +24,7 @@ export default function LoginPage() {
         </div> */}
 
         <h2 className="flex text-black text-4xl justify-center items-center ">
-          Sign in to your account
+          Sign in to your account  {t('welcome')}
         </h2>
 
         <div className="bg-white px-6 py-5 shadow sm:rounded-lg sm:px-12">
