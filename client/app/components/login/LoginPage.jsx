@@ -6,7 +6,24 @@ import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/20/solid";
 import { useTranslations } from "next-intl";
 
 export default function LoginPage() {
-  const t = useTranslations('LoginPage');
+  const t = useTranslations("LoginPage");
+
+  const changeLanguage = (newLocale) => {
+    console.log("newLocale", newLocale);
+    const { pathname, asPath, query } = router;
+
+    // Yeni locale bilgisini mevcut URL'e ekleyerek dil değişikliği yap
+    const newAsPath = asPath.replace(`/${router.locale}/`, `/${newLocale}/`);
+
+    console.log(newAsPath, "newAsPath");
+
+    // Push the new path with the updated locale
+    router.push({ pathname, query }, newAsPath, {
+      locale: newLocale,
+      shallow: true,
+    });
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
@@ -24,7 +41,7 @@ export default function LoginPage() {
         </div> */}
 
         <h2 className="flex text-black text-4xl justify-center items-center ">
-          Sign in to your account  {t('welcome')}
+          Sign in to your account {t("welcome")}
         </h2>
 
         <div className="bg-white px-6 py-5 shadow sm:rounded-lg sm:px-12">

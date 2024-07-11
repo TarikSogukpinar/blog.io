@@ -2,5 +2,17 @@
   "LoginPage": {
     "welcome": "Hoşgeldin",
     "hello": "Merhaba"
+  },
+  "NavbarPage": {
+    "Dashboard": "Gösterge Paneli",
+    "Team": "Takım",
+    "Projects": "Projeler",
+    "Calendar": "Takvim",
+    "Your Profile": "Profiliniz",
+    "Settings": "Ayarlar",
+    "Sign out": "Çıkış Yap",
+    "home": "Ana Sayfa",
+    "about": "Hakkında",
+    "contact": "İletişim"
   }
 }

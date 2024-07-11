@@ -2,5 +2,17 @@
   "LoginPage": {
     "welcome": "Welcome",
     "hello": "Hello"
+  },
+  "NavbarPage": {
+    "Dashboard": "Dashboard",
+    "Team": "Team",
+    "Projects": "Projects",
+    "Calendar": "Calendar",
+    "Your Profile": "Your Profile",
+    "Settings": "Settings",
+    "Sign out": "Sign out",
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact"
   }
 }

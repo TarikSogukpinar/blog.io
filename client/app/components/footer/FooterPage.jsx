@@ -1,19 +1,25 @@
 "use client";
 import React from "react";
+import { useTranslations } from "next-intl";
+import { useRouter } from 'next/navigation'
 
 export default function FooterPage() {
+  const t = useTranslations("FooterPage");
+  const router = useRouter();
+
+ 
   const navigation = {
     main: [
-      { name: "About", href: "#" },
-      { name: "Blog", href: "#" },
-      { name: "Jobs", href: "#" },
-      { name: "Press", href: "#" },
-      { name: "Accessibility", href: "#" },
-      { name: "Partners", href: "#" },
+      { name: t("main.About"), href: "#" },
+      { name: t("main.Blog"), href: "#" },
+      { name: t("main.Jobs"), href: "#" },
+      { name: t("main.Press"), href: "#" },
+      { name: t("main.Accessibility"), href: "#" },
+      { name: t("main.Partners"), href: "#" },
     ],
     social: [
       {
-        name: "Facebook",
+        name: t("social.Facebook"),
         href: "#",
         icon: (props) => (
           <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
@@ -26,7 +32,7 @@ export default function FooterPage() {
         ),
       },
       {
-        name: "Instagram",
+        name: t("social.Instagram"),
         href: "#",
         icon: (props) => (
           <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
@@ -39,7 +45,7 @@ export default function FooterPage() {
         ),
       },
       {
-        name: "X",
+        name: t("social.X"),
         href: "#",
         icon: (props) => (
           <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
@@ -48,7 +54,7 @@ export default function FooterPage() {
         ),
       },
       {
-        name: "GitHub",
+        name: t("social.GitHub"),
         href: "#",
         icon: (props) => (
           <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
@@ -61,7 +67,7 @@ export default function FooterPage() {
         ),
       },
       {
-        name: "YouTube",
+        name: t("social.YouTube"),
         href: "#",
         icon: (props) => (
           <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
@@ -75,7 +81,7 @@ export default function FooterPage() {
       },
     ],
   };
-  
+
   return (
     <footer className="bg-white">
       <div className="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:py-24 lg:px-8">
@@ -107,8 +113,23 @@ export default function FooterPage() {
           ))}
         </div>
         <p className="mt-10 text-center text-xs leading-5 text-gray-500">
-          &copy; 2024 Blog.io open source medium alternative Build with Nest.js, Next.js.
+          &copy; 2024 Blog.io open source medium alternative Build with Nest.js,
+          Next.js.
         </p>
+        <div className="mt-4 flex justify-center space-x-4">
+          <button
+            onClick={() => router.push('/en')}
+            className="text-sm leading-6 text-gray-600 hover:text-gray-900"
+          >
+            English
+          </button>
+          <button
+            onClick={() => router.push('/tr')}
+            className="text-sm leading-6 text-gray-600 hover:text-gray-900"
+          >
+            Türkçe
+          </button>
+        </div>
       </div>
     </footer>
   );
