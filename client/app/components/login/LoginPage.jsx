@@ -8,20 +8,9 @@ import { useTranslations } from "next-intl";
 export default function LoginPage() {
   const t = useTranslations("LoginPage");
 
-  const changeLanguage = (newLocale) => {
-    console.log("newLocale", newLocale);
-    const { pathname, asPath, query } = router;
-
-    // Yeni locale bilgisini mevcut URL'e ekleyerek dil değişikliği yap
-    const newAsPath = asPath.replace(`/${router.locale}/`, `/${newLocale}/`);
-
-    console.log(newAsPath, "newAsPath");
-
-    // Push the new path with the updated locale
-    router.push({ pathname, query }, newAsPath, {
-      locale: newLocale,
-      shallow: true,
-    });
+  const changeLanguage = (locale) => {
+    Cookies.set("NEXT_LOCALE", locale, { expires: 365 }); // Çerez ayarla
+    router.push(`/${locale}`);
   };
 
   return (

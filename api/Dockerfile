@@ -1,0 +1,36 @@
+# Use the official Node.js image as a base image
+FROM node:20
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Install pnpm globally and set the pnpm store directory
+RUN npm install -g pnpm \
+    && pnpm config set store-dir /usr/src/app/.pnpm-store
+
+# Copy the package files
+COPY package*.json ./
+
+
+
+# Install dependencies using pnpm
+RUN pnpm install
+
+# Copy the rest of the application code
+COPY . .
+
+
+# Ensure CLI dependencies are installed (if needed)
+RUN pnpm add @nestjs/cli
+
+# Generate Prisma client
+RUN pnpm exec prisma generate
+
+# TypeScript derleme
+RUN pnpm run build
+
+ENV NODE_ENV=production
+
+# Expose port and define command to run the app
+EXPOSE 5000
+CMD ["node", "dist/main.js"]

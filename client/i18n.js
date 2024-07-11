@@ -6,14 +6,17 @@ import { locales } from "./i18n.config";
 // Load the translation file for the active locale
 // on each request and make it available to our
 // pages, components, etc.
+
+
 export default getRequestConfig(async ({ locale }) => {
   if (!locales.includes(locale)) {
     return notFound();
   }
 
-  console.log(`Loading translations for ${locale}.`)
+  console.log(`Loading translations for ${locale}.`);
 
   return {
-    messages: (await import(`./public/locales/${locale}/${locale}.json`)).default,
+    messages: (await import(`./public/locales/${locale}/${locale}.json`))
+      .default,
   };
 });

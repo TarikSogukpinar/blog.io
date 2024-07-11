@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: ./api
+    container_name: blogio-api
+    ports:
+      - "7010:7010"
+    environment:
+      - DATABASE_URL=mysql://root:2216@mysql/igniter
+    restart: unless-stopped
+    volumes:
+      - ./api:/usr/src/app
+    depends_on:
+      - mysql
+    command: /bin/sh
+
+  client:
+    build:
+      context: ./client
+    container_name: blogio-client
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    volumes:
+      - ./web:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - api
+
+volumes:
+  mysql-data:

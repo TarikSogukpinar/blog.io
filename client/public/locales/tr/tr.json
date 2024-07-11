@@ -14,5 +14,19 @@
     "home": "Ana Sayfa",
     "about": "Hakkında",
     "contact": "İletişim"
+  },
+  "FooterPage": {
+    "footer": "Footer",
+    "About": "Hakkımızda",
+    "Blog": "Blog",
+    "Jobs": "İşler",
+    "Press": "Basın",
+    "Accessibility": "Erişilebilirik",
+    "Partners": "Partnerler",
+    "Facebook": "Facebook",
+    "Instagram": "Instagram",
+    "X": "X",
+    "Github": "Github",
+    "Youtube": "Youtube"
   }
 }

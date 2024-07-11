@@ -14,5 +14,19 @@
     "home": "Home",
     "about": "About",
     "contact": "Contact"
+  },
+  "FooterPage": {
+    "footer": "Footer",
+    "About": "About Us",
+    "Blog": "Blog",
+    "Jobs": "Jobs",
+    "Press": "Press",
+    "Accessibility": "Accessibility",
+    "Partners": "Partners",
+    "Facebook": "Facebook",
+    "Instagram": "Instagram",
+    "X": "X",
+    "Github": "Github",
+    "Youtube": "Youtube"
   }
 }

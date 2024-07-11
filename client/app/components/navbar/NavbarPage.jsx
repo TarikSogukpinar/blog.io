@@ -1,8 +1,12 @@
 "use client";
-import { useState, useRouter, Fragment } from "react";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { useState, useEffect, Fragment } from "react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -10,23 +14,43 @@ function classNames(...classes) {
 
 export default function NavbarPage() {
   const t = useTranslations("NavbarPage");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const locale = usePathname();
+
+  // console.log(router, "router değeri");
+
+  // const { locale } = router; // Use the locale from the router
+
+  console.log(locale, "locale değeri");
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await axios.get("/api/auth/status"); // Replace with your API endpoint
+        setIsAuthenticated(response.data.isAuthenticated);
+      } catch (error) {
+        console.error("Error fetching auth status:", error);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await axios.post("/api/auth/logout"); // Replace with your logout endpoint
+      setIsAuthenticated(false);
+      router.push(`/${locale}/login`);
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
 
   // const changeLanguage = (newLocale) => {
-  //   console.log("newLocale", newLocale);
-  //   const { pathname, asPath, query } = router;
+  //   const currentPath = window.location.pathname;
+  //   const newPath = currentPath.replace(/^\/[a-z]{2}/, `/${newLocale}`);
 
-  //   // Correctly replace the locale in the URL
-  //   const newAsPath = asPath.includes(`/${router.locale}`)
-  //     ? asPath.replace(`/${router.locale}`, `/${newLocale}`)
-  //     : `/${newLocale}${asPath}`;
-
-  //   console.log(newAsPath, "newAsPath");
-
-  //   // Push the new path with the updated locale
-  //   router.push({ pathname, query }, newAsPath, {
-  //     locale: newLocale,
-  //     shallow: true,
-  //   });
+  //   Cookies.set("NEXT_LOCALE", newLocale, { expires: 365 });
+  //   router.push(newPath);
   // };
 
   return (
@@ -44,7 +68,7 @@ export default function NavbarPage() {
                   />
                 </div>
                 <a
-                  href="#"
+                  href={`/`}
                   className="rounded-md bg-transparent px-3 py-2 text-sm font-medium text-white"
                 >
                   Blog.io
@@ -71,7 +95,7 @@ export default function NavbarPage() {
                     Write Blog
                   </a>
                   <a
-                    href="/login"
+                    href={`${locale}/login`} // Dynamically set the href with the current locale
                     className="bg-gray-950 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-900 hover:text-white"
                   >
                     Start Here

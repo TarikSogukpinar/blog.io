@@ -1,25 +1,34 @@
 "use client";
 import React from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function FooterPage() {
   const t = useTranslations("FooterPage");
   const router = useRouter();
 
- 
+  const changeLanguage = (locale) => {
+    const currentPath = window.location.pathname;
+    console.log(currentPath, "currentPath");
+    const newPath = currentPath.replace(/^\/[a-z]{2}/, `/${locale}`);
+
+    Cookies.set("NEXT_LOCALE", locale, { expires: 365 });
+    router.push(newPath);
+  };
+
   const navigation = {
     main: [
-      { name: t("main.About"), href: "#" },
-      { name: t("main.Blog"), href: "#" },
-      { name: t("main.Jobs"), href: "#" },
-      { name: t("main.Press"), href: "#" },
-      { name: t("main.Accessibility"), href: "#" },
-      { name: t("main.Partners"), href: "#" },
+      { name: t("About"), href: "/login" },
+      { name: t("Blog"), href: "#" },
+      { name: t("Jobs"), href: "#" },
+      { name: t("Press"), href: "#" },
+      { name: t("Accessibility"), href: "#" },
+      { name: t("Partners"), href: "#" },
     ],
     social: [
       {
-        name: t("social.Facebook"),
+        name: t("Facebook"),
         href: "#",
         icon: (props) => (
           <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
@@ -32,7 +41,7 @@ export default function FooterPage() {
         ),
       },
       {
-        name: t("social.Instagram"),
+        name: t("Instagram"),
         href: "#",
         icon: (props) => (
           <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
@@ -45,7 +54,7 @@ export default function FooterPage() {
         ),
       },
       {
-        name: t("social.X"),
+        name: t("X"),
         href: "#",
         icon: (props) => (
           <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
@@ -54,7 +63,7 @@ export default function FooterPage() {
         ),
       },
       {
-        name: t("social.GitHub"),
+        name: t("Github"),
         href: "#",
         icon: (props) => (
           <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
@@ -67,7 +76,7 @@ export default function FooterPage() {
         ),
       },
       {
-        name: t("social.YouTube"),
+        name: t("YouTube"),
         href: "#",
         icon: (props) => (
           <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
@@ -118,13 +127,13 @@ export default function FooterPage() {
         </p>
         <div className="mt-4 flex justify-center space-x-4">
           <button
-            onClick={() => router.push('/en')}
+            onClick={() => router.push("/en")}
             className="text-sm leading-6 text-gray-600 hover:text-gray-900"
           >
             English
           </button>
           <button
-            onClick={() => router.push('/tr')}
+            onClick={() => router.push("/tr")}
             className="text-sm leading-6 text-gray-600 hover:text-gray-900"
           >
             Türkçe
