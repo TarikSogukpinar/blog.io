@@ -9,6 +9,7 @@ import { Dialog, DialogPanel } from "@headlessui/react";
 import Image from "next/image";
 import Link from "next/link";
 import Cookies from "js-cookie";
+import Navbar from "@/app/[locale]/navbar/page";
 
 const user = {
   name: "Tom Cook",
@@ -98,21 +99,21 @@ const navigation = {
 export default function MainPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const [currentLocale, setCurrentLocale] = useState('en'); // Varsayılan dil 'en'
+  const [currentLocale, setCurrentLocale] = useState("en"); // Varsayılan dil 'en'
 
   useEffect(() => {
-    const savedLocale =   Cookies.get('NEXT_LOCALE');
-    console.log(savedLocale, "saved locale")
+    const savedLocale = Cookies.get("NEXT_LOCALE");
+    console.log(savedLocale, "saved locale");
     if (savedLocale && savedLocale !== currentLocale) {
       setCurrentLocale(savedLocale);
     } else {
-      Cookies.set('NEXT_LOCALE', currentLocale, { expires: 365 });
+      Cookies.set("NEXT_LOCALE", currentLocale, { expires: 365 });
     }
   }, [currentLocale]);
 
-
   return (
     <div className="bg-white">
+      <Navbar />
       <header className="absolute inset-x-0 top-0 z-50">
         <Dialog
           className="lg:hidden"

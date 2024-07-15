@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development dotenv -e .env.development -- pnpm prisma generate && nest start --watch",
+    "dev": "cross-env NODE_ENV=development dotenv -e .env.development -- pnpm prisma generate && nest start --debug --watch",
     "staging": "cross-env NODE_ENV=staging dotenv -e .env.staging -- pnpm prisma generate && nest start",
     "start:prod": "cross-env NODE_ENV=production dotenv -e .env.production -- pnpm prisma generate && nest start",
     "migrate:dev": "cross-env dotenv -e .env.development -- pnpm prisma migrate dev --name init",

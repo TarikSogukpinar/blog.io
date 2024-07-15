@@ -29,7 +29,7 @@ async function bootstrap() {
   const PORT = configService.get<string>('API_PORT', { infer: true });
 
   app.enableCors({
-    origin: ['*'],
+    origin: ['http://localhost:8080', 'http://localhost:3000'],
     credentials: true,
   });
 

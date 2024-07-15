@@ -14,7 +14,6 @@ import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { LoginResponseDto } from './dto/loginResponse.dto';
 import { HashingService } from 'src/utils/hashing/hashing.service';
-import { register } from 'module';
 
 @Injectable()
 export class AuthService {

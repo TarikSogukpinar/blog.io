@@ -17,16 +17,12 @@ export default function NavbarPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const locale = usePathname();
 
-  // console.log(router, "router değeri");
-
-  // const { locale } = router; // Use the locale from the router
-
   console.log(locale, "locale değeri");
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get("/api/auth/status"); // Replace with your API endpoint
+        const response = await axios.get("/api/auth/status");
         setIsAuthenticated(response.data.isAuthenticated);
       } catch (error) {
         console.error("Error fetching auth status:", error);
@@ -44,15 +40,7 @@ export default function NavbarPage() {
       console.error("Error logging out:", error);
     }
   };
-
-  // const changeLanguage = (newLocale) => {
-  //   const currentPath = window.location.pathname;
-  //   const newPath = currentPath.replace(/^\/[a-z]{2}/, `/${newLocale}`);
-
-  //   Cookies.set("NEXT_LOCALE", newLocale, { expires: 365 });
-  //   router.push(newPath);
-  // };
-
+  
   return (
     <Disclosure as="nav" className="bg-gray-950">
       {({ open }) => (

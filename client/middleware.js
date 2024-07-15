@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { verifyJwtToken } from "@/app/utils/auth";
+import { verifyJwtToken } from "@/app/utils/jwt";
 import createIntlMiddleware from "next-intl/middleware";
 
 const AUTH_PAGES = ["/login", "/register"];
