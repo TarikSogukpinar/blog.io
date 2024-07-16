@@ -1,7 +1,30 @@
 {
   "LoginPage": {
-    "welcome": "Welcome",
-    "hello": "Hello"
+    "welcome": "Sign in to your account",
+    "email": "Email",
+    "password": "Password",
+    "remember": "Remember me",
+    "forgotPassword": "Forgot password",
+    "orContinueWith": "Or continue with",
+    "loading": "Authenticating...",
+    "authSuccess": "Authentication successful, redirecting...",
+    "authError": "Authentication failed",
+    "userNameorPasswordError": "Username or password is incorrect",
+    "signin": "Sign in"
+  },
+  "RegisterPage": {
+    "welcome": "Sign up to your account",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "remember": "Remember me",
+    "forgotPassword": "Forgot password",
+    "orContinueWith": "Or continue with",
+    "loading": "Register...",
+    "registerSuccess": "Register successful, redirecting...",
+    "registerError": "Register failed",
+    "userNameorPasswordError": "Invalid form",
+    "signup": "Sign up"
   },
   "NavbarPage": {
     "Dashboard": "Dashboard",
@@ -11,6 +34,7 @@
     "Your Profile": "Your Profile",
     "Settings": "Settings",
     "Sign out": "Sign out",
+    "Sign in": "Sign in",
     "home": "Home",
     "about": "About",
     "contact": "Contact",

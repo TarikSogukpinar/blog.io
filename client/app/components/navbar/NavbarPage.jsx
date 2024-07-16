@@ -1,12 +1,12 @@
 "use client";
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect } from "react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { Disclosure } from "@headlessui/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import Cookies from "js-cookie";
-import { useParams, usePathname, useSearchParams } from "next/navigation";
+import { logoutUser } from "../../utils/auth";
+import { usePathname } from "next/navigation"; // Correctly import usePathname
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -14,33 +14,27 @@ function classNames(...classes) {
 
 export default function NavbarPage() {
   const t = useTranslations("NavbarPage");
+  const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const locale = usePathname();
-
-  console.log(locale, "locale değeri");
+  const pathname = usePathname(); // Correctly use usePathname hook
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await axios.get("/api/auth/status");
-        setIsAuthenticated(response.data.isAuthenticated);
-      } catch (error) {
-        console.error("Error fetching auth status:", error);
-      }
-    };
-    checkAuth();
+    const token = Cookies.get("JWT");
+    console.log("Token:", token);
+    setIsAuthenticated(!!token); // Set authentication state based on token existence
   }, []);
 
   const handleLogout = async () => {
     try {
-      await axios.post("/api/auth/logout"); // Replace with your logout endpoint
+      await logoutUser(); // Use the imported logout function
+      Cookies.remove("JWT");
       setIsAuthenticated(false);
       router.push(`/${locale}/login`);
     } catch (error) {
       console.error("Error logging out:", error);
     }
   };
-  
+
   return (
     <Disclosure as="nav" className="bg-gray-950">
       {({ open }) => (
@@ -82,12 +76,21 @@ export default function NavbarPage() {
                   >
                     Write Blog
                   </a>
-                  <a
-                    href={`${locale}/login`} // Dynamically set the href with the current locale
-                    className="bg-gray-950 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-900 hover:text-white"
-                  >
-                    Start Here
-                  </a>
+                  {isAuthenticated ? (
+                    <button
+                      onClick={handleLogout}
+                      className="bg-gray-950 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-900 hover:text-white"
+                    >
+                      Logout
+                    </button>
+                  ) : (
+                    <a
+                      href={`${pathname}/login`} // Dynamically set the href with the current locale
+                      className="bg-gray-950 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-900 hover:text-white"
+                    >
+                      Start Here
+                    </a>
+                  )}
                 </div>
               </div>
               <div className="flex lg:hidden">
@@ -135,47 +138,59 @@ export default function NavbarPage() {
               </Disclosure.Button>
             </div>
             <div className="border-t border-gray-700 pb-3 pt-4">
-              <div className="flex items-center px-5">
-                <div className="flex-shrink-0"></div>
-                <div className="ml-3">
-                  <div className="text-base font-medium text-white">
-                    Tom Cook
+              {isAuthenticated ? (
+                <>
+                  <div className="flex items-center px-5">
+                    <div className="flex-shrink-0"></div>
+                    <div className="ml-3">
+                      <div className="text-base font-medium text-white">
+                        Tom Cook
+                      </div>
+                      <div className="text-sm font-medium text-gray-400">
+                        tom@example.com
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                    >
+                      <span className="sr-only">View notifications</span>
+                      <BellIcon className="h-6 w-6" aria-hidden="true" />
+                    </button>
                   </div>
-                  <div className="text-sm font-medium text-gray-400">
-                    tom@example.com
+                  <div className="mt-3 space-y-1 px-2">
+                    <Disclosure.Button
+                      as="a"
+                      href="#"
+                      className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                    >
+                      {t("Your Profile")}
+                    </Disclosure.Button>
+                    <Disclosure.Button
+                      as="a"
+                      href="#"
+                      className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                    >
+                      {t("Settings")}
+                    </Disclosure.Button>
+                    <Disclosure.Button
+                      as="button"
+                      onClick={handleLogout}
+                      className="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                    >
+                      {t("Sign out")}
+                    </Disclosure.Button>
                   </div>
-                </div>
-                <button
-                  type="button"
-                  className="ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                >
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
-              </div>
-              <div className="mt-3 space-y-1 px-2">
+                </>
+              ) : (
                 <Disclosure.Button
                   as="a"
-                  href="#"
+                  href={`${pathname}/login`}
                   className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                 >
-                  {t("Your Profile")}
+                  {t("Sign in")}
                 </Disclosure.Button>
-                <Disclosure.Button
-                  as="a"
-                  href="#"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                >
-                  {t("Settings")}
-                </Disclosure.Button>
-                <Disclosure.Button
-                  as="a"
-                  href="#"
-                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                >
-                  {t("Sign out")}
-                </Disclosure.Button>
-              </div>
+              )}
             </div>
           </Disclosure.Panel>
         </>

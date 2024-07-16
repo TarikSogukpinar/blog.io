@@ -20,11 +20,25 @@ export const loginUser = async (email, password) => {
   }
 };
 
-export const logoutUser = async () => {
-  return await axios.get(`http://localhost:5000/api/auth/logout`, {
-    credentials: "include",
-    withCredentials: true,
-  });
+export const logoutUser = async (token) => {
+  try {
+    const response = await axios.post(
+      `http://localhost:5000/api/auth/logout`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Logout error:", error.response ? error.response.data : error);
+    return {
+      error: error.response?.data?.message || "An error occurred during logout.",
+    };
+  }
 };
 
 export const registerUser = async (name, email, password) => {

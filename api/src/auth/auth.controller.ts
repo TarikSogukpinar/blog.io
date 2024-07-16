@@ -5,6 +5,7 @@ import {
   Req,
   UseGuards,
   UnauthorizedException,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/loginUser.dto';
@@ -53,7 +54,7 @@ export class AuthController {
     };
   }
 
-  @Post('logout')
+  @Get('logout')
   @ApiOperation({ summary: 'Logout User' })
   @ApiResponse({ status: 200, description: 'Successful logout' })
   @ApiBody({ type: LogoutDto })

@@ -29,19 +29,22 @@ export default function LoginPage() {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log(loginValues, "login values works");
-    try {
-      const res = await loginUser(loginValues.email, loginValues.password);
 
-      console.log(res, "login response"); // Yanıtı konsola yazdırın
+    const loginPromise = loginUser(loginValues.email, loginValues.password);
+
+    toast.promise(loginPromise, {
+      loading: t("loading"), // Assuming you have a translation for loading
+      success: t("authSuccess"), // Assuming you have a translation for success
+      error: (err) => `${t("authError")}: ${err.message}`, // Assuming you have a translation for error
+    });
+
+    try {
+      const res = await loginPromise;
 
       if (res.error) {
-        notifyError(res.error);
-        setLoading(false);
-        return;
+        throw new Error(res.error);
       }
 
-      notify("Authentication successful, redirecting");
       Cookies.set("JWT", res.result.accessToken, {
         path: "/",
         secure: false,
@@ -54,9 +57,9 @@ export default function LoginPage() {
       }, 1000);
     } catch (error) {
       const errorMessage =
-        error.response?.data?.message || "Username or password is wrong!";
+        error.response?.data?.message || t("userNameorPasswordError");
       const errorStatus = error.response?.data?.statusCode || "";
-      notifyError(`${errorMessage}`);
+      console.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -67,7 +70,7 @@ export default function LoginPage() {
       <Toaster position="top-right" reverseOrder={false} />
       <div className="w-full max-w-md space-y-8">
         <h2 className="flex text-black text-4xl justify-center items-center ">
-          Sign in to your account {t("welcome")}
+          {t("welcome")}
         </h2>
 
         <div className="bg-white px-6 py-5 shadow sm:rounded-lg sm:px-12">
@@ -78,7 +81,7 @@ export default function LoginPage() {
                   htmlFor="email"
                   className="block text-sm font-medium leading-6 text-black"
                 >
-                  Email
+                  {t("email")}
                 </label>
                 <div className="relative mt-2 rounded-md shadow-sm">
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -95,7 +98,7 @@ export default function LoginPage() {
                     value={loginValues.email}
                     required
                     className="block w-full rounded-md border-0 py-2 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    placeholder="you@example.com"
+                    placeholder="johndoe@example.com"
                   />
                 </div>
               </div>
@@ -106,7 +109,7 @@ export default function LoginPage() {
                 htmlFor="password"
                 className="block text-sm font-medium leading-6 text-black"
               >
-                Password
+                {t("password")}
               </label>
               <div className="relative mt-2 rounded-md shadow-sm">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -122,6 +125,7 @@ export default function LoginPage() {
                   onChange={handleLogin}
                   value={loginValues.password}
                   required
+                  placeholder="********"
                   className="block w-full rounded-md border-0 py-2 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -139,7 +143,7 @@ export default function LoginPage() {
                   htmlFor="remember-me"
                   className="ml-3 block text-sm leading-6 text-black"
                 >
-                  Remember me
+                  {t("remember")}
                 </label>
               </div>
 
@@ -148,7 +152,7 @@ export default function LoginPage() {
                   href="#"
                   className="font-semibold text-gray-600 hover:text-gray-500"
                 >
-                  Forgot password?
+                  {t("forgotPassword")}
                 </a>
               </div>
             </div>
@@ -158,7 +162,7 @@ export default function LoginPage() {
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-gray-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-teal-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Sign in
+                {t("signin")}
               </button>
             </div>
           </form>
@@ -173,7 +177,7 @@ export default function LoginPage() {
               </div>
               <div className="relative flex justify-center text-sm font-medium leading-6">
                 <span className="bg-gray-800 px-6 text-white">
-                  Or continue with
+                  {t("orContinueWith")}
                 </span>
               </div>
             </div>

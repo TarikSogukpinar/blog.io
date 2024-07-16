@@ -1,7 +1,30 @@
 {
   "LoginPage": {
-    "welcome": "Hoşgeldin",
-    "hello": "Merhaba"
+    "welcome": "Lütfen giriş yapın!",
+    "email": "E-posta",
+    "password": "Şifre",
+    "remember": "Beni hatırla",
+    "forgotPassword": "Şifremi unuttum",
+    "orContinueWith": "Veya devam et",
+    "loading": "Giriş yapılıyor...",
+    "authSuccess": "Giriş başarılı, yönlendiriliyorsunuz...",
+    "authError": "Giriş başarısız",
+    "userNameorPasswordError": "Kullanıcı adı veya şifre yanlış",
+    "signin": "Giriş yap"
+  },
+  "RegisterPage": {
+    "welcome": "Lütfen kayıt olun!",
+    "name": "İsim",
+    "email": "E-posta",
+    "password": "Şifre",
+    "remember": "Beni hatırla",
+    "forgotPassword": "Şifremi unuttum",
+    "orContinueWith": "Veya devam et",
+    "loading": "Kayıt olunuyor...",
+    "authSuccess": "Kayıt başarılı, yönlendiriliyorsunuz...",
+    "authError": "Kayıt işlemi başarısız",
+    "userNameorPasswordError": "Kullanıcı adı veya şifre yanlış",
+    "signup": "Kayıt ol"
   },
   "NavbarPage": {
     "Dashboard": "Gösterge Paneli",
