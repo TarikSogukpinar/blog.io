@@ -1,61 +1,83 @@
-import { NextResponse } from "next/server";
-import { verifyJwtToken } from "@/app/utils/jwt";
+import { NextRequest, NextResponse, NextFetchEvent } from "next/server";
+import { verifyJwtToken } from "./app/utils/jwt";
 import createIntlMiddleware from "next-intl/middleware";
 
+// Dil çevirisi middleware'ini oluşturun
+const I18nMiddleware = createIntlMiddleware({
+  locales: ["en", "tr"], // Dillerinizi buraya ekleyin
+  defaultLocale: "en",
+  urlMappingStrategy: "rewrite",
+});
+
 const AUTH_PAGES = ["/login", "/register"];
-const PROTECTED_PAGES = ["/dashboard", "/settings"]; // Protected pages
+const PROTECTED_PAGES = ["/home", "/settings", "/admin"]; // Protected pages
 
-const isAuthPages = (url) => AUTH_PAGES.some((page) => page.startsWith(url));
+const isAuthPage = (url) => AUTH_PAGES.includes(url);
 const isProtectedPage = (url) =>
-  PROTECTED_PAGES.some((page) => page.startsWith(url));
+  PROTECTED_PAGES.some((page) => url.startsWith(page));
 
-export default async function middleware(request) {
+export async function middleware(request, event) {
   const { nextUrl, cookies } = request;
-  const { value: token } = cookies.get("JWT") ?? { value: null };
+  const tokenObj = cookies.get("JWT");
+  const token = tokenObj?.value;
 
-  const hasVerifiedToken = token && (await verifyJwtToken(token));
-  const isAuthPageRequested = isAuthPages(nextUrl.pathname);
-  const isProtectedPageRequested = isProtectedPage(nextUrl.pathname);
+  console.log("Middleware çalışıyor! URL:", request.url);
+  console.log("Token middleware:", token);
 
-  if (nextUrl.pathname === "/") {
-    // Redirect root path to the default locale
-    return NextResponse.redirect(new URL("/en", request.url));
-  }
-
-  if (isAuthPageRequested) {
-    if (!hasVerifiedToken) {
-      const response = NextResponse.next();
-      response.cookies.delete("JWT");
-      return response;
+  let hasVerifiedToken = false;
+  let payload = null;
+  if (token) {
+    try {
+      payload = await verifyJwtToken(token);
+      hasVerifiedToken = !!payload; // Payload varsa true, yoksa false yapar
+      console.log("Token doğrulandı:", hasVerifiedToken, "Payload:", payload);
+    } catch (error) {
+      console.error("Token verification failed:", error);
     }
-    return NextResponse.redirect(new URL(`/`, request.url));
   }
 
-  // Access control for protected pages
+  const locale = nextUrl.pathname.split("/")[1] || "en"; // Varsayılan olarak 'en' kullanılır
+
+  const pathWithoutLocale = nextUrl.pathname.replace(`/${locale}`, "");
+  const isAuthPageRequested = isAuthPage(pathWithoutLocale);
+  const isProtectedPageRequested = isProtectedPage(pathWithoutLocale);
+
+  console.log(nextUrl.pathname, "nextUrl.pathname");
+  console.log(pathWithoutLocale, "pathWithoutLocale");
+
+  // if (nextUrl.pathname === `/`) {
+  //   console.log("Root path yönlendirmesi yapılıyor.");
+  //   return NextResponse.redirect(new URL(`/${locale}/`, request.url));
+  // }
+
+  if (isAuthPageRequested && hasVerifiedToken) {
+    console.log(
+      "Authenticated user tries to access auth page, redirecting to home."
+    );
+    return NextResponse.redirect(new URL(`/${locale}/home`, request.url));
+  }
+
   if (isProtectedPageRequested && !hasVerifiedToken) {
+    console.log("User is not authenticated, redirecting to login.");
     const searchParams = new URLSearchParams(nextUrl.searchParams);
     searchParams.set("next", nextUrl.pathname);
 
-    const response = NextResponse.redirect(
-      new URL(`/login?${searchParams}`, request.url)
+    return NextResponse.redirect(
+      new URL(`/${locale}/login?${searchParams}`, request.url)
     );
-    response.cookies.delete("JWT");
-
-    return response;
   }
 
-  // Call the next middleware in the chain
-  const intlMiddleware = createIntlMiddleware({
-    defaultLocale: "en",
-    locales: ["en", "tr"],
-    localeDetection: true,
-  });
+  console.log("No redirection, proceeding to next middleware.");
 
-  const response = await intlMiddleware(request);
-  return response;
+  // Dil çevirisi middleware'ini çağır
+  return I18nMiddleware(request);
 }
 
-// Middleware configuration for next-intl
+// Middleware yapılandırmasını yapın
 export const config = {
-  matcher: ["/", "/(tr|en)/:path*"],
+  matcher: [
+    "/((?!api|static|.*\\..*|_next|favicon.ico|robots.txt).*)",
+    "/",
+    "/[locale]/:path*",
+  ],
 };

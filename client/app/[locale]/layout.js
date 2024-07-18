@@ -24,7 +24,7 @@ export default function LocaleLayout({ children, params }) {
       </head>
       <body className={inter.className}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          {/* <Navbar /> */}
+          <Navbar />
           <main>{children}</main> {/* Ana içerik alanı */}
           <Footer /> {/* Footer bileşenini buraya ekleyin */}
         </NextIntlClientProvider>

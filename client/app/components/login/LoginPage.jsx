@@ -1,26 +1,25 @@
 "use client";
 import React, { useState } from "react";
-import Image from "next/image";
-import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/20/solid";
 import { useTranslations } from "next-intl";
 import { toast, Toaster } from "react-hot-toast";
 import { loginUser } from "../../utils/auth";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/20/solid";
 
 export default function LoginPage() {
   const t = useTranslations("LoginPage");
   const router = useRouter();
+  const pathname = usePathname();
+  const lang = pathname.split("/")[1];
 
   const [loading, setLoading] = useState(false);
-
-  const notify = (message) => toast.success(message);
-  const notifyError = (message) => toast.error(message);
-
   const [loginValues, setLoginValues] = useState({
     email: "",
     password: "",
   });
+
+  const notifyError = (message) => toast.error(message);
 
   const handleLogin = (e) => {
     setLoginValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -30,16 +29,8 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
 
-    const loginPromise = loginUser(loginValues.email, loginValues.password);
-
-    toast.promise(loginPromise, {
-      loading: t("loading"), // Assuming you have a translation for loading
-      success: t("authSuccess"), // Assuming you have a translation for success
-      error: (err) => `${t("authError")}: ${err.message}`, // Assuming you have a translation for error
-    });
-
     try {
-      const res = await loginPromise;
+      const res = await loginUser(loginValues.email, loginValues.password);
 
       if (res.error) {
         throw new Error(res.error);
@@ -52,13 +43,15 @@ export default function LoginPage() {
       });
 
       setTimeout(() => {
-        router.push("/");
+        router.push(`/${lang}/home`);
         router.refresh();
       }, 1000);
+
+      window.location.href = `/${lang}/home`;
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || t("userNameorPasswordError");
-      const errorStatus = error.response?.data?.statusCode || "";
+      notifyError(errorMessage);
       console.error(errorMessage);
     } finally {
       setLoading(false);

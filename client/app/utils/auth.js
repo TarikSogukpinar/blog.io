@@ -34,9 +34,13 @@ export const logoutUser = async (token) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Logout error:", error.response ? error.response.data : error);
+    console.error(
+      "Logout error:",
+      error.response ? error.response.data : error
+    );
     return {
-      error: error.response?.data?.message || "An error occurred during logout.",
+      error:
+        error.response?.data?.message || "An error occurred during logout.",
     };
   }
 };
