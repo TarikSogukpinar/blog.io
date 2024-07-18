@@ -21,8 +21,8 @@ export async function middleware(request, event) {
   const tokenObj = cookies.get("JWT");
   const token = tokenObj?.value;
 
-  console.log("Middleware çalışıyor! URL:", request.url);
-  console.log("Token middleware:", token);
+  // console.log("Middleware çalışıyor! URL:", request.url);
+  // console.log("Token middleware:", token);
 
   let hasVerifiedToken = false;
   let payload = null;
@@ -30,9 +30,10 @@ export async function middleware(request, event) {
     try {
       payload = await verifyJwtToken(token);
       hasVerifiedToken = !!payload; // Payload varsa true, yoksa false yapar
-      console.log("Token doğrulandı:", hasVerifiedToken, "Payload:", payload);
+      // console.log("Token doğrulandı:", hasVerifiedToken, "Payload:", payload);
     } catch (error) {
-      console.error("Token verification failed:", error);
+      throw new Error("Token verification failed: " + error);
+      // console.error("Token verification failed:", error);
     }
   }
 
@@ -51,14 +52,14 @@ export async function middleware(request, event) {
   // }
 
   if (isAuthPageRequested && hasVerifiedToken) {
-    console.log(
-      "Authenticated user tries to access auth page, redirecting to home."
-    );
+    // console.log(
+    //   "Authenticated user tries to access auth page, redirecting to home."
+    // );
     return NextResponse.redirect(new URL(`/${locale}/home`, request.url));
   }
 
   if (isProtectedPageRequested && !hasVerifiedToken) {
-    console.log("User is not authenticated, redirecting to login.");
+    // console.log("User is not authenticated, redirecting to login.");
     const searchParams = new URLSearchParams(nextUrl.searchParams);
     searchParams.set("next", nextUrl.pathname);
 
@@ -67,7 +68,7 @@ export async function middleware(request, event) {
     );
   }
 
-  console.log("No redirection, proceeding to next middleware.");
+  // console.log("No redirection, proceeding to next middleware.");
 
   // Dil çevirisi middleware'ini çağır
   return I18nMiddleware(request);

@@ -45,7 +45,9 @@ export default function NavbarPage() {
     }
   };
 
-  const localePath = `/${pathname.split('/')[1]}/`;
+  const localePath = `/${pathname.split("/")[1]}/`;
+
+  const homeHref = isAuthenticated ? `${localePath}home` : "/";
 
   return (
     <Disclosure as="nav" className="bg-gray-950">
@@ -62,7 +64,7 @@ export default function NavbarPage() {
                   />
                 </div>
                 <Link
-                  href="/"
+                  href={homeHref}
                   passHre
                   className="rounded-md bg-transparent px-3 py-2 text-sm font-medium text-white"
                 >
@@ -114,7 +116,7 @@ export default function NavbarPage() {
                           <Menu.Item>
                             {({ active }) => (
                               <a
-                                href="#"
+                                href="/profile"
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
                                   "flex items-center px-4 py-2 text-sm text-gray-700"
