@@ -23,11 +23,43 @@ import { RegisterUserDto } from './dto/registerUser.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
+import { GoogleAuthGuard } from './guards/google.guard';
+import { GitHubAuthGuard } from './guards/github.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Get('google')
+  @UseGuards(GoogleAuthGuard)
+  async googleAuth(@Req() req) {}
+
+  @Get('google/callback')
+  @UseGuards(GoogleAuthGuard)
+  async googleAuthRedirect(@Req() req) {
+    const user = await this.authService.validateOAuthLoginEmail(
+      req.user.email,
+      'google',
+    );
+    const accessToken = await this.authService.loginOAuth(user);
+    return { accessToken };
+  }
+
+  @Get('github')
+  @UseGuards(GitHubAuthGuard)
+  async githubAuth(@Req() req) {}
+
+  @Get('github/callback')
+  @UseGuards(GitHubAuthGuard)
+  async githubAuthRedirect(@Req() req) {
+    const user = await this.authService.validateOAuthLoginEmail(
+      req.user.email,
+      'github',
+    );
+    const accessToken = await this.authService.loginOAuth(user);
+    return { accessToken };
+  }
 
   @Post('register')
   @ApiOperation({ summary: 'User register' })

@@ -20,4 +20,4 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   providers: [TokenService],
   exports: [TokenService],
 })
-export class TokenModule { }
+export class TokenModule {}

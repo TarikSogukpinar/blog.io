@@ -126,4 +126,31 @@ export class AuthService {
       );
     }
   }
+
+  async validateOAuthLoginEmail(
+    email: string,
+    provider: string,
+  ): Promise<User> {
+    let user = await this.prismaService.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      user = await this.prismaService.user.create({
+        data: {
+          email,
+          provider,
+          password: '',
+          role: 'USER',
+        },
+      });
+    }
+
+    return user;
+  }
+
+  async loginOAuth(user: User): Promise<string> {
+    const accessToken = await this.tokenService.createAccessToken(user);
+    return accessToken;
+  }
 }

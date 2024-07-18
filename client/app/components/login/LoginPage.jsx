@@ -6,6 +6,7 @@ import { loginUser } from "../../utils/auth";
 import Cookies from "js-cookie";
 import { usePathname, useRouter } from "next/navigation";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/20/solid";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 
 export default function LoginPage() {
   const t = useTranslations("LoginPage");
@@ -162,16 +163,32 @@ export default function LoginPage() {
 
           <div>
             <div className="relative mt-10">
-              <div
-                className="absolute inset-0 flex items-center"
-                aria-hidden="true"
-              >
-                <div className="w-full border-t border-gray-700" />
-              </div>
-              <div className="relative flex justify-center text-sm font-medium leading-6">
-                <span className="bg-gray-800 px-6 text-white">
-                  {t("orContinueWith")}
-                </span>
+              <div>
+                <div>
+                  <div className="relative flex justify-center text-sm font-medium leading-6 rounded-md">
+                    <span className=" px-6 text-black rounded-md mb-2">
+                      {t("orContinueWith")}
+                    </span>
+                  </div>
+                  <div className="mt-6 flex flex-col justify-center space-y-4">
+                    <div>
+                      <button
+                        type="submit"
+                        className="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-teal-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      >
+                        <FaGoogle className="mr-2 mt-1" /> Sign in with Google
+                      </button>
+                    </div>
+                    <div>
+                      <button
+                        type="submit"
+                        className="flex w-full justify-center rounded-md bg-gray-950 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-teal-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      >
+                        <FaGithub className="mr-2 mt-1" /> Sign in with Github
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
