@@ -23,8 +23,8 @@ import { RegisterUserDto } from './dto/registerUser.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
-import { GoogleAuthGuard } from './guards/google.guard';
-import { GitHubAuthGuard } from './guards/github.guard';
+import { GoogleAuthGuard } from '../auth-google/guards/auth-google.guard';
+import { GitHubAuthGuard } from '../auth-github/guards/auth-github.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
