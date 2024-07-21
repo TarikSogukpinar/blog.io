@@ -3,7 +3,7 @@ import axios from "axios";
 export const loginUser = async (email, password) => {
   try {
     const response = await axios.post(
-      `http://localhost:5000/api/auth/login`,
+      `https://blog.tariksogukpinar.dev/api/auth/login`,
       {
         email,
         password,
@@ -23,7 +23,7 @@ export const loginUser = async (email, password) => {
 export const logoutUser = async (token) => {
   try {
     const response = await axios.post(
-      `http://localhost:5000/api/auth/logout`,
+      `https://blog.tariksogukpinar.dev/api/auth/logout`,
       {},
       {
         headers: {
@@ -47,7 +47,7 @@ export const logoutUser = async (token) => {
 
 export const registerUser = async (name, email, password) => {
   return await axios.post(
-    `http://localhost:5000/api/auth/register`,
+    `https://blog.tariksogukpinar.dev/api/auth/register`,
     {
       name,
       email,

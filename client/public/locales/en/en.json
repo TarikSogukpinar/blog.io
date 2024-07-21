@@ -27,6 +27,7 @@
     "signup": "Sign up"
   },
   "NavbarPage": {
+    "StartHere": "Login",
     "Dashboard": "Dashboard",
     "Team": "Team",
     "Projects": "Projects",
@@ -44,6 +45,7 @@
   },
   "FooterPage": {
     "English": "English",
+    "Home": "Home",
     "Turkish": "Turkish",
     "footer": "Footer",
     "About": "About Us",

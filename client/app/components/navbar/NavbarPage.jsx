@@ -70,12 +70,13 @@ export default function NavbarPage() {
               <div className="flex-1 flex justify-center lg:justify-end">
                 <div className="hidden lg:flex lg:space-x-4">
                   <a
-                    href="#"
+                    href="https://github.com/TarikSogukpinar/blog.io"
+                    target="_blank"
                     className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                   >
                     Github
                   </a>
-                  <a
+                  {/* <a
                     href="#"
                     className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                   >
@@ -86,7 +87,7 @@ export default function NavbarPage() {
                     className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                   >
                     Write Blog
-                  </a>
+                  </a> */}
                   {isAuthenticated ? (
                     <Menu as="div" className="relative">
                       <div>
@@ -187,7 +188,7 @@ export default function NavbarPage() {
                       href={`${pathname}/login`}
                       className="bg-gray-950 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-900 hover:text-white"
                     >
-                      Start Here
+                      {t("StartHere")}
                     </a>
                   )}
                 </div>

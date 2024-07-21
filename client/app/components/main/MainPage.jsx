@@ -1,22 +1,10 @@
 "use client";
 
-import { useState, Fragment, useEffect } from "react";
-import { ChevronRightIcon } from "@heroicons/react/20/solid";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useState, useEffect } from "react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Dialog, DialogPanel } from "@headlessui/react";
-import Image from "next/image";
 import Link from "next/link";
 import Cookies from "js-cookie";
-import Navbar from "@/app/[locale]/navbar/page";
-
-const user = {
-  name: "Tom Cook",
-  email: "tom@example.com",
-  imageUrl:
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-};
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -99,7 +87,7 @@ const navigation = {
 export default function MainPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const [currentLocale, setCurrentLocale] = useState("en"); // Varsayılan dil 'en'
+  const [currentLocale, setCurrentLocale] = useState("en");
 
   useEffect(() => {
     const savedLocale = Cookies.get("NEXT_LOCALE");
@@ -113,7 +101,6 @@ export default function MainPage() {
 
   return (
     <div className="bg-white">
-      {/* <Navbar /> */}
       <header className="absolute inset-x-0 top-0 z-50">
         <Dialog
           className="lg:hidden"
@@ -138,37 +125,13 @@ export default function MainPage() {
           </DialogPanel>
         </Dialog>
       </header>
-      <main>
+      <main className="flex items-center justify-center min-h-screen">
         <div className="relative isolate">
-          <svg
-            className="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
-            aria-hidden="true"
-          >
-            <defs>
-              <pattern
-                id="1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84"
-                width={200}
-                height={200}
-                x="50%"
-                y={-1}
-                patternUnits="userSpaceOnUse"
-              >
-                <path d="M.5 200V.5H200" fill="none" />
-              </pattern>
-            </defs>
-
-            <rect
-              width="100%"
-              height="100%"
-              strokeWidth={0}
-              fill="url(#1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84)"
-            />
-          </svg>
           <div
-            className="absolute left-1/2 right-0 top-0 -z-10 -ml-24 transform-gpu overflow-hidden blur-3xl lg:ml-24 xl:ml-48"
+            className="absolute left-1/2 right-0 top-0 -z-10 -ml-24 transform-gpu  blur-3xl lg:ml-24 xl:ml-48"
             aria-hidden="true"
           ></div>
-          <div className="overflow-hidden">
+          <div className="flex flex-col items-center text-center">
             <div className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32">
               <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
                 <div className="relative w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
@@ -181,7 +144,7 @@ export default function MainPage() {
                     <br />
                     <small className="font-bold">Latest version 1.0.0</small>
                   </p>
-                  <div className="mt-10 flex items-center gap-x-6">
+                  <div className="mt-10 flex flex-col items-center gap-x-6">
                     <Link
                       href="/login"
                       className="rounded-md bg-gray-950 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -189,70 +152,12 @@ export default function MainPage() {
                       Login
                     </Link>
                     <Link
-                      href="https://igniter.tebex.io/"
-                      className="text-sm font-semibold leading-6 text-gray-900"
+                      href="https://github.com/TarikSogukpinar/blog.io"
+                      className="text-sm font-semibold leading-6 text-gray-900 mt-2"
                       target="_blank"
                     >
-                      Contact <span aria-hidden="true">→</span>
+                      Open Source Repo <span aria-hidden="true">→</span>
                     </Link>
-                  </div>
-                </div>
-                <div className="mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">
-                  <div className="ml-auto w-44 flex-none space-y-8 pt-32 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-none xl:pt-80">
-                    <div className="relative">
-                      <Image
-                        src="/assets/gta3.jpg"
-                        alt="Michael De Santa"
-                        className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg subpixel-antialiased transition-all duration-300 ease-in-out transform group-hover:translate-y-[-5px] group-hover:opacity-20"
-                        width={1920}
-                        height={1080}
-                      />
-                      <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
-                    </div>
-                  </div>
-                  <div className="mr-auto w-44 flex-none space-y-8 sm:mr-0 sm:pt-52 lg:pt-36">
-                    <div className="relative">
-                      <Image
-                        src="/assets/gta4.jpg"
-                        alt=""
-                        className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg subpixel-antialiased transition-all duration-300 ease-in-out transform group-hover:translate-y-[-5px] group-hover:opacity-20"
-                        width={1920}
-                        height={1080}
-                      />
-                      <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
-                    </div>
-                    <div className="relative">
-                      <Image
-                        src="/assets/gta5.jpg"
-                        alt=""
-                        className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg subpixel-antialiased transition-all duration-300 ease-in-out transform group-hover:translate-y-[-5px] group-hover:opacity-20"
-                        width={1920}
-                        height={1080}
-                      />
-                      <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
-                    </div>
-                  </div>
-                  <div className="w-44 flex-none space-y-8 pt-32 sm:pt-0">
-                    <div className="relative">
-                      <Image
-                        src="/assets/gta6.jpg"
-                        alt=""
-                        className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg subpixel-antialiased transition-all duration-300 ease-in-out transform group-hover:translate-y-[-5px] group-hover:opacity-20"
-                        width={1920}
-                        height={1080}
-                      />
-                      <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
-                    </div>
-                    <div className="relative">
-                      <Image
-                        src="/assets/gta7.jpg"
-                        alt=""
-                        className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg subpixel-antialiased transition-all duration-300 ease-in-out transform group-hover:translate-y-[-5px] group-hover:opacity-20"
-                        width={1920}
-                        height={1080}
-                      />
-                      <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
-                    </div>
                   </div>
                 </div>
               </div>

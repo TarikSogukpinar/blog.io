@@ -27,6 +27,7 @@
     "signup": "Kayıt ol"
   },
   "NavbarPage": {
+    "StartHere": "Giriş yap",
     "Dashboard": "Gösterge Paneli",
     "Team": "Takım",
     "Projects": "Projeler",
@@ -43,6 +44,7 @@
   },
   "FooterPage": {
     "English": "İngilizce",
+    "Home": "Anasayfa",
     "Turkish": "Türkçe",
     "footer": "Footer",
     "About": "Hakkımızda",

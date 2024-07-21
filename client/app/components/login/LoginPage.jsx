@@ -92,7 +92,7 @@ export default function LoginPage() {
                     value={loginValues.email}
                     required
                     className="block w-full rounded-md border-0 py-2 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    placeholder="johndoe@example.com"
+                    placeholder="johndoe@gmail.com"
                   />
                 </div>
               </div>
@@ -174,6 +174,7 @@ export default function LoginPage() {
                     <div>
                       <button
                         type="submit"
+                        disabled
                         className="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-teal-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                       >
                         <FaGoogle className="mr-2 mt-1" /> Sign in with Google
@@ -182,6 +183,7 @@ export default function LoginPage() {
                     <div>
                       <button
                         type="submit"
+                        disabled
                         className="flex w-full justify-center rounded-md bg-gray-950 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-teal-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                       >
                         <FaGithub className="mr-2 mt-1" /> Sign in with Github
