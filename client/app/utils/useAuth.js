@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { logoutUser } from "../utils/auth"; // Adjust the import path as needed
+import { logoutUser } from "../utils/auth";
 
 const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -10,12 +10,12 @@ const useAuth = () => {
 
   useEffect(() => {
     const token = Cookies.get("JWT");
-    setIsAuthenticated(!!token); // Set authentication state based on token existence
+    setIsAuthenticated(!!token);
   }, []);
 
   const handleUserLogout = async () => {
     try {
-      await logoutUser(); // Use the imported logout function
+      await logoutUser();
       Cookies.remove("JWT");
       setIsAuthenticated(false);
       router.push(`/${locale}/login`);
