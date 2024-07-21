@@ -38,9 +38,13 @@
     "home": "Home",
     "about": "About",
     "contact": "Contact",
-    "Youtube": "Youtube"
+    "Youtube": "Youtube",
+    "Library": "Library",
+    "Stories": "Stories"
   },
   "FooterPage": {
+    "English": "English",
+    "Turkish": "Turkish",
     "footer": "Footer",
     "About": "About Us",
     "Blog": "Blog",

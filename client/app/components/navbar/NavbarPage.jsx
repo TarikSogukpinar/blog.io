@@ -26,11 +26,8 @@ export default function NavbarPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const pathname = usePathname();
 
-  console.log("Pathname:", pathname);
-
   useEffect(() => {
     const token = Cookies.get("JWT");
-    console.log("Token:", token);
     setIsAuthenticated(!!token);
   }, []);
 
@@ -56,19 +53,18 @@ export default function NavbarPage() {
           <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
             <div className="relative flex h-16 items-center justify-between">
               <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <img
-                    className="h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                    alt="Your Company"
-                  />
+                <div className="flex-shrink-0 antialiased">
+                  <img className="h-8 w-auto" src="/favicon.ico" alt="Blog" />
                 </div>
                 <Link
                   href={homeHref}
-                  passHre
-                  className="rounded-md bg-transparent px-3 py-2 text-sm font-medium text-white"
+                  className="rounded-md bg-transparent px-3 py-2 text-sm text-white"
                 >
                   Blog.io
+                  <br></br>
+                  <small className="bg-opacity-35 rounded-md">
+                    Alternative Medium
+                  </small>
                 </Link>
               </div>
               <div className="flex-1 flex justify-center lg:justify-end">
@@ -98,7 +94,7 @@ export default function NavbarPage() {
                           <span className="sr-only">Open user menu</span>
                           <img
                             className="h-8 w-8 rounded-full"
-                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&q=80"
+                            src="https://static.vecteezy.com/system/resources/thumbnails/002/387/693/small_2x/user-profile-icon-free-vector.jpg"
                             alt=""
                           />
                         </Menu.Button>

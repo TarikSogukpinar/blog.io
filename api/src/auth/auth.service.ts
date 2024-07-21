@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../database/database.service';
 import { TokenService } from '../core/token/token.service';
-import { ConfigService } from '@nestjs/config';
 import { RegisterResponseDto } from './dto/registerResponse.dto';
 import { User } from '@prisma/client';
 import { LoginUserDto } from './dto/loginUser.dto';
@@ -21,7 +20,6 @@ export class AuthService {
     private readonly prismaService: PrismaService,
     private readonly hashingService: HashingService,
     private readonly tokenService: TokenService,
-    private readonly configService: ConfigService,
   ) {}
 
   async registerUserService(

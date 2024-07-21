@@ -37,9 +37,13 @@
     "home": "Ana Sayfa",
     "about": "Hakkında",
     "contact": "İletişim",
-    "Youtube": "Youtube"
+    "Youtube": "Youtube",
+    "Library": "Kütüphane",
+    "Stories": "Hikayeler"
   },
   "FooterPage": {
+    "English": "İngilizce",
+    "Turkish": "Türkçe",
     "footer": "Footer",
     "About": "Hakkımızda",
     "Blog": "Blog",
