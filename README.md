@@ -32,7 +32,7 @@ go project folder /api & or /web
 generate prisma schema
 
 ```bash
-  npx prisma migrate:dev
+  pnpm run migrate:dev
 ```
 
 
