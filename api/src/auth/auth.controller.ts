@@ -31,10 +31,15 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Get('google')
+  @ApiOperation({ summary: 'Google login' })
+  @ApiResponse({ status: 200, description: 'Google login' })
+  @ApiBody({ type: RegisterUserDto })
   @UseGuards(GoogleAuthGuard)
   async googleAuth(@Req() req) {}
 
   @Get('google/callback')
+  @ApiOperation({ summary: 'Google login callback' })
+  @ApiResponse({ status: 200, description: 'Google login callback' })
   @UseGuards(GoogleAuthGuard)
   async googleAuthRedirect(@Req() req) {
     const user = await this.authService.validateOAuthLoginEmail(
@@ -46,10 +51,15 @@ export class AuthController {
   }
 
   @Get('github')
+  @ApiOperation({ summary: 'Github login' })
+  @ApiResponse({ status: 200, description: 'Github login' })
+  @ApiBody({ type: RegisterUserDto })
   @UseGuards(GitHubAuthGuard)
   async githubAuth(@Req() req) {}
 
   @Get('github/callback')
+  @ApiOperation({ summary: 'Github login callback' })
+  @ApiResponse({ status: 200, description: 'Github login callback' })
   @UseGuards(GitHubAuthGuard)
   async githubAuthRedirect(@Req() req) {
     const user = await this.authService.validateOAuthLoginEmail(
