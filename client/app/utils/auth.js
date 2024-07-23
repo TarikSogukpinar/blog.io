@@ -75,4 +75,27 @@ export const handleGithubCallback = () => {
   }
 };
 
-export default { loginUser, registerUser, logoutUser, handleGithubCallback };
+export const handleOAuthCallback = () => {
+  if (typeof window !== "undefined") {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("JWT");
+
+    if (token) {
+      Cookies.set("JWT", token, {
+        path: "/",
+        secure: false,
+        sameSite: "strict",
+      });
+
+      window.location.href = "/en/home"; // Kullanıcıyı oturum açılmış sayfaya yönlendirin
+    }
+  }
+};
+
+export default {
+  loginUser,
+  registerUser,
+  logoutUser,
+  handleGithubCallback,
+  handleOAuthCallback,
+};

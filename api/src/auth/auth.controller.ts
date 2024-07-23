@@ -47,7 +47,21 @@ export class AuthController {
   @UseGuards(AuthGuard('github'))
   async githubCallback(@Req() req, @Res() res) {
     const jwt = req.user.jwt;
-    console.log(jwt, 'jwt datası');
+    return res.redirect(`http://127.0.0.1:3000/en/login?JWT=${jwt}`);
+  }
+
+  @Get('google')
+  @ApiOperation({ summary: 'Google login' })
+  @ApiResponse({ status: 200, description: 'Google login' })
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req) {}
+
+  @Get('google/callback')
+  @ApiOperation({ summary: 'Google login callback' })
+  @ApiResponse({ status: 200, description: 'Google login callback' })
+  @UseGuards(AuthGuard('google'))
+  async googleCallback(@Req() req, @Res() res) {
+    const jwt = req.user.jwt;
     return res.redirect(`http://127.0.0.1:3000/en/login?JWT=${jwt}`);
   }
 

@@ -9,7 +9,8 @@ import { PassportModule } from '@nestjs/passport';
 import { HashingModule } from 'src/utils/hashing/hashing.module';
 import { GithubStrategy } from './strategies/github.strategy';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+// import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GoogleStrategy } from './strategies/google.strategy';
 
 @Module({
   imports: [
@@ -24,7 +25,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     HashingModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, PrismaService, JwtStrategy, GithubStrategy],
+  providers: [
+    AuthService,
+    PrismaService,
+    JwtStrategy,
+    GithubStrategy,
+    GoogleStrategy,
+  ],
   exports: [AuthService],
 })
 export class AuthModule {}

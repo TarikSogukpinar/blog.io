@@ -169,4 +169,4 @@ export class AuthService {
   }
 }
 
-// Bangkok Pathum Thani 115/186 (mooban. s gate) Village3. mooban. s gate, (soi) watnongprong Tambol bang duea, Amphur Muang Pathum Thani 12000 (Thailand)
+

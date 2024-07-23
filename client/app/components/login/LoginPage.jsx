@@ -67,6 +67,10 @@ export default function LoginPage() {
     window.location.href = "http://127.0.0.1:5000/api/auth/github";
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = "http://127.0.0.1:5000/api/auth/google";
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-white py-12 px-4 sm:px-6 lg:px-8">
       <Toaster position="top-right" reverseOrder={false} />
@@ -190,6 +194,7 @@ export default function LoginPage() {
                     <div>
                       <button
                         type="submit"
+                        onClick={handleGoogleLogin}
                         className="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-teal-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                       >
                         <FaGoogle className="mr-2 mt-1" /> Sign in with Google

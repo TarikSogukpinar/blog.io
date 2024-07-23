@@ -91,7 +91,6 @@ export default function MainPage() {
 
   useEffect(() => {
     const savedLocale = Cookies.get("NEXT_LOCALE");
-    console.log(savedLocale, "saved locale");
     if (savedLocale && savedLocale !== currentLocale) {
       setCurrentLocale(savedLocale);
     } else {
