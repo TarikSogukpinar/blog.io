@@ -20,8 +20,10 @@ enum Role {
 
 model User {
   id           Int     @id @default(autoincrement())
+  githubId     String?
   email        String  @unique
   provider     String?
+  image        String?
   name         String?
   password     String
   refreshToken String?

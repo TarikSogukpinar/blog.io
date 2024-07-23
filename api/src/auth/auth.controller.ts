@@ -6,6 +6,7 @@ import {
   UseGuards,
   UnauthorizedException,
   Get,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/loginUser.dto';
@@ -22,52 +23,32 @@ import { CustomRequest } from '../core/request/customRequest';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { ErrorCodes } from 'src/core/handler/error/error-codes';
-import { GoogleAuthGuard } from '../auth-google/guards/auth-google.guard';
-import { GitHubAuthGuard } from '../auth-github/guards/auth-github.guard';
+import { AuthGuard } from '@nestjs/passport';
+// import { GoogleAuthGuard } from '../auth-google/guards/auth-google.guard';
+// import { GitHubAuthGuard } from '../auth-github/guards/auth-github.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('google')
-  @ApiOperation({ summary: 'Google login' })
-  @ApiResponse({ status: 200, description: 'Google login' })
-  @ApiBody({ type: RegisterUserDto })
-  @UseGuards(GoogleAuthGuard)
-  async googleAuth(@Req() req) {}
-
-  @Get('google/callback')
-  @ApiOperation({ summary: 'Google login callback' })
-  @ApiResponse({ status: 200, description: 'Google login callback' })
-  @UseGuards(GoogleAuthGuard)
-  async googleAuthRedirect(@Req() req) {
-    const user = await this.authService.validateOAuthLoginEmail(
-      req.user.email,
-      'google',
-    );
-    const accessToken = await this.authService.loginOAuth(user);
-    return { accessToken };
-  }
-
   @Get('github')
   @ApiOperation({ summary: 'Github login' })
   @ApiResponse({ status: 200, description: 'Github login' })
   @ApiBody({ type: RegisterUserDto })
-  @UseGuards(GitHubAuthGuard)
-  async githubAuth(@Req() req) {}
+  @UseGuards(AuthGuard('github'))
+  async githubAuth(@Req() req) {
+    // GitHub ile oturum açma başlatılıyor
+  }
 
   @Get('github/callback')
   @ApiOperation({ summary: 'Github login callback' })
   @ApiResponse({ status: 200, description: 'Github login callback' })
-  @UseGuards(GitHubAuthGuard)
-  async githubAuthRedirect(@Req() req) {
-    const user = await this.authService.validateOAuthLoginEmail(
-      req.user.email,
-      'github',
-    );
-    const accessToken = await this.authService.loginOAuth(user);
-    return { accessToken };
+  @UseGuards(AuthGuard('github'))
+  async githubCallback(@Req() req, @Res() res) {
+    const jwt = req.user.jwt;
+    console.log(jwt, 'jwt datası');
+    return res.redirect(`http://127.0.0.1:3000/en/login?JWT=${jwt}`);
   }
 
   @Post('register')

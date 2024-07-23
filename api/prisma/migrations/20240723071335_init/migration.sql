@@ -1,8 +1,17 @@
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
+    "githubId" TEXT,
     "email" TEXT NOT NULL,
+    "provider" TEXT,
     "name" TEXT,
+    "password" TEXT NOT NULL,
+    "refreshToken" TEXT,
+    "accessTokens" TEXT,
+    "role" "Role" NOT NULL DEFAULT 'USER',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

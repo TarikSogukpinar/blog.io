@@ -13,6 +13,7 @@ import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { LoginResponseDto } from './dto/loginResponse.dto';
 import { HashingService } from 'src/utils/hashing/hashing.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,7 @@ export class AuthService {
     private readonly prismaService: PrismaService,
     private readonly hashingService: HashingService,
     private readonly tokenService: TokenService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async registerUserService(
@@ -147,8 +149,24 @@ export class AuthService {
     return user;
   }
 
-  async loginOAuth(user: User): Promise<string> {
-    const accessToken = await this.tokenService.createAccessToken(user);
-    return accessToken;
+  async validateOAuthLogin(profile: {
+    email: string;
+    provider: string;
+  }): Promise<string> {
+    const { email, provider } = profile;
+
+    if (!email) {
+      throw new Error('Email not found');
+    }
+
+    const user = await this.validateOAuthLoginEmail(email, provider);
+
+    const payload = { email: user.email, sub: user.id, role: user.role };
+    return this.jwtService.sign(payload, {
+      secret: process.env.JWT_SECRET,
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
   }
 }
+
+// Bangkok Pathum Thani 115/186 (mooban. s gate) Village3. mooban. s gate, (soi) watnongprong Tambol bang duea, Amphur Muang Pathum Thani 12000 (Thailand)

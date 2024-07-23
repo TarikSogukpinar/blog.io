@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export const loginUser = async (email, password) => {
   try {
@@ -57,4 +58,21 @@ export const registerUser = async (name, email, password) => {
   );
 };
 
-export default { loginUser, registerUser, logoutUser };
+export const handleGithubCallback = () => {
+  if (typeof window !== "undefined") {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("JWT");
+
+    if (token) {
+      Cookies.set("JWT", token, {
+        path: "/",
+        secure: false,
+        sameSite: "strict",
+      });
+
+      window.location.href = "/en/home"; // Kullanıcıyı oturum açılmış sayfaya yönlendirin
+    }
+  }
+};
+
+export default { loginUser, registerUser, logoutUser, handleGithubCallback };

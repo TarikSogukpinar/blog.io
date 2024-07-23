@@ -1,8 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { toast, Toaster } from "react-hot-toast";
-import { loginUser } from "../../utils/auth";
+import { loginUser, handleGithubCallback } from "../../utils/auth";
 import Cookies from "js-cookie";
 import { usePathname, useRouter } from "next/navigation";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/20/solid";
@@ -19,6 +19,10 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    handleGithubCallback();
+  }, []);
 
   const notifyError = (message) => toast.error(message);
 
@@ -57,6 +61,10 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGithubLogin = () => {
+    window.location.href = "http://127.0.0.1:5000/api/auth/github";
   };
 
   return (
@@ -173,20 +181,18 @@ export default function LoginPage() {
                   <div className="mt-6 flex flex-col justify-center space-y-4">
                     <div>
                       <button
-                        type="submit"
-                        disabled
-                        className="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-teal-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        onClick={handleGithubLogin}
+                        className="flex w-full justify-center rounded-md bg-gray-950 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-teal-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                       >
-                        <FaGoogle className="mr-2 mt-1" /> Sign in with Google
+                        <FaGithub className="mr-2 mt-1" /> Sign in with Github
                       </button>
                     </div>
                     <div>
                       <button
                         type="submit"
-                        disabled
-                        className="flex w-full justify-center rounded-md bg-gray-950 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-teal-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        className="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-teal-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                       >
-                        <FaGithub className="mr-2 mt-1" /> Sign in with Github
+                        <FaGoogle className="mr-2 mt-1" /> Sign in with Google
                       </button>
                     </div>
                   </div>
