@@ -18,6 +18,7 @@ const isProtectedPage = (url) =>
 export async function middleware(request, event) {
   const { nextUrl, cookies } = request;
   const tokenObj = cookies.get("JWT");
+
   const token = tokenObj?.value;
 
   let hasVerifiedToken = false;

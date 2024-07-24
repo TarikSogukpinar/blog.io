@@ -64,11 +64,11 @@ export default function LoginPage() {
   };
 
   const handleGithubLogin = () => {
-    window.location.href = "http://127.0.0.1:5000/api/auth/github";
+    window.location.href = "https://blog.tariksogukpinar.dev/api/auth/github";
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://127.0.0.1:5000/api/auth/google";
+    window.location.href = "https://blog.tariksogukpinar.dev/api/auth/google";
   };
 
   return (

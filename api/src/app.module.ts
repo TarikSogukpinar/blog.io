@@ -35,7 +35,7 @@ import { SwaggerModule } from './core/swagger/swagger.module';
   providers: [],
 })
 export class AppModule {
-  constructor(private configService: ConfigService) {
-    console.log('Database URL:', this.configService.get('DATABASE_URL'));
+  constructor(private readonly configService: ConfigService) {
+    console.log(`NODE_ENV: ${this.configService.get('NODE_ENV')}`);
   }
 }

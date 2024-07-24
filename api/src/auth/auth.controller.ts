@@ -16,7 +16,6 @@ import {
   ApiResponse,
   ApiBody,
   ApiBearerAuth,
-  ApiQuery,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from './auth.guard';
 import { CustomRequest } from '../core/request/customRequest';
@@ -24,37 +23,23 @@ import { RegisterUserDto } from './dto/registerUser.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { AuthGuard } from '@nestjs/passport';
-// import { GoogleAuthGuard } from '../auth-google/guards/auth-google.guard';
-// import { GitHubAuthGuard } from '../auth-github/guards/auth-github.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('github')
-  @ApiOperation({ summary: 'Github login' })
-  @ApiResponse({ status: 200, description: 'Github login' })
-  @ApiBody({ type: RegisterUserDto })
-  @UseGuards(AuthGuard('github'))
-  async githubAuth(@Req() req) {
-    // GitHub ile oturum açma başlatılıyor
-  }
-
   @Get('github/callback')
   @ApiOperation({ summary: 'Github login callback' })
   @ApiResponse({ status: 200, description: 'Github login callback' })
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('github'))
   async githubCallback(@Req() req, @Res() res) {
     const jwt = req.user.jwt;
-    return res.redirect(`http://127.0.0.1:3000/en/login?JWT=${jwt}`);
+    return await res.redirect(
+      `https://blog.tariksogukpinar.dev/en/login?JWT=${jwt}`,
+    );
   }
-
-  @Get('google')
-  @ApiOperation({ summary: 'Google login' })
-  @ApiResponse({ status: 200, description: 'Google login' })
-  @UseGuards(AuthGuard('google'))
-  async googleAuth(@Req() req) {}
 
   @Get('google/callback')
   @ApiOperation({ summary: 'Google login callback' })
@@ -62,7 +47,9 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleCallback(@Req() req, @Res() res) {
     const jwt = req.user.jwt;
-    return res.redirect(`http://127.0.0.1:3000/en/login?JWT=${jwt}`);
+    return await res.redirect(
+      `https://blog.tariksogukpinar.dev/en/login?JWT=${jwt}`,
+    );
   }
 
   @Post('register')
