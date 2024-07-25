@@ -17,7 +17,7 @@ import {
   ApiBody,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from "./guards/auth.guard";
+import { JwtAuthGuard } from './guards/auth.guard';
 import { CustomRequest } from '../core/request/customRequest';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { LogoutDto } from './dto/logout.dto';

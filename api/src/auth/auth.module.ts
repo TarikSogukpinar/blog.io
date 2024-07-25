@@ -22,7 +22,6 @@ import { HttpModule } from '@nestjs/axios';
     HashingModule,
     TokenModule,
     PrismaModule,
-    HashingModule,
     HttpModule,
   ],
   controllers: [AuthController],
