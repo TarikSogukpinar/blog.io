@@ -4,6 +4,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { PrismaModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { SwaggerModule } from './core/swagger/swagger.module';
+import { BlogModule } from './blog/blog.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { SwaggerModule } from './core/swagger/swagger.module';
     PrismaModule,
     AuthModule,
     SwaggerModule,
+    BlogModule,
   ],
   controllers: [],
   providers: [],

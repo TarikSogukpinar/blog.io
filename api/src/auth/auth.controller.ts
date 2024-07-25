@@ -17,7 +17,7 @@ import {
   ApiBody,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from './auth.guard';
+import { JwtAuthGuard } from "./guards/auth.guard";
 import { CustomRequest } from '../core/request/customRequest';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { LogoutDto } from './dto/logout.dto';
@@ -39,7 +39,6 @@ export class AuthController {
   @UseGuards(AuthGuard('github'))
   async githubAuth(@Req() req) {}
 
-
   @Get('github/callback')
   @ApiOperation({ summary: 'Github login callback' })
   @ApiResponse({ status: 200, description: 'Github login callback' })
@@ -47,11 +46,12 @@ export class AuthController {
   @UseGuards(AuthGuard('github'))
   async githubCallback(@Req() req, @Res() res) {
     const jwt = req.user.jwt;
-    const redirectUrl = this.configService.get<string>('GITHUB_REDIRECT_URL');
-    return await res.redirect(`${redirectUrl}?JWT=${jwt}`);
+    // const redirectUrl = this.configService.get<string>('GITHUB_REDIRECT_URL');
+    return await res.redirect(
+      `https://blog.tariksogukpinar.dev/en/login?JWT=${jwt}`,
+    );
   }
 
-  
   @Get('google')
   @ApiOperation({ summary: 'Google login' })
   @ApiResponse({ status: 200, description: 'Google login' })
@@ -64,8 +64,10 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleCallback(@Req() req, @Res() res) {
     const jwt = req.user.jwt;
-    const redirectUrl = this.configService.get<string>('GOOGLE_REDIRECT_URL');
-    return await res.redirect(`${redirectUrl}?JWT=${jwt}`);
+    // const redirectUrl = this.configService.get<string>('GOOGLE_REDIRECT_URL');
+    return await res.redirect(
+      `https://blog.tariksogukpinar.dev/en/login?JWT=${jwt}`,
+    );
   }
 
   @Post('register')
