@@ -23,11 +23,22 @@ import { RegisterUserDto } from './dto/registerUser.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { AuthGuard } from '@nestjs/passport';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
+
+  @Get('github')
+  @ApiOperation({ summary: 'Github login' })
+  @ApiResponse({ status: 200, description: 'Github login' })
+  @UseGuards(AuthGuard('github'))
+  async githubAuth(@Req() req) {}
+
 
   @Get('github/callback')
   @ApiOperation({ summary: 'Github login callback' })
@@ -36,10 +47,16 @@ export class AuthController {
   @UseGuards(AuthGuard('github'))
   async githubCallback(@Req() req, @Res() res) {
     const jwt = req.user.jwt;
-    return await res.redirect(
-      `https://blog.tariksogukpinar.dev/en/login?JWT=${jwt}`,
-    );
+    const redirectUrl = this.configService.get<string>('GITHUB_REDIRECT_URL');
+    return await res.redirect(`${redirectUrl}?JWT=${jwt}`);
   }
+
+  
+  @Get('google')
+  @ApiOperation({ summary: 'Google login' })
+  @ApiResponse({ status: 200, description: 'Google login' })
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req) {}
 
   @Get('google/callback')
   @ApiOperation({ summary: 'Google login callback' })
@@ -47,9 +64,8 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleCallback(@Req() req, @Res() res) {
     const jwt = req.user.jwt;
-    return await res.redirect(
-      `https://blog.tariksogukpinar.dev/en/login?JWT=${jwt}`,
-    );
+    const redirectUrl = this.configService.get<string>('GOOGLE_REDIRECT_URL');
+    return await res.redirect(`${redirectUrl}?JWT=${jwt}`);
   }
 
   @Post('register')

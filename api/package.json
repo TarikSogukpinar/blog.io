@@ -38,6 +38,7 @@
     "@prisma/client": "^5.16.1",
     "@types/passport-github2": "^1.2.9",
     "@types/passport-google-oauth20": "^2.0.16",
+    "@types/quill": "^2.0.14",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
@@ -51,6 +52,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "quill": "^2.0.2",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
   },
