@@ -34,8 +34,32 @@ export class BlogService {
     let content = data.content;
     let encryptionKey = null;
     if (data.encrypted) {
-      encryptionKey = this.encryptionService.generateEncryptionKey();
-      content = this.encryptionService.encrypt(data.content, encryptionKey);
+      encryptionKey = await this.encryptionService.generateEncryptionKey();
+      content = await this.encryptionService.encrypt(
+        data.content,
+        encryptionKey,
+      );
+    }
+
+    if (data.categoryId) {
+      const category = await this.prismaService.category.findUnique({
+        where: { id: data.categoryId },
+      });
+      if (!category) {
+        throw new NotFoundException('Category not found');
+      }
+    }
+    if (data.tagIds) {
+      const tags = await this.prismaService.tag.findMany({
+        where: {
+          id: {
+            in: data.tagIds,
+          },
+        },
+      });
+      if (tags.length !== data.tagIds.length) {
+        throw new NotFoundException('One or more tags not found');
+      }
     }
 
     return this.prismaService.post.create({
@@ -97,6 +121,45 @@ export class BlogService {
       where: { id: postId },
     });
   }
+
+  async decryptPost(postId: number, key: string) {
+    const post = await this.prismaService.post.findUnique({
+      where: { id: postId },
+      include: {
+        author: true,
+        category: true,
+        tags: true,
+      },
+    });
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    if (!post.encrypted || !post.encryptionKey) {
+      throw new UnauthorizedException(
+        'Post is not encrypted or no encryption key found',
+      );
+    }
+
+    if (key !== post.encryptionKey) {
+      throw new UnauthorizedException('Invalid encryption key');
+    }
+
+    post.content = await this.encryptionService.decrypt(
+      post.content,
+      post.encryptionKey,
+    );
+
+    return post;
+  }
+
+  // private generateSlug(title: string): string {
+  //   return title
+  //     .toLowerCase()
+  //     .replace(/[^a-z0-9]+/g, '-')
+  //     .replace(/(^-|-$)+/g, '');
+  // }
 
   async getAllPosts(
     publishedOnly: boolean = true,

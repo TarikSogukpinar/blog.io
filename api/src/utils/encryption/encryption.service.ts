@@ -3,11 +3,11 @@ import * as crypto from 'crypto';
 
 @Injectable()
 export class EncryptionService {
-  generateEncryptionKey(): string {
+  async generateEncryptionKey(): Promise<string> {
     return crypto.randomBytes(32).toString('hex'); // 32 byte = 256 bit
   }
 
-  encrypt(text: string, key: string): string {
+  async encrypt(text: string, key: string): Promise<string> {
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv(
       'aes-256-cbc',
@@ -19,7 +19,7 @@ export class EncryptionService {
     return iv.toString('hex') + ':' + encrypted.toString('hex');
   }
 
-  decrypt(text: string, key: string): string {
+  async decrypt(text: string, key: string): Promise<string> {
     const textParts = text.split(':');
     const iv = Buffer.from(textParts.shift(), 'hex');
     const encryptedText = Buffer.from(textParts.join(':'), 'hex');

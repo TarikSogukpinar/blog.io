@@ -99,6 +99,16 @@ export class BlogController {
     return post;
   }
 
+  @Get('decrypt-post/:id')
+  @ApiOperation({ summary: 'Decrypt post by ID' })
+  @ApiResponse({ status: 200, description: 'Post decrypted successfully' })
+  @ApiResponse({ status: 404, description: 'Post not found' })
+  @ApiResponse({ status: 401, description: 'Invalid encryption key' })
+  async decryptPost(@Param('id') id: string, @Query('key') key: string) {
+    const postId = parseInt(id, 10);
+    return this.blogService.decryptPost(postId, key);
+  }
+
   @Get('post/slug/:slug')
   @ApiOperation({ summary: 'Get post by slug' })
   @ApiResponse({ status: 200, description: 'Post retrieved successfully' })
