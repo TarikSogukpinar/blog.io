@@ -33,10 +33,28 @@ model User {
 }
 
 model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+  id         Int       @id @default(autoincrement())
+  slug       String    @unique
+  title      String
+  content    String?
+  published  Boolean   @default(false)
+  author     User      @relation(fields: [authorId], references: [id])
+  authorId   Int
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+  tags       Tag[]     @relation("PostTags")
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  posts Post[]
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  posts Post[] @relation("PostTags")
 }

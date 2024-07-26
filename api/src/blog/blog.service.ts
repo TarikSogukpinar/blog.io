@@ -63,20 +63,47 @@ export class BlogService {
     });
   }
 
-  async getAllPosts() {
-    return this.prismaService.post.findMany({
+  async getAllPosts(
+    publishedOnly: boolean = true,
+    page: number = 1,
+    pageSize: number = 10,
+  ) {
+    const posts = await this.prismaService.post.findMany({
+      where: publishedOnly ? { published: true } : {},
       include: {
-        author: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      orderBy: {
+        createdAt: 'desc',
       },
     });
+
+    const totalPosts = await this.prismaService.post.count({
+      where: publishedOnly ? { published: true } : {},
+    });
+
+    return {
+      data: posts,
+      meta: {
+        totalPosts,
+        currentPage: page,
+        pageSize,
+        totalPages: Math.ceil(totalPosts / pageSize),
+      },
+    };
   }
 
   async getPostById(postId: number) {
     return this.prismaService.post.findUnique({
       where: { id: postId },
-      include: {
-        author: true,
-      },
     });
   }
 
