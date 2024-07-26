@@ -48,7 +48,6 @@ export class AuthController {
   @UseGuards(AuthGuard('github'))
   async githubCallback(@Req() req, @Res() res) {
     const jwt = req.user.jwt;
-    // const redirectUrl = this.configService.get<string>('GITHUB_REDIRECT_URL');
     return await res.redirect(
       `https://blog.tariksogukpinar.dev/en/login?JWT=${jwt}`,
     );
@@ -66,7 +65,6 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleCallback(@Req() req, @Res() res) {
     const jwt = req.user.jwt;
-    // const redirectUrl = this.configService.get<string>('GOOGLE_REDIRECT_URL');
     return await res.redirect(
       `https://blog.tariksogukpinar.dev/en/login?JWT=${jwt}`,
     );
