@@ -24,8 +24,12 @@ async function bootstrap() {
   app.use(hpp());
   app.use(compression());
   app.use(cookieParser());
-  app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalInterceptors(new SanitizeInterceptor());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      disableErrorMessages: false,
+    }),
+  );
+  // app.useGlobalInterceptors(new SanitizeInterceptor());
 
   const swaggerService = app.get(SwaggerService);
   swaggerService.setupSwagger(app);

@@ -7,6 +7,8 @@ import {
   UnauthorizedException,
   Get,
   Res,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/loginUser.dto';
@@ -74,6 +76,7 @@ export class AuthController {
   @ApiOperation({ summary: 'User register' })
   @ApiResponse({ status: 200, description: 'Successful register' })
   @ApiBody({ type: RegisterUserDto })
+  @UsePipes(new ValidationPipe({ transform: true }))
   async register(@Body() registerUserDto: RegisterUserDto) {
     const result = await this.authService.registerUserService(registerUserDto);
     return {

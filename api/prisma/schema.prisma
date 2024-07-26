@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -21,8 +15,8 @@ enum Role {
 model User {
   id           Int     @id @default(autoincrement())
   githubId     String?
-  email        String  @unique
   provider     String?
+  email        String  @unique
   image        String?
   name         String?
   password     String
@@ -33,28 +27,38 @@ model User {
 }
 
 model Post {
-  id         Int       @id @default(autoincrement())
-  slug       String    @unique
-  title      String
-  content    String?
-  published  Boolean   @default(false)
-  author     User      @relation(fields: [authorId], references: [id])
-  authorId   Int
-  category   Category? @relation(fields: [categoryId], references: [id])
-  categoryId Int?
-  tags       Tag[]     @relation("PostTags")
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id            Int       @id @default(autoincrement())
+  slug          String    @unique
+  title         String
+  content       String?
+  published     Boolean   @default(false)
+  author        User      @relation(fields: [authorId], references: [id])
+  authorId      Int
+  category      Category? @relation(fields: [categoryId], references: [id])
+  categoryId    Int?
+  tags          Tag[]     @relation("PostTags")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  encryptionKey String?
+  encrypted     Boolean?  @default(false)
+
+  @@index([slug])
+  @@index([authorId])
+  @@index([categoryId])
 }
 
 model Category {
   id    Int    @id @default(autoincrement())
   name  String @unique
   posts Post[]
+
+  @@index([name])
 }
 
 model Tag {
   id    Int    @id @default(autoincrement())
   name  String @unique
   posts Post[] @relation("PostTags")
+
+  @@index([name])
 }

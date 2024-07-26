@@ -6,19 +6,54 @@ import {
 import { PrismaService } from 'src/database/database.service';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
+import { EncryptionService } from 'src/utils/encryption/encryption.service';
 
 @Injectable()
 export class BlogService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly encryptionService: EncryptionService,
+  ) {}
+
+  private generateSlug(title: string): string {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '');
+  }
 
   async createPost(data: CreatePostDto, userId: number) {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    let content = data.content;
+    let encryptionKey = null;
+    if (data.encrypted) {
+      encryptionKey = this.encryptionService.generateEncryptionKey();
+      content = this.encryptionService.encrypt(data.content, encryptionKey);
+    }
+
     return this.prismaService.post.create({
       data: {
         title: data.title,
-        content: data.content,
+        content: content,
+        slug: data.slug || this.generateSlug(data.title),
         author: {
           connect: { id: userId },
         },
+        category: data.categoryId
+          ? { connect: { id: data.categoryId } }
+          : undefined,
+        tags: data.tagIds
+          ? { connect: data.tagIds.map((id) => ({ id })) }
+          : undefined,
+        encryptionKey: encryptionKey,
+        encrypted: data.encrypted || false,
       },
     });
   }
@@ -104,6 +139,22 @@ export class BlogService {
   async getPostById(postId: number) {
     return this.prismaService.post.findUnique({
       where: { id: postId },
+      include: {
+        author: true,
+        category: true,
+        tags: true,
+      },
+    });
+  }
+
+  async getPostBySlug(slug: string) {
+    return this.prismaService.post.findUnique({
+      where: { slug },
+      include: {
+        author: true,
+        category: true,
+        tags: true,
+      },
     });
   }
 
@@ -112,6 +163,19 @@ export class BlogService {
       where: { authorId: userId },
       include: {
         author: true,
+        category: true,
+        tags: true,
+      },
+    });
+  }
+
+  async getPostsByCategory(categoryId: number) {
+    return this.prismaService.post.findMany({
+      where: { categoryId },
+      include: {
+        author: true,
+        category: true,
+        tags: true,
       },
     });
   }

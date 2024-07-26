@@ -4,38 +4,38 @@ import {
   Body,
   Req,
   UseGuards,
-  UnauthorizedException,
   Get,
-  Res,
-  UsePipes,
-  ValidationPipe,
   Put,
   Param,
   Delete,
+  Query,
+  UsePipes,
+  ValidationPipe,
+  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { BlogService } from './blog.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { PrismaService } from 'src/database/database.service';
 import { CreatePostDto } from './dto/createPost.dto';
+import { UpdatePostDto } from './dto/updatePost.dto';
 import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
 import { CustomRequest } from 'src/core/request/customRequest';
-import { UpdatePostDto } from './dto/updatePost.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('blog')
 @ApiTags('Blog')
 export class BlogController {
-  constructor(
-    private readonly blogService: BlogService,
-    private readonly prismaService: PrismaService,
-  ) {}
+  constructor(private readonly blogService: BlogService) {}
 
   @Post('create-post')
   @ApiOperation({ summary: 'Create post' })
-  @ApiResponse({ status: 200, description: 'Create post' })
+  @ApiResponse({ status: 201, description: 'Post created successfully' })
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   async createPost(@Body() data: CreatePostDto, @Req() req: CustomRequest) {
     const userId = req.user?.id;
+    if (!userId) {
+      throw new UnauthorizedException('User not found');
+    }
     return this.blogService.createPost(data, userId);
   }
 
@@ -73,8 +73,15 @@ export class BlogController {
   @Get('posts')
   @ApiOperation({ summary: 'Get all posts' })
   @ApiResponse({ status: 200, description: 'Posts retrieved successfully' })
-  async getAllPosts() {
-    return this.blogService.getAllPosts();
+  async getAllPosts(
+    @Query('publishedOnly') publishedOnly: string,
+    @Query('page') page: string,
+    @Query('pageSize') pageSize: string,
+  ) {
+    const published = publishedOnly === 'false' ? false : true;
+    const pageNum = parseInt(page, 10) || 1;
+    const size = parseInt(pageSize, 10) || 10;
+    return this.blogService.getAllPosts(published, pageNum, size);
   }
 
   @Get('post/:id')
@@ -83,7 +90,27 @@ export class BlogController {
   @ApiResponse({ status: 404, description: 'Post not found' })
   async getPostById(@Param('id') id: string) {
     const postId = parseInt(id, 10);
-    return this.blogService.getPostById(postId);
+    const post = await this.blogService.getPostById(postId);
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    return post;
+  }
+
+  @Get('post/slug/:slug')
+  @ApiOperation({ summary: 'Get post by slug' })
+  @ApiResponse({ status: 200, description: 'Post retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'Post not found' })
+  async getPostBySlug(@Param('slug') slug: string) {
+    const post = await this.blogService.getPostBySlug(slug);
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    return post;
   }
 
   @Get('user-posts/:userId')
@@ -92,5 +119,13 @@ export class BlogController {
   async getPostsByUser(@Param('userId') userId: string) {
     const id = parseInt(userId, 10);
     return this.blogService.getPostsByUser(id);
+  }
+
+  @Get('category/:categoryId/posts')
+  @ApiOperation({ summary: 'Get posts by category ID' })
+  @ApiResponse({ status: 200, description: 'Posts retrieved successfully' })
+  async getPostsByCategory(@Param('categoryId') categoryId: string) {
+    const id = parseInt(categoryId, 10);
+    return this.blogService.getPostsByCategory(id);
   }
 }

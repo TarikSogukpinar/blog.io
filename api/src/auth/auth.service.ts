@@ -28,22 +28,22 @@ export class AuthService {
     registerUserDto: RegisterUserDto,
   ): Promise<RegisterResponseDto> {
     try {
+      const { name, email, password } = registerUserDto;
+
       const existingUser = await this.prismaService.user.findUnique({
-        where: { email: registerUserDto.email },
+        where: { email },
       });
 
       if (existingUser) {
         throw new ConflictException(ErrorCodes.UserAlreadyExists);
       }
 
-      const hashedPassword = await this.hashingService.hashPassword(
-        registerUserDto.password,
-      );
+      const hashedPassword = await this.hashingService.hashPassword(password);
 
       const user = await this.prismaService.user.create({
         data: {
-          name: registerUserDto.name,
-          email: registerUserDto.email,
+          name: name,
+          email: email,
           password: hashedPassword,
           role: 'USER',
         },
@@ -62,14 +62,16 @@ export class AuthService {
     loginUserDto: LoginUserDto,
   ): Promise<LoginResponseDto> {
     try {
+      const { email, password } = loginUserDto;
+
       const user = await this.prismaService.user.findUnique({
-        where: { email: loginUserDto.email },
+        where: { email },
       });
 
       if (!user) throw new NotFoundException(ErrorCodes.UserNotFound);
 
       const isPasswordValid = await this.hashingService.comparePassword(
-        loginUserDto.password,
+        password,
         user.password,
       );
 
@@ -139,7 +141,6 @@ export class AuthService {
       user = await this.prismaService.user.create({
         data: {
           email,
-          provider,
           password: '',
           role: 'USER',
         },
