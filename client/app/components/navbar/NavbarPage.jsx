@@ -70,24 +70,11 @@ export default function NavbarPage() {
               <div className="flex-1 flex justify-center lg:justify-end">
                 <div className="hidden lg:flex lg:space-x-4">
                   <a
-                    href="https://github.com/TarikSogukpinar/blog.io"
-                    target="_blank"
+                    href="/write"
                     className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                   >
-                    Github
+                    Write Article
                   </a>
-                  {/* <a
-                    href="#"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                  >
-                    About Project
-                  </a>
-                  <a
-                    href="/contact"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                  >
-                    Write Blog
-                  </a> */}
                   {isAuthenticated ? (
                     <Menu as="div" className="relative">
                       <div>

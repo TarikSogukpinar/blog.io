@@ -167,7 +167,7 @@ export class BlogService {
     pageSize: number = 10,
   ) {
     const posts = await this.prismaService.post.findMany({
-      where: publishedOnly ? { published: true } : {},
+      where: publishedOnly ? { published: false } : {},
       include: {
         author: {
           select: {
@@ -183,6 +183,8 @@ export class BlogService {
         createdAt: 'desc',
       },
     });
+
+    console.log('Fetched posts:', posts); // Veri kontrolü için
 
     const totalPosts = await this.prismaService.post.count({
       where: publishedOnly ? { published: true } : {},

@@ -70,7 +70,7 @@ export const handleGithubCallback = () => {
         sameSite: "strict",
       });
 
-      window.location.href = "/en/home"; // Kullanıcıyı oturum açılmış sayfaya yönlendirin
+      window.location.href = "/en/home";
     }
   }
 };
@@ -87,7 +87,7 @@ export const handleOAuthCallback = () => {
         sameSite: "strict",
       });
 
-      window.location.href = "/en/home"; // Kullanıcıyı oturum açılmış sayfaya yönlendirin
+      window.location.href = "/en/home";
     }
   }
 };
