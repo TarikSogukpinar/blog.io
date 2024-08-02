@@ -5,6 +5,7 @@ import { PrismaModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { SwaggerModule } from './core/swagger/swagger.module';
 import { BlogModule } from './blog/blog.module';
+import { UuidModule } from './utils/uuid/uuid.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { BlogModule } from './blog/blog.module';
     AuthModule,
     SwaggerModule,
     BlogModule,
+    UuidModule,
   ],
   controllers: [],
   providers: [],
