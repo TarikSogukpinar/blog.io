@@ -1,7 +1,7 @@
 import React from "react";
 
 const LoadingSpinner = () => (
-  <div className="text-center">
+  <div className="text-center mt-10">
     <div role="status">
       <svg
         aria-hidden="true"

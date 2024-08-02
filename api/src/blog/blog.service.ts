@@ -166,6 +166,7 @@ export class BlogService {
     page: number = 1,
     pageSize: number = 10,
   ) {
+    //*added published only true*\\
     const posts = await this.prismaService.post.findMany({
       where: publishedOnly ? { published: false } : {},
       include: {

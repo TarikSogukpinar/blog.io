@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 const truncateContent = (content, limit) => {
   if (content.length > limit) {
@@ -9,7 +10,10 @@ const truncateContent = (content, limit) => {
 
 const PostCard = ({ post }) => {
   return (
-    <div className="bg-white shadow-md rounded-lg p-6 mb-4 w-full max-w-md">
+    <Link
+      href={`/post/${post.id}`}
+      className="bg-white shadow-md rounded-lg p-6 mb-4 w-full max-w-md block hover:shadow-lg transition-shadow duration-200"
+    >
       <div className="mb-4 overflow-hidden rounded">
         <img
           src={post.image || "https://via.placeholder.com/300"}
@@ -24,7 +28,7 @@ const PostCard = ({ post }) => {
         <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
         <p className="text-gray-700">{truncateContent(post.content, 20)}</p>
       </div>
-    </div>
+    </Link>
   );
 };
 
