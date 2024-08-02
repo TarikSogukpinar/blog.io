@@ -10,7 +10,6 @@ import * as hpp from 'hpp';
 import * as compression from 'compression';
 import * as cookieParser from 'cookie-parser';
 import { SwaggerService } from './core/swagger/swagger.service';
-import { SanitizeInterceptor } from './core/sanitizer/sanitizer.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -29,6 +28,7 @@ async function bootstrap() {
       disableErrorMessages: false,
     }),
   );
+  //refactor this sanitizer
   // app.useGlobalInterceptors(new SanitizeInterceptor());
 
   const swaggerService = app.get(SwaggerService);

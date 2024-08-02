@@ -154,13 +154,6 @@ export class BlogService {
     return post;
   }
 
-  // private generateSlug(title: string): string {
-  //   return title
-  //     .toLowerCase()
-  //     .replace(/[^a-z0-9]+/g, '-')
-  //     .replace(/(^-|-$)+/g, '');
-  // }
-
   async getAllPosts(
     publishedOnly: boolean = true,
     page: number = 1,
