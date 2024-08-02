@@ -8,3 +8,31 @@
   font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
+
+.quill-editor .ql-container {
+  min-height: 400px; /* Editörün minimum yüksekliği */
+  border: 1px solid #ccc; /* Sınır rengi */
+  border-radius: 8px; /* Kenar yuvarlama */
+  padding: 15px; /* İç boşluk */
+  font-family: "Arial", sans-serif; /* Yazı tipi */
+  background-color: #fff; /* Arka plan rengi */
+}
+
+.quill-editor .ql-toolbar {
+  background-color: #f9f9f9; /* Araç çubuğu arka plan rengi */
+  border-radius: 8px; /* Kenar yuvarlama */
+  margin-bottom: 10px; /* Alt boşluk */
+}
+
+.quill-editor .ql-toolbar button {
+  color: #333; /* Düğme rengi */
+}
+
+.quill-editor .ql-toolbar button:hover {
+  color: #0056b3; /* Hover rengi */
+}
+
+.quill-editor .ql-editor {
+  font-size: 16px; /* Yazı boyutu */
+  line-height: 1.5; /* Satır yüksekliği */
+}

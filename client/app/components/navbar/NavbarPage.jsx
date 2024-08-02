@@ -70,10 +70,10 @@ export default function NavbarPage() {
               <div className="flex-1 flex justify-center lg:justify-end">
                 <div className="hidden lg:flex lg:space-x-4">
                   <a
-                    href="/write"
+                    href="/post"
                     className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                   >
-                    Write Article
+                    Post Article
                   </a>
                   {isAuthenticated ? (
                     <Menu as="div" className="relative">
