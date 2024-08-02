@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useParams } from "next/navigation";
+import LoadingSpinner from "@/app/components/elements/LoadingSpinner";
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -10,13 +11,12 @@ const PostDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-
   useEffect(() => {
     if (id) {
       console.log("Fetching post with id:", id);
       const token = Cookies.get("JWT");
       axios
-        .get(`http://localhost:5000/api/blog/post/${id}`, {
+        .get(`https://blog.tariksogukpinar.dev/api/blog/post/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
@@ -33,7 +33,7 @@ const PostDetail = () => {
   }, [id]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
 
   if (error) {

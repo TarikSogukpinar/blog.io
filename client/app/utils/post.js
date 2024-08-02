@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const fetchPost = async (token) => {
   try {
-    const response = await axios.get(`http://localhost:5000/api/blog/posts`, {
+    const response = await axios.get(`https://blog.tariksogukpinar.dev/api/blog/posts`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -25,7 +25,7 @@ export const fetchPost = async (token) => {
 export const addPost = async (token, bookData) => {
   try {
     const response = await axios.post(
-      `http://localhost:5000/api/blog/posts`,
+      `https://blog.tariksogukpinar.dev/api/blog/posts`,
       bookData,
       {
         headers: {
