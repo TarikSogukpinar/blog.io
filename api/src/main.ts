@@ -1,7 +1,7 @@
 //Custom Modules, Packages, Configs, etc.
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 //pnpm packages
@@ -19,6 +19,9 @@ async function bootstrap() {
     configService.get<string>('API_GLOBAL_PREFIX', { infer: true }),
   );
   app.enableShutdownHooks();
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
   app.use(helmet());
   app.use(hpp());
   app.use(compression());
@@ -28,6 +31,7 @@ async function bootstrap() {
       disableErrorMessages: false,
     }),
   );
+
   //refactor this sanitizer
   // app.useGlobalInterceptors(new SanitizeInterceptor());
 
@@ -37,15 +41,17 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      'http://localhost:8080',
+      configService.get<string>('CORS_ORIGIN', { infer: true }),
       'http://localhost:3000',
-      'https://blog.tariksogukpinar.dev',
       'http://127.0.0.1:3000',
     ],
     credentials: true,
   });
 
-  await app.listen(PORT, '0.0.0.0');
+  await app.listen(
+    configService.get<number>('API_PORT', { infer: true }),
+    '0.0.0.0',
+  );
   Logger.log(`🚀 Application is running on: http://localhost:${PORT}/`);
 }
-bootstrap();
+void bootstrap();
