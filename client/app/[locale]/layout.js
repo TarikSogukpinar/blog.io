@@ -18,8 +18,14 @@ export default function LocaleLayout({ children, params }) {
   return (
     <html lang={locale}>
       <head>
-        <meta name="description" content="Nest.js, Next.js, Medium Alternative Blog App" />
-        <meta name="keywords" content="Nestjs, Nextjs, TypeScript, Docker, ElasticSearch, Redis" />
+        <meta
+          name="description"
+          content="Nest.js, Next.js, Medium Alternative Blog App"
+        />
+        <meta
+          name="keywords"
+          content="Nestjs, Nextjs, TypeScript, Docker, ElasticSearch, Redis"
+        />
         <meta name="robots" content="index, follow" />
       </head>
       <body className={inter.className}>

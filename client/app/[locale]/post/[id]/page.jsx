@@ -46,9 +46,6 @@ const PostDetail = () => {
           <p className="mb-4 text-3xl md:text-4xl font-bold text-gray-800">
             Details
           </p>
-          {/* <p className="text-lg md:text-2xl font-light text-gray-400">
-            All articles are verified by 2 experts and validated by the CTO
-          </p> */}
         </div>
       </div>
 
