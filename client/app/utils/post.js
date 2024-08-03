@@ -1,13 +1,16 @@
 import axios from "axios";
 
-export const fetchPost = async (token) => {
+export const fetchPost = async (token, page = 1, pageSize = 10) => {
   try {
-    const response = await axios.get(`https://blog.tariksogukpinar.dev/api/blog/posts`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      withCredentials: true,
-    });
+    const response = await axios.get(
+      `https://blog.tariksogukpinar.dev/api/blog/posts?page=${page}&pageSize=${pageSize}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      }
+    );
     return response.data;
   } catch (error) {
     console.error(
