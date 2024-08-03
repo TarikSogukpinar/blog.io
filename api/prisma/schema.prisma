@@ -10,6 +10,8 @@ datasource db {
 enum Role {
   USER
   ADMIN
+  MODERATOR
+  GUEST
 }
 
 model User {
@@ -24,6 +26,11 @@ model User {
   accessTokens String?
   role         Role    @default(USER)
   posts        Post[]
+
+
+  @@index([email])
+  @@index([role])
+  @@index([name])
 }
 
 model Post {
