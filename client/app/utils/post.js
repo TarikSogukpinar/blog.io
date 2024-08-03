@@ -50,3 +50,25 @@ export const addPost = async (token, bookData) => {
     };
   }
 };
+
+export const fetchPostById = async (id) => {
+  try {
+    const response = await axios.get(
+      `https://blog.tariksogukpinar.dev/api/blog/posts/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching post by ID:",
+      error.response ? error.response.data : error
+    );
+    return {
+      error:
+        error.response?.data?.message ||
+        "An error occurred while fetching the post.",
+    };
+  }
+};

@@ -12,7 +12,7 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const pageSize = 40; // Sayfa başına gösterilecek post sayısı
+  const pageSize = 40;
 
   useEffect(() => {
     const token = Cookies.get("JWT");
@@ -20,7 +20,7 @@ export default function HomePage() {
       setIsSignedIn(true);
       loadPosts(token, page);
     } else {
-      setIsLoading(false); // Stop loading if not signed in
+      setIsLoading(false);
     }
   }, [page]);
 
@@ -32,7 +32,7 @@ export default function HomePage() {
         setPosts(data.data || []);
         setTotalPages(data.meta.totalPages);
       }
-      setIsLoading(false); // Stop loading
+      setIsLoading(false);
     });
   };
 
@@ -54,16 +54,21 @@ export default function HomePage() {
       <div className="flex flex-col md:flex-row items-end justify-between mb-12 header">
         <div className="title">
           <p className="mb-4 text-3xl md:text-4xl font-bold text-gray-800">
-            Lastest articles
+            Latest articles
           </p>
-          <p className="text-lg md:text-2xl font-light text-gray-400">
-            All articles are verified by 2 experts and validated by the CTO
+          <p className="text-lg md:text-2xl font-bold text-gray-600">
+            All articles are listed here
           </p>
         </div>
       </div>
 
       {isLoading ? (
-        <LoadingSpinner />
+        <div className="flex flex-col items-center">
+          <LoadingSpinner />
+          <p className="mt-4 text-lg font-semibold text-gray-700">
+            Loading Posts...
+          </p>
+        </div>
       ) : isSignedIn ? (
         <>
           <div className="grid grid-cols-1 gap-6 md:gap-12 md:grid-cols-2 xl:grid-cols-3">
@@ -74,7 +79,7 @@ export default function HomePage() {
 
           <div className="flex justify-between items-center mt-6">
             <button
-              className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+              className="px-4 py-2 bg-gray-600 text-white rounded disabled:opacity-50"
               disabled={page <= 1}
               onClick={() => handlePageChange(page - 1)}
             >
@@ -84,7 +89,7 @@ export default function HomePage() {
               Pages {page} / {totalPages}
             </span>
             <button
-              className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+              className="px-4 py-2 bg-gray-600 text-white rounded disabled:opacity-50"
               disabled={page >= totalPages}
               onClick={() => handlePageChange(page + 1)}
             >
