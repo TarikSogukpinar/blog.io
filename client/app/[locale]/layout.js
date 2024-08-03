@@ -18,15 +18,15 @@ export default function LocaleLayout({ children, params }) {
   return (
     <html lang={locale}>
       <head>
-        <meta name="description" content="Your site description" />
-        <meta name="keywords" content="keyword1, keyword2, keyword3" />
+        <meta name="description" content="Nest.js, Next.js, Medium Alternative Blog App" />
+        <meta name="keywords" content="Nestjs, Nextjs, TypeScript, Docker, ElasticSearch, Redis" />
         <meta name="robots" content="index, follow" />
       </head>
       <body className={inter.className}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Navbar />
-          <main>{children}</main> {/* Ana içerik alanı */}
-          <Footer /> {/* Footer bileşenini buraya ekleyin */}
+          <main>{children}</main>
+          <Footer />
         </NextIntlClientProvider>
       </body>
     </html>
