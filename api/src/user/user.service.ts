@@ -9,7 +9,6 @@ import { PrismaService } from 'src/database/database.service';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { HashingService } from 'src/utils/hashing/hashing.service';
 import { ErrorCodes } from 'src/core/handler/error/error-codes';
-import { GetUserByUuidDto } from './dto/getUserUuid.dto';
 import { UuidService } from 'src/utils/uuid/uuid.service';
 import { GetUserUUIDResponseDto } from './dto/getUserUuidResponse.dto';
 
@@ -22,7 +21,6 @@ export class UsersService {
   ) {}
 
   async getUserByUuid(id: string): Promise<GetUserUUIDResponseDto> {
-    
     if (!(await this.uuidService.validateUuid(id))) {
       throw new BadRequestException(ErrorCodes.InvalidUuid);
     }
@@ -66,13 +64,14 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(ErrorCodes.UserNotFound);
     }
 
     const isMatch = await this.hashingService.comparePassword(
       changePasswordDto.currentPassword,
       user.password,
     );
+
     if (!isMatch) {
       throw new UnauthorizedException('Current password is incorrect');
     }
@@ -80,7 +79,7 @@ export class UsersService {
     const hashedPassword = await this.hashingService.hashPassword(
       changePasswordDto.newPassword,
     );
-    return this.prismaService.user.update({
+    return await this.prismaService.user.update({
       where: { id },
       data: { password: hashedPassword },
     });
