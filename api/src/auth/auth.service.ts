@@ -14,6 +14,7 @@ import { RegisterUserDto } from './dto/registerUser.dto';
 import { LoginResponseDto } from './dto/loginResponse.dto';
 import { HashingService } from 'src/utils/hashing/hashing.service';
 import { JwtService } from '@nestjs/jwt';
+import { LogoutResponseDto } from './dto/logoutResponse.dto';
 
 @Injectable()
 export class AuthService {
@@ -97,15 +98,27 @@ export class AuthService {
     }
   }
 
-  async logoutUserService(userId: number, token: string): Promise<void> {
+  async logoutUserService(
+    userId: number,
+    token: string,
+  ): Promise<LogoutResponseDto> {
     try {
+      const user = await this.prismaService.user.findUnique({
+        where: { id: userId },
+      });
+
+      if (!user) {
+        throw new NotFoundException(ErrorCodes.UserNotFound);
+      }
+
       await this.prismaService.user.update({
         where: { id: userId },
         data: { refreshToken: null },
       });
 
-      // Optionally blacklist the token
       // await this.tokenService.blacklistToken(token);
+
+      return { message: 'Logout successful' };
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(

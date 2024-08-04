@@ -9,6 +9,8 @@ import {
   Res,
   UsePipes,
   ValidationPipe,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/loginUser.dto';
@@ -26,9 +28,11 @@ import { LogoutDto } from './dto/logout.dto';
 import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { AuthGuard } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
+import { LogoutResponseDto } from './dto/logoutResponse.dto';
 
-@Controller('auth')
+@Controller({ path: 'auth', version: '1' })
 @ApiTags('Auth')
+@ApiBearerAuth()
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
@@ -72,9 +76,14 @@ export class AuthController {
 
   @Post('register')
   @ApiOperation({ summary: 'User register' })
-  @ApiResponse({ status: 200, description: 'Successful register' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successful register',
+    type: RegisterUserDto,
+  })
   @ApiBody({ type: RegisterUserDto })
   @UsePipes(new ValidationPipe({ transform: true }))
+  @HttpCode(HttpStatus.OK)
   async register(@Body() registerUserDto: RegisterUserDto) {
     const result = await this.authService.registerUserService(registerUserDto);
     return {
@@ -85,9 +94,14 @@ export class AuthController {
 
   @Post('login')
   @ApiOperation({ summary: 'User login' })
-  @ApiResponse({ status: 200, description: 'Successful login' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successful login',
+    type: LoginUserDto,
+  })
   @ApiBody({ type: LoginUserDto })
-  @ApiTags('Auth')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @HttpCode(HttpStatus.OK)
   async login(@Body() loginUserDto: LoginUserDto) {
     const result = await this.authService.loginUserService(loginUserDto);
     return {
@@ -96,22 +110,31 @@ export class AuthController {
     };
   }
 
-  @Get('logout')
+  @Post('logout')
   @ApiOperation({ summary: 'Logout User' })
-  @ApiResponse({ status: 200, description: 'Successful logout' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully logout',
+    type: LogoutResponseDto,
+  })
   @ApiBody({ type: LogoutDto })
   @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
   async logout(@Req() req: CustomRequest) {
     const userId = req.user?.id;
     const authHeader = req.headers['authorization'];
     const token = authHeader ? authHeader.split(' ')[1] : null;
 
-    if (!userId || !token) {
+    if (!userId) {
       throw new UnauthorizedException(ErrorCodes.InvalidCredentials);
     }
 
-    await this.authService.logoutUserService(userId, token);
-    return { message: 'Logout successful' };
+    if (!token) {
+      throw new UnauthorizedException(ErrorCodes.InvalidCredentials);
+    }
+
+    const result = await this.authService.logoutUserService(userId, token);
+    return { message: 'Logout successful', result };
   }
 
   @Post('refresh-token')
@@ -119,6 +142,7 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Refresh access token' })
   @ApiBody({ type: String })
   @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
   async refreshToken(@Body('refreshToken') refreshToken: string) {
     const result = await this.authService.refreshTokenService(refreshToken);
     return { message: 'Token refreshed', result };
