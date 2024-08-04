@@ -6,8 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { SwaggerModule } from './core/swagger/swagger.module';
 import { BlogModule } from './blog/blog.module';
 import { UuidModule } from './utils/uuid/uuid.module';
-import { HealthModule } from './core/healthCheck/health.module';
 import { UsersModule } from './user/user.module';
+import { HealthModule } from './core/healthCheck/health.module';
 
 @Module({
   imports: [
