@@ -48,7 +48,7 @@ async function bootstrap() {
     configService.get<number>('API_PORT', { infer: true }),
     '0.0.0.0',
   );
-  
+
   Logger.log(`🚀 Application is running on: http://localhost:${PORT}/`);
 }
 void bootstrap();

@@ -16,6 +16,7 @@ enum Role {
 
 model User {
   id           Int     @id @default(autoincrement())
+  uuid         String  @unique @default(uuid())
   githubId     String?
   provider     String?
   email        String  @unique
@@ -23,10 +24,9 @@ model User {
   name         String?
   password     String
   refreshToken String?
-  accessTokens String?
+  accessToken  String?
   role         Role    @default(USER)
   posts        Post[]
-
 
   @@index([email])
   @@index([role])

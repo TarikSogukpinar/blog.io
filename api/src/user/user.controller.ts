@@ -29,8 +29,8 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'User retrieved successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @UsePipes(new ValidationPipe())
-  async getUserById(@Param('id') id: string) {
-    const userId = parseInt(id, 10);
+  async getUserById(@Param('id') id: string, @Req() req: CustomRequest) {
+    const userId = req.user?.id;
     const user = await this.usersService.getUserById(userId);
 
     if (!user) {

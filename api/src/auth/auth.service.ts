@@ -49,7 +49,7 @@ export class AuthService {
         },
       });
 
-      return { email: user.email, role: user.role };
+      return { uuid: user.uuid, email: user.email, role: user.role };
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(
@@ -83,7 +83,7 @@ export class AuthService {
 
       await this.prismaService.user.update({
         where: { id: user.id },
-        data: { refreshToken: refreshToken },
+        data: { accessToken: accessToken },
       });
 
       return {
