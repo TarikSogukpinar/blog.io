@@ -73,6 +73,7 @@ export class BlogController {
   @Get('posts')
   @ApiOperation({ summary: 'Get all posts' })
   @ApiResponse({ status: 200, description: 'Posts retrieved successfully' })
+  @UseGuards(JwtAuthGuard)
   async getAllPosts(
     @Query('publishedOnly') publishedOnly: string,
     @Query('page') page: string,
@@ -88,6 +89,7 @@ export class BlogController {
   @ApiOperation({ summary: 'Get post by ID' })
   @ApiResponse({ status: 200, description: 'Post retrieved successfully' })
   @ApiResponse({ status: 404, description: 'Post not found' })
+  @UseGuards(JwtAuthGuard)
   async getPostById(@Param('id') id: string) {
     const postId = parseInt(id, 10);
     const post = await this.blogService.getPostById(postId);
@@ -104,6 +106,7 @@ export class BlogController {
   @ApiResponse({ status: 200, description: 'Post decrypted successfully' })
   @ApiResponse({ status: 404, description: 'Post not found' })
   @ApiResponse({ status: 401, description: 'Invalid encryption key' })
+  @UseGuards(JwtAuthGuard)
   async decryptPost(@Param('id') id: string, @Query('key') key: string) {
     const postId = parseInt(id, 10);
     return this.blogService.decryptPost(postId, key);
@@ -113,6 +116,7 @@ export class BlogController {
   @ApiOperation({ summary: 'Get post by slug' })
   @ApiResponse({ status: 200, description: 'Post retrieved successfully' })
   @ApiResponse({ status: 404, description: 'Post not found' })
+  @UseGuards(JwtAuthGuard)
   async getPostBySlug(@Param('slug') slug: string) {
     const post = await this.blogService.getPostBySlug(slug);
 
@@ -126,6 +130,7 @@ export class BlogController {
   @Get('user-posts/:userId')
   @ApiOperation({ summary: 'Get posts by user ID' })
   @ApiResponse({ status: 200, description: 'Posts retrieved successfully' })
+  @UseGuards(JwtAuthGuard)
   async getPostsByUser(@Param('userId') userId: string) {
     const id = parseInt(userId, 10);
     return this.blogService.getPostsByUser(id);
@@ -134,6 +139,7 @@ export class BlogController {
   @Get('category/:categoryId/posts')
   @ApiOperation({ summary: 'Get posts by category ID' })
   @ApiResponse({ status: 200, description: 'Posts retrieved successfully' })
+  @UseGuards(JwtAuthGuard)
   async getPostsByCategory(@Param('categoryId') categoryId: string) {
     const id = parseInt(categoryId, 10);
     return this.blogService.getPostsByCategory(id);

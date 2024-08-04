@@ -7,6 +7,7 @@ import { SwaggerModule } from './core/swagger/swagger.module';
 import { BlogModule } from './blog/blog.module';
 import { UuidModule } from './utils/uuid/uuid.module';
 import { HealthModule } from './core/healthCheck/health.module';
+import { UsersModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { HealthModule } from './core/healthCheck/health.module';
     BlogModule,
     UuidModule,
     HealthModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],

@@ -23,11 +23,12 @@ import { ChangePasswordDto } from './dto/changePassword.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiResponse({ status: 200, description: 'User retrieved successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
+  @UsePipes(new ValidationPipe())
   async getUserById(@Param('id') id: string) {
     const userId = parseInt(id, 10);
     const user = await this.usersService.getUserById(userId);
@@ -39,8 +40,8 @@ export class UsersController {
     return user;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update user information' })
   @ApiResponse({ status: 200, description: 'User updated successfully' })
   @UsePipes(new ValidationPipe())
@@ -57,8 +58,8 @@ export class UsersController {
     return this.usersService.updateUser(userId, updateUserDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Put(':id/password')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Change user password' })
   @ApiResponse({ status: 200, description: 'Password changed successfully' })
   @UsePipes(new ValidationPipe())
@@ -75,8 +76,8 @@ export class UsersController {
     return this.usersService.changePassword(userId, changePasswordDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id/sessions')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get user sessions' })
   @ApiResponse({ status: 200, description: 'Sessions retrieved successfully' })
   async getUserSessions(@Param('id') id: string, @Req() req: CustomRequest) {

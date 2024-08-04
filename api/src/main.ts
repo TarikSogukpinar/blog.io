@@ -10,6 +10,7 @@ import * as hpp from 'hpp';
 import * as compression from 'compression';
 import * as cookieParser from 'cookie-parser';
 import { SwaggerService } from './core/swagger/swagger.service';
+import validationOptions from './utils/validate/validation-options';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,11 +27,7 @@ async function bootstrap() {
   app.use(hpp());
   app.use(compression());
   app.use(cookieParser());
-  app.useGlobalPipes(
-    new ValidationPipe({
-      disableErrorMessages: false,
-    }),
-  );
+  app.useGlobalPipes(new ValidationPipe(validationOptions));
 
   //refactor this sanitizer
   // app.useGlobalInterceptors(new SanitizeInterceptor());
@@ -42,8 +39,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       configService.get<string>('CORS_ORIGIN', { infer: true }),
-      'http://localhost:3000',
-      'http://127.0.0.1:3000',
+      configService.get<string>('CORS_ORIGIN_LOCAL', { infer: true }),
     ],
     credentials: true,
   });
@@ -52,6 +48,7 @@ async function bootstrap() {
     configService.get<number>('API_PORT', { infer: true }),
     '0.0.0.0',
   );
+  
   Logger.log(`🚀 Application is running on: http://localhost:${PORT}/`);
 }
 void bootstrap();
