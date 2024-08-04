@@ -11,14 +11,15 @@ export class HealthService {
   constructor(
     private health: HealthCheckService,
     private http: HttpHealthIndicator,
-    private prisma: PrismaHealthIndicator,
+    private prismaHealthService: PrismaHealthIndicator,
   ) {}
 
   @HealthCheck()
-  check() {
-    return this.health.check([
-      async () => this.prisma.isHealthy('database'),
-      async () => this.http.pingCheck('nestjs-docs', 'https://docs.nestjs.com'),
+  async check() {
+    return await this.health.check([
+      async () => await this.prismaHealthService.isHealthy('database'),
+      async () =>
+        await this.http.pingCheck('nestjs-docs', 'https://docs.nestjs.com'),
     ]);
   }
 }
