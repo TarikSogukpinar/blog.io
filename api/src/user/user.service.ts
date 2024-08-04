@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -7,22 +8,45 @@ import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/database/database.service';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { HashingService } from 'src/utils/hashing/hashing.service';
+import { ErrorCodes } from 'src/core/handler/error/error-codes';
+import { GetUserByUuidDto } from './dto/getUserUuid.dto';
+import { UuidService } from 'src/utils/uuid/uuid.service';
+import { GetUserUUIDResponseDto } from './dto/getUserUuidResponse.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
-    private prismaService: PrismaService,
-    private hashingService: HashingService,
+    private readonly prismaService: PrismaService,
+    private readonly hashingService: HashingService,
+    private readonly uuidService: UuidService,
   ) {}
 
-  async getUserById(id: number): Promise<User> {
-    const user = await this.prismaService.user.findUnique({
-      where: { id },
-    });
-    if (!user) {
-      throw new NotFoundException('User not found');
+  async getUserByUuid(id: string): Promise<GetUserUUIDResponseDto> {
+    
+    if (!(await this.uuidService.validateUuid(id))) {
+      throw new BadRequestException(ErrorCodes.InvalidUuid);
     }
-    return user;
+
+    const user = await this.prismaService.user.findUnique({
+      where: { uuid: id },
+      select: {
+        uuid: true,
+        email: true,
+        role: true,
+        name: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException(ErrorCodes.UserNotFound);
+    }
+
+    return {
+      uuid: user.uuid,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
   }
 
   async updateUser(id: number, data: Prisma.UserUpdateInput): Promise<User> {

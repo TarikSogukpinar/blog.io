@@ -27,22 +27,29 @@ import { RegisterUserDto } from './dto/registerUser.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { AuthGuard } from '@nestjs/passport';
-import { ConfigService } from '@nestjs/config';
 import { LogoutResponseDto } from './dto/logoutResponse.dto';
+import { ConfigService } from '@nestjs/config';
+import { TokenService } from 'src/core/token/token.service';
 
 @Controller({ path: 'auth', version: '1' })
 @ApiTags('Auth')
 @ApiBearerAuth()
 export class AuthController {
+  private readonly redirectUrl: string;
+
   constructor(
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
-  ) {}
+    private readonly tokenService: TokenService,
+  ) {
+    this.redirectUrl = this.configService.get<string>('REDIRECT_URL');
+  }
 
   @Get('github')
   @ApiOperation({ summary: 'Github login' })
   @ApiResponse({ status: 200, description: 'Github login' })
   @UseGuards(AuthGuard('github'))
+  @HttpCode(HttpStatus.OK)
   async githubAuth(@Req() req) {}
 
   @Get('github/callback')
@@ -50,28 +57,31 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Github login callback' })
   @ApiBearerAuth()
   @UseGuards(AuthGuard('github'))
+  @HttpCode(HttpStatus.OK)
   async githubCallback(@Req() req, @Res() res) {
     const jwt = req.user.jwt;
-    return await res.redirect(
-      `https://blog.tariksogukpinar.dev/en/login?JWT=${jwt}`,
-    );
+    const result = await this.validateAndRedirect(jwt, res);
+
+    return { message: 'Successfully login with github', result };
   }
 
   @Get('google')
   @ApiOperation({ summary: 'Google login' })
   @ApiResponse({ status: 200, description: 'Google login' })
   @UseGuards(AuthGuard('google'))
+  @HttpCode(HttpStatus.OK)
   async googleAuth(@Req() req) {}
 
   @Get('google/callback')
   @ApiOperation({ summary: 'Google login callback' })
   @ApiResponse({ status: 200, description: 'Google login callback' })
   @UseGuards(AuthGuard('google'))
+  @HttpCode(HttpStatus.OK)
   async googleCallback(@Req() req, @Res() res) {
     const jwt = req.user.jwt;
-    return await res.redirect(
-      `https://blog.tariksogukpinar.dev/en/login?JWT=${jwt}`,
-    );
+    const result = await this.validateAndRedirect(jwt, res);
+
+    return { message: 'Successfully login with google', result };
   }
 
   @Post('register')
@@ -146,5 +156,14 @@ export class AuthController {
   async refreshToken(@Body('refreshToken') refreshToken: string) {
     const result = await this.authService.refreshTokenService(refreshToken);
     return { message: 'Token refreshed', result };
+  }
+
+  private async validateAndRedirect(jwt: string, res: any) {
+    try {
+      await this.tokenService.verifyToken(jwt);
+      return await res.redirect(`${this.redirectUrl}?JWT=${jwt}`);
+    } catch (error) {
+      throw new UnauthorizedException('Invalid JWT token');
+    }
   }
 }

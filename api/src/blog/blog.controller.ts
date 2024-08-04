@@ -21,7 +21,7 @@ import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
 import { CustomRequest } from 'src/core/request/customRequest';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-@Controller('blog')
+@Controller({ path: 'blog', version: '1' })
 @ApiTags('Blog')
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}

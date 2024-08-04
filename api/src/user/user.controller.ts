@@ -10,6 +10,9 @@ import {
   Req,
   NotFoundException,
   UnauthorizedException,
+  HttpCode,
+  HttpStatus,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UsersService } from './user.service';
 import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
@@ -17,8 +20,10 @@ import { CustomRequest } from 'src/core/request/customRequest';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
+import { ErrorCodes } from 'src/core/handler/error/error-codes';
+import { GetUserByUuidDto } from './dto/getUserUuid.dto';
 
-@Controller('users')
+@Controller({ path: 'user', version: '1' })
 @ApiTags('Users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -29,12 +34,21 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'User retrieved successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @UsePipes(new ValidationPipe())
-  async getUserById(@Param('id') id: string, @Req() req: CustomRequest) {
+  @HttpCode(HttpStatus.OK)
+  async getUserById(
+    @Param() getUserByUuidDto: GetUserByUuidDto,
+    @Req() req: CustomRequest,
+  ) {
     const userId = req.user?.id;
-    const user = await this.usersService.getUserById(userId);
+
+    if (!userId) {
+      throw new UnauthorizedException(ErrorCodes.InvalidCredentials);
+    }
+
+    const user = await this.usersService.getUserByUuid(getUserByUuidDto.id);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(ErrorCodes.UserNotFound);
     }
 
     return user;

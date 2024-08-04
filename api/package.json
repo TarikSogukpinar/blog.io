@@ -62,6 +62,7 @@
     "rxjs": "^7.8.1",
     "sanitize-html": "^2.13.0",
     "uuid": "^10.0.0",
+    "uuid-validate": "^0.0.3",
     "winston": "^3.13.1",
     "winston-daily-rotate-file": "^5.0.0"
   },
@@ -80,6 +81,7 @@
     "@types/passport-local": "^1.0.38",
     "@types/supertest": "^6.0.0",
     "@types/uuid": "^10.0.0",
+    "@types/uuid-validate": "^0.0.3",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "cross-env": "^7.0.3",
