@@ -8,5 +8,5 @@ export class ErrorCodes {
   static readonly UnauthorizedAccess = 'Unauthorized access';
   static readonly PermissionNotFound = 'Permission not found';
   static readonly UserAlreadyHasPermission = 'User already has this permission';
-  static readonly InvalidUuid = 'Invalid UUID format';  
+  static readonly InvalidUuid = 'Invalid UUID format';
 }
