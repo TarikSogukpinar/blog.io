@@ -4,7 +4,6 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { PrismaService } from '../../database/database.service';
 import { ErrorCodes } from '../handler/error/error-codes';
-import * as crypto from 'crypto';
 
 @Injectable()
 export class TokenService {
@@ -17,7 +16,7 @@ export class TokenService {
   async verifyToken(token: string) {
     try {
       const secret = this.configService.get<string>('JWT_SECRET');
-      const decoded = this.jwtService.verify(token, { secret });
+      const decoded = await this.jwtService.verify(token, { secret });
 
       const isBlacklisted = await this.isTokenBlacklisted(token);
       if (isBlacklisted) {
@@ -28,28 +27,6 @@ export class TokenService {
     } catch (error) {
       throw new UnauthorizedException(ErrorCodes.InvalidToken);
     }
-  }
-
-  async blacklistToken(token: string): Promise<void> {
-    try {
-      const decodedToken = this.jwtService.decode(token) as any;
-      const expiresAt = new Date(decodedToken.exp * 1000);
-
-      await this.prismaService.blacklistedToken.create({
-        data: { token, expiresAt },
-      });
-    } catch (error) {
-      console.error('Error in blacklistToken:', error);
-      throw new UnauthorizedException(ErrorCodes.InvalidToken);
-    }
-  }
-
-  async isTokenBlacklisted(token: string): Promise<boolean> {
-    const blacklisted = await this.prismaService.blacklistedToken.findUnique({
-      where: { token },
-    });
-
-    return !!blacklisted;
   }
 
   async createPasswordResetToken(user: User) {
@@ -108,5 +85,27 @@ export class TokenService {
     }
 
     return this.createAccessToken(user);
+  }
+
+  async blacklistToken(token: string): Promise<void> {
+    try {
+      const decodedToken = (await this.jwtService.decode(token));
+      const expiresAt = new Date(decodedToken.exp * 1000);
+
+      await this.prismaService.blacklistedToken.create({
+        data: { token, expiresAt },
+      });
+    } catch (error) {
+      console.error('Error in blacklistToken:', error);
+      throw new UnauthorizedException(ErrorCodes.InvalidToken);
+    }
+  }
+
+  async isTokenBlacklisted(token: string): Promise<boolean> {
+    const blacklisted = await this.prismaService.blacklistedToken.findUnique({
+      where: { token },
+    });
+
+    return !!blacklisted;
   }
 }

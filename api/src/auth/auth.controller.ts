@@ -30,6 +30,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { LogoutResponseDto } from './dto/logoutResponse.dto';
 import { ConfigService } from '@nestjs/config';
 import { TokenService } from 'src/core/token/token.service';
+import { Request } from 'express';
 
 @Controller({ path: 'auth', version: '1' })
 @ApiTags('Auth')
@@ -112,8 +113,8 @@ export class AuthController {
   @ApiBody({ type: LoginUserDto })
   @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(HttpStatus.OK)
-  async login(@Body() loginUserDto: LoginUserDto) {
-    const result = await this.authService.loginUserService(loginUserDto);
+  async login(@Body() loginUserDto: LoginUserDto, @Req() req: Request) {
+    const result = await this.authService.loginUserService(loginUserDto, req);
     return {
       message: 'Successfully login user!',
       result,
@@ -163,7 +164,7 @@ export class AuthController {
       await this.tokenService.verifyToken(jwt);
       return await res.redirect(`${this.redirectUrl}?JWT=${jwt}`);
     } catch (error) {
-      throw new UnauthorizedException('Invalid JWT token');
+      throw new UnauthorizedException(ErrorCodes.InvalidToken);
     }
   }
 }

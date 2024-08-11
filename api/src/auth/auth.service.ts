@@ -15,6 +15,8 @@ import { LoginResponseDto } from './dto/loginResponse.dto';
 import { HashingService } from 'src/utils/hashing/hashing.service';
 import { JwtService } from '@nestjs/jwt';
 import { LogoutResponseDto } from './dto/logoutResponse.dto';
+import * as requestIp from 'request-ip';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -61,6 +63,7 @@ export class AuthService {
 
   async loginUserService(
     loginUserDto: LoginUserDto,
+    req: Request,
   ): Promise<LoginResponseDto> {
     try {
       const { email, password } = loginUserDto;
@@ -87,6 +90,8 @@ export class AuthService {
         data: { accessToken: accessToken },
       });
 
+      await this.createSession(user.id, accessToken, req);
+
       return {
         accessToken,
         refreshToken,
@@ -94,7 +99,9 @@ export class AuthService {
       };
     } catch (error) {
       console.log(error);
-      throw error;
+      throw new InternalServerErrorException(
+        'An error occurred, please try again later',
+      );
     }
   }
 
@@ -113,7 +120,7 @@ export class AuthService {
 
       await this.prismaService.user.update({
         where: { id: userId },
-        data: { refreshToken: null },
+        data: { accessToken: null, refreshToken: null },
       });
 
       await this.tokenService.blacklistToken(token);
@@ -180,5 +187,65 @@ export class AuthService {
       secret: process.env.JWT_SECRET,
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
+  }
+
+  async createSession(userId: number, token: string, req: Request) {
+    try {
+      const clientIp = requestIp.getClientIp(req);
+      const userAgent = req.headers['user-agent'] || 'unknown';
+
+      const createSession = await this.prismaService.session.create({
+        data: {
+          userId,
+          token,
+          ipAddress: clientIp,
+          userAgent,
+          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 saat geçerli
+          isActive: true,
+        },
+      });
+      return createSession;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(
+        'An error occurred, please try again later',
+      );
+    }
+  }
+
+  async terminateSession(userId: number, token: string) {
+    try {
+      const terminateSession = await this.prismaService.session.updateMany({
+        where: { userId, token },
+        data: { isActive: false },
+      });
+      return terminateSession;
+    } catch (error) {
+      console.error('Error terminating session:', error);
+      throw new InternalServerErrorException(
+        'An error occurred, please try again later',
+      );
+    }
+  }
+
+  async getUserSessions(userId: number) {
+    try {
+      const sessions = await this.prismaService.session.findMany({
+        where: { userId, isActive: true },
+        select: {
+          id: true,
+          ipAddress: true,
+          userAgent: true,
+          createdAt: true,
+          expiresAt: true,
+        },
+      });
+      return sessions;
+    } catch (error) {
+      console.error('Error terminating session:', error);
+      throw new InternalServerErrorException(
+        'An error occurred, please try again later',
+      );
+    }
   }
 }
