@@ -11,6 +11,8 @@ import {
   ValidationPipe,
   HttpCode,
   HttpStatus,
+  Param,
+  Delete,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/loginUser.dto';
@@ -157,6 +159,32 @@ export class AuthController {
   async refreshToken(@Body('refreshToken') refreshToken: string) {
     const result = await this.authService.refreshTokenService(refreshToken);
     return { message: 'Token refreshed', result };
+  }
+
+  @Get(':userId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get all active sessions for a user' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of active sessions',
+  })
+  @HttpCode(HttpStatus.OK)
+  async getUserSessions(@Param('userId') userId: number) {
+    return await this.authService.getUserSessions(userId);
+  }
+
+  @Delete(':userId/:token')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Terminate a session for a user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Session terminated successfully',
+  })
+  async terminateUserSession(
+    @Param('userId') userId: number,
+    @Param('token') token: string,
+  ) {
+    return await this.authService.terminateSession(userId, token);
   }
 
   private async validateAndRedirect(jwt: string, res: any) {
