@@ -163,6 +163,7 @@ export class AuthController {
 
   @Get(':userId')
   @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: Number })
   @ApiOperation({ summary: 'Get all active sessions for a user' })
   @ApiResponse({
     status: 200,
@@ -175,11 +176,13 @@ export class AuthController {
 
   @Delete(':userId/:token')
   @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: Number })
   @ApiOperation({ summary: 'Terminate a session for a user' })
   @ApiResponse({
     status: 200,
     description: 'Session terminated successfully',
   })
+  @HttpCode(HttpStatus.OK)
   async terminateUserSession(
     @Param('userId') userId: number,
     @Param('token') token: string,

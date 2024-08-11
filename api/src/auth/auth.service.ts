@@ -17,6 +17,8 @@ import { JwtService } from '@nestjs/jwt';
 import { LogoutResponseDto } from './dto/logoutResponse.dto';
 import * as requestIp from 'request-ip';
 import { Request } from 'express';
+import { ConfigService } from '@nestjs/config';
+import ms from 'ms';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +27,7 @@ export class AuthService {
     private readonly hashingService: HashingService,
     private readonly tokenService: TokenService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async registerUserService(
@@ -194,13 +197,16 @@ export class AuthService {
       const clientIp = requestIp.getClientIp(req);
       const userAgent = req.headers['user-agent'] || 'unknown';
 
+      const expiresIn = this.configService.get<string>('JWT_EXPIRES_IN');
+      const expiresAt = new Date(Date.now() + ms(expiresIn));
+
       const createSession = await this.prismaService.session.create({
         data: {
           userId,
           token,
           ipAddress: clientIp,
           userAgent,
-          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 saat geçerli
+          expiresAt,
           isActive: true,
         },
       });
