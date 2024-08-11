@@ -33,6 +33,8 @@ import { LogoutResponseDto } from './dto/logoutResponse.dto';
 import { ConfigService } from '@nestjs/config';
 import { TokenService } from 'src/core/token/token.service';
 import { Request } from 'express';
+import { Roles } from './guards/role.guard';
+import { Role } from '@prisma/client';
 
 @Controller({ path: 'auth', version: '1' })
 @ApiTags('Auth')
@@ -170,6 +172,7 @@ export class AuthController {
     description: 'List of active sessions',
   })
   @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN, Role.USER)
   async getUserSessions(@Param('userId') userId: number) {
     return await this.authService.getUserSessions(userId);
   }
@@ -183,11 +186,20 @@ export class AuthController {
     description: 'Session terminated successfully',
   })
   @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN, Role.USER)
   async terminateUserSession(
     @Param('userId') userId: number,
     @Param('token') token: string,
   ) {
-    return await this.authService.terminateSession(userId, token);
+    const terminatedSession = await this.authService.terminateSession(
+      userId,
+      token,
+    );
+
+    return {
+      message: 'Session terminated successfully',
+      sessionId: terminatedSession.id,
+    };
   }
 
   private async validateAndRedirect(jwt: string, res: any) {

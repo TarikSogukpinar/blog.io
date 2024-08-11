@@ -27,7 +27,6 @@ export class AuthService {
     private readonly hashingService: HashingService,
     private readonly tokenService: TokenService,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
   ) {}
 
   async registerUserService(
@@ -197,8 +196,8 @@ export class AuthService {
       const clientIp = requestIp.getClientIp(req);
       const userAgent = req.headers['user-agent'] || 'unknown';
 
-      const expiresIn = this.configService.get<string>('JWT_EXPIRES_IN');
-      const expiresAt = new Date(Date.now() + ms(expiresIn));
+      const expiresIn = 24 * 60 * 60 * 1000; // 24 saat
+      const expiresAt = new Date(Date.now() + expiresIn);
 
       const createSession = await this.prismaService.session.create({
         data: {
@@ -221,11 +220,24 @@ export class AuthService {
 
   async terminateSession(userId: number, token: string) {
     try {
-      const terminateSession = await this.prismaService.session.updateMany({
-        where: { userId, token },
+      const session = await this.prismaService.session.findFirst({
+        where: {
+          userId,
+          token,
+          isActive: true,
+        },
+      });
+
+      if (!session) {
+        throw new NotFoundException(ErrorCodes.InvalidSessions);
+      }
+
+      const terminatedSession = await this.prismaService.session.update({
+        where: { id: session.id },
         data: { isActive: false },
       });
-      return terminateSession;
+
+      return terminatedSession;
     } catch (error) {
       console.error('Error terminating session:', error);
       throw new InternalServerErrorException(
@@ -239,7 +251,6 @@ export class AuthService {
       const sessions = await this.prismaService.session.findMany({
         where: { userId, isActive: true },
         select: {
-          id: true,
           ipAddress: true,
           userAgent: true,
           createdAt: true,
