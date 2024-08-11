@@ -12,7 +12,6 @@ import {
   UnauthorizedException,
   HttpCode,
   HttpStatus,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { UsersService } from './user.service';
 import { JwtAuthGuard } from 'src/auth/guards/auth.guard';

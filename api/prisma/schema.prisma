@@ -15,18 +15,19 @@ enum Role {
 }
 
 model User {
-  id           Int     @id @default(autoincrement())
-  uuid         String  @unique @default(uuid())
+  id           Int       @id @default(autoincrement())
+  uuid         String    @unique @default(uuid())
   githubId     String?
   provider     String?
-  email        String  @unique
+  email        String    @unique
   image        String?
   name         String?
   password     String
   refreshToken String?
   accessToken  String?
-  role         Role    @default(USER)
+  role         Role      @default(USER)
   posts        Post[]
+  Session      Session[]
 
   @@index([email])
   @@index([role])
@@ -68,4 +69,29 @@ model Tag {
   posts Post[] @relation("PostTags")
 
   @@index([name])
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  ipAddress String?
+  userAgent String?
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  expiresAt DateTime
+  isActive  Boolean  @default(true)
+
+  @@index([userId])
+  @@index([token])
+}
+
+model BlacklistedToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([expiresAt])
 }

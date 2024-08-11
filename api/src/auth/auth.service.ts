@@ -116,7 +116,7 @@ export class AuthService {
         data: { refreshToken: null },
       });
 
-      // await this.tokenService.blacklistToken(token);
+      await this.tokenService.blacklistToken(token);
 
       return { message: 'Logout successful' };
     } catch (error) {

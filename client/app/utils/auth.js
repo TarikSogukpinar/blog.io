@@ -4,14 +4,13 @@ import Cookies from "js-cookie";
 export const loginUser = async (email, password) => {
   try {
     const response = await axios.post(
-      `https://blog.tariksogukpinar.dev/api/auth/login`,
+      `http://localhost:5000/api/v1/auth/login`,
       {
         email,
         password,
       },
       { withCredentials: true }
     );
-    console.log("API response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Login error:", error.response ? error.response.data : error);
