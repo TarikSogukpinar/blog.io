@@ -7,8 +7,6 @@ import {
 } from 'class-validator';
 
 export class GetUserSessionDto {
-  @IsUUID()
-  uuid: string;
 
   @IsOptional()
   @IsString()

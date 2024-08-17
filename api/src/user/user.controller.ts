@@ -114,10 +114,11 @@ export class UsersController {
     return this.usersService.changePassword(userId, changePasswordDto);
   }
 
-  @Get()
+  @Get(':id/sessions')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get user sessions' })
   @ApiResponse({ status: 200, description: 'Sessions retrieved successfully' })
+  @UsePipes(new ValidationPipe())
   @HttpCode(HttpStatus.OK)
   async getUserSessions(
     @Req() req: CustomRequest,

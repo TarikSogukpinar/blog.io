@@ -87,12 +87,10 @@ export class UsersService {
   }
 
   async getUserSessions(uuid: string): Promise<GetUserSessionDto[]> {
-    // UUID'nin geçerli olup olmadığını kontrol edin
     if (!this.uuidService.validateUuid(uuid)) {
       throw new BadRequestException(ErrorCodes.InvalidUuid);
     }
 
-    // UUID'ye göre oturumları getirin
     const sessions = await this.prismaService.session.findMany({
       where: { uuid: uuid },
       select: {
@@ -113,8 +111,7 @@ export class UsersService {
       throw new NotFoundException('No sessions found for the provided UUID');
     }
 
-    // Session bilgilerini DTO'ya dönüştürme
-    return sessions.map(session => ({
+    return sessions.map((session) => ({
       uuid: session.uuid,
       ipAddress: session.ipAddress,
       userAgent: session.userAgent,
