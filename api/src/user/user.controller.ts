@@ -21,7 +21,7 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { GetUserByUuidDto } from './dto/getUserUuid.dto';
-import { GetUserSessionDto } from './dto/getSession.dto';
+import { GetUserSessionDto } from '../sessions/dto/getSession.dto';
 
 @Controller({ path: 'user', version: '1' })
 @ApiTags('Users')
@@ -114,21 +114,21 @@ export class UsersController {
     return this.usersService.changePassword(userId, changePasswordDto);
   }
 
-  @Get(':id/sessions')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get user sessions' })
-  @ApiResponse({ status: 200, description: 'Sessions retrieved successfully' })
-  @UsePipes(new ValidationPipe())
-  @HttpCode(HttpStatus.OK)
-  async getUserSessions(
-    @Req() req: CustomRequest,
-  ): Promise<GetUserSessionDto[]> {
-    const userUuid = req.user?.uuid;
+  // @Get(':id/sessions')
+  // @UseGuards(JwtAuthGuard)
+  // @ApiOperation({ summary: 'Get user sessions' })
+  // @ApiResponse({ status: 200, description: 'Sessions retrieved successfully' })
+  // @UsePipes(new ValidationPipe())
+  // @HttpCode(HttpStatus.OK)
+  // async getUserSessions(
+  //   @Req() req: CustomRequest,
+  // ): Promise<GetUserSessionDto[]> {
+  //   const userUuid = req.user?.uuid;
 
-    if (!userUuid) {
-      throw new NotFoundException('User UUID is missing');
-    }
+  //   if (!userUuid) {
+  //     throw new NotFoundException('User UUID is missing');
+  //   }
 
-    return this.usersService.getUserSessions(userUuid);
-  }
+  //   return this.usersService.getUserSessions(userUuid);
+  // }
 }

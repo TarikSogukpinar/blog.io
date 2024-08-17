@@ -11,7 +11,7 @@ import { HashingService } from 'src/utils/hashing/hashing.service';
 import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { UuidService } from 'src/utils/uuid/uuid.service';
 import { GetUserUUIDResponseDto } from './dto/getUserUuidResponse.dto';
-import { GetUserSessionDto } from './dto/getSession.dto';
+import { GetUserSessionDto } from '../sessions/dto/getSession.dto';
 
 @Injectable()
 export class UsersService {
@@ -86,42 +86,4 @@ export class UsersService {
     });
   }
 
-  async getUserSessions(uuid: string): Promise<GetUserSessionDto[]> {
-    if (!this.uuidService.validateUuid(uuid)) {
-      throw new BadRequestException(ErrorCodes.InvalidUuid);
-    }
-
-    const sessions = await this.prismaService.session.findMany({
-      where: { uuid: uuid },
-      select: {
-        uuid: true,
-        ipAddress: true,
-        userAgent: true,
-        city: true,
-        region: true,
-        country: true,
-        createdAt: true,
-        updatedAt: true,
-        expiresAt: true,
-        isActive: true,
-      },
-    });
-
-    if (sessions.length === 0) {
-      throw new NotFoundException('No sessions found for the provided UUID');
-    }
-
-    return sessions.map((session) => ({
-      uuid: session.uuid,
-      ipAddress: session.ipAddress,
-      userAgent: session.userAgent,
-      city: session.city,
-      region: session.region,
-      country: session.country,
-      createdAt: session.createdAt.toISOString(),
-      updatedAt: session.updatedAt.toISOString(),
-      expiresAt: session.expiresAt.toISOString(),
-      isActive: session.isActive,
-    }));
-  }
 }
