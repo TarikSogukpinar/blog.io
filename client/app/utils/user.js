@@ -39,7 +39,7 @@ export const getUserSessions = async (userId) => {
     }
 
     const response = await axios.get(
-      `http://localhost:5000/api/v1/user/sessions/${userId}`,
+      `http://localhost:5000/api/v1/sessions`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

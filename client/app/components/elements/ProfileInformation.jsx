@@ -33,11 +33,18 @@ export default function ProfileInformation() {
   }, []);
 
   if (loading) return <LoadingSpinner />;
-
   if (error) return <p>{error}</p>;
 
+  const handleDeactivateAccount = () => {
+    console.log("Deactivating account...");
+  };
+
+  const handleDeleteAccount = () => {
+    console.log("Deleting account...");
+  };
+
   return (
-    <div className="space-y-6 max-w-3xl mx-auto p-6 ">
+    <div className="space-y-6 max-w-3xl mx-auto p-6">
       <div className="text-center">
         <img
           className="w-24 h-24 object-cover rounded-full border-4 border-white shadow-lg mx-auto"
@@ -52,7 +59,7 @@ export default function ProfileInformation() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Name
+              First Name
             </label>
             <input
               type="text"
@@ -65,13 +72,13 @@ export default function ProfileInformation() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Email
+              Last Name
             </label>
             <input
-              type="email"
-              value={userData.email}
+              type="text"
+              value={userData.lastName}
               onChange={(e) =>
-                setUserData({ ...userData, email: e.target.value })
+                setUserData({ ...userData, lastName: e.target.value })
               }
               className="mt-2 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
@@ -103,6 +110,24 @@ export default function ProfileInformation() {
         </div>
         <button className="w-full mt-6 px-4 py-2 bg-gray-950 text-white font-semibold rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
           Save Changes
+        </button>
+
+        {/* Deactivate Account Button */}
+        <button
+          type="button"
+          onClick={handleDeactivateAccount}
+          className="w-full mt-6 px-4 py-2 bg-teal-500 text-white font-semibold rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-600"
+        >
+          Deactivate Account
+        </button>
+
+        {/* Delete Account Button */}
+        <button
+          type="button"
+          onClick={handleDeleteAccount}
+          className="w-full mt-2 px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-red-700"
+        >
+          Delete Account
         </button>
       </form>
     </div>

@@ -57,11 +57,11 @@ export class UsersService {
   }
 
   async changePassword(
-    id: number,
+    uuid: string,
     changePasswordDto: ChangePasswordDto,
   ): Promise<User> {
     const user = await this.prismaService.user.findUnique({
-      where: { id },
+      where: { uuid },
     });
 
     if (!user) {
@@ -80,10 +80,10 @@ export class UsersService {
     const hashedPassword = await this.hashingService.hashPassword(
       changePasswordDto.newPassword,
     );
+
     return await this.prismaService.user.update({
-      where: { id },
+      where: { uuid },
       data: { password: hashedPassword },
     });
   }
-
 }

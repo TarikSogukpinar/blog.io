@@ -1,37 +1,50 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
+import LoadingSpinner from "./LoadingSpinner";
 
 export default function ChangePassword() {
+  const [loading, setLoading] = useState(true);
+
+  if (loading) return <LoadingSpinner />;
+  if (error) return <p>Error: {error}</p>;
+
   return (
-    <div className="space-y-6">
-      <h3 className="text-xl font-semibold text-gray-700 mb-2">
-        Change Password
+    <div className="max-w-lg mx-auto p-6 ">
+      <h3 className="text-2xl font-semibold text-gray-900 mb-6 text-center">
+        Change Account Password
       </h3>
-      <form className="space-y-4">
+      <form className="space-y-6">
         <div>
-          <label className="block text-gray-700">Current Password</label>
+          <label className="block text-gray-700 font-medium mb-2">
+            Current Password
+          </label>
           <input
             type="password"
             placeholder="Current Password"
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            className="block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
           />
         </div>
         <div>
-          <label className="block text-gray-700">New Password</label>
+          <label className="block text-gray-700 font-medium mb-2">
+            New Password
+          </label>
           <input
             type="password"
             placeholder="New Password"
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            className="block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
           />
         </div>
         <div>
-          <label className="block text-gray-700">Confirm New Password</label>
+          <label className="block text-gray-700 font-medium mb-2">
+            Confirm New Password
+          </label>
           <input
             type="password"
             placeholder="Confirm New Password"
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            className="block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
           />
         </div>
-        <button className="w-full px-4 py-2 bg-gray-950 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button className="w-full py-3 bg-gray-950 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
           Change Password
         </button>
       </form>

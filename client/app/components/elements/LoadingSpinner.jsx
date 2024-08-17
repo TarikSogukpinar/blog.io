@@ -1,7 +1,7 @@
 import React from "react";
 
 const LoadingSpinner = () => (
-  <div className="text-center mt-10">
+  <div className="text-center mt-10 subpixel-antialiased">
     <div role="status">
       <svg
         aria-hidden="true"
@@ -19,7 +19,7 @@ const LoadingSpinner = () => (
           fill="currentFill"
         />
       </svg>
-      <span className="sr-only text-black">Loading Posts...</span>
+      <span className="sr-only text-black">Loading...</span>
     </div>
   </div>
 );
