@@ -27,6 +27,28 @@ import { GetUserByUuidDto } from './dto/getUserUuid.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiResponse({ status: 200, description: 'User retrieved successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @HttpCode(HttpStatus.OK)
+  async getCurrentUser(@Req() req: CustomRequest) {
+    const userUuid = req.user?.uuid;
+
+    if (!userUuid) {
+      throw new NotFoundException(ErrorCodes.InvalidCredentials);
+    }
+
+    const user = await this.usersService.getUserByUuid(userUuid);
+
+    if (!user) {
+      throw new NotFoundException(ErrorCodes.UserNotFound);
+    }
+
+    return user;
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get user by ID' })
@@ -105,6 +127,4 @@ export class UsersController {
 
     return this.usersService.getUserSessions(userId);
   }
-
- 
 }

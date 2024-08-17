@@ -1,6 +1,40 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
+import { getUserInformation } from "@/app/utils/user";
 
 export default function ProfileInformation() {
+  const [userData, setUserData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: "",
+  });
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const data = await getUserInformation();
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setUserData({
+          firstName: data.name.split(" ")[0] || "",
+          lastName: data.name.split(" ")[1] || "",
+          email: data.email,
+          role: data.role,
+        });
+      }
+      setLoading(false);
+    };
+
+    fetchUserData();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
+
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -9,8 +43,8 @@ export default function ProfileInformation() {
           src="https://via.placeholder.com/150"
           alt="Profile"
         />
-        <h2 className="text-2xl font-semibold text-gray-900 mt-2">John Doe</h2>
-        <p className="text-gray-600">Software Developer</p>
+        <h2 className="text-2xl font-semibold text-gray-900 mt-2">{`${userData.firstName} ${userData.lastName}`}</h2>
+        <p className="text-gray-600">{userData.role}</p>
       </div>
 
       <form className="space-y-4">
@@ -19,7 +53,10 @@ export default function ProfileInformation() {
             <label className="block text-gray-700">First Name</label>
             <input
               type="text"
-              placeholder="John"
+              value={userData.firstName}
+              onChange={(e) =>
+                setUserData({ ...userData, firstName: e.target.value })
+              }
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
@@ -27,7 +64,10 @@ export default function ProfileInformation() {
             <label className="block text-gray-700">Last Name</label>
             <input
               type="text"
-              placeholder="Doe"
+              value={userData.lastName}
+              onChange={(e) =>
+                setUserData({ ...userData, lastName: e.target.value })
+              }
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
@@ -36,7 +76,10 @@ export default function ProfileInformation() {
           <label className="block text-gray-700">Email</label>
           <input
             type="email"
-            placeholder="john.doe@example.com"
+            value={userData.email}
+            onChange={(e) =>
+              setUserData({ ...userData, email: e.target.value })
+            }
             className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
         </div>

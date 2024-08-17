@@ -43,6 +43,7 @@ export class TokenService {
   async createAccessToken(user: User) {
     const payload = {
       id: user.id,
+      uuid: user.uuid,
     };
     return this.jwtService.sign(payload, {
       secret: this.configService.get<string>('JWT_SECRET'),
@@ -89,7 +90,7 @@ export class TokenService {
 
   async blacklistToken(token: string): Promise<void> {
     try {
-      const decodedToken = (await this.jwtService.decode(token));
+      const decodedToken = await this.jwtService.decode(token);
       const expiresAt = new Date(decodedToken.exp * 1000);
 
       await this.prismaService.blacklistedToken.create({

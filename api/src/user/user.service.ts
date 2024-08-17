@@ -11,7 +11,6 @@ import { HashingService } from 'src/utils/hashing/hashing.service';
 import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { UuidService } from 'src/utils/uuid/uuid.service';
 import { GetUserUUIDResponseDto } from './dto/getUserUuidResponse.dto';
-import { GetCurrentUserResponseDto } from './dto/getCurrentUserResponse.dto';
 
 @Injectable()
 export class UsersService {
