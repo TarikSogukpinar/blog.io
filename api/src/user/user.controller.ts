@@ -58,6 +58,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Update user information' })
   @ApiResponse({ status: 200, description: 'User updated successfully' })
   @UsePipes(new ValidationPipe())
+  @HttpCode(HttpStatus.OK)
   async updateUser(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -76,6 +77,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Change user password' })
   @ApiResponse({ status: 200, description: 'Password changed successfully' })
   @UsePipes(new ValidationPipe())
+  @HttpCode(HttpStatus.OK)
   async changePassword(
     @Param('id') id: string,
     @Body() changePasswordDto: ChangePasswordDto,
@@ -93,6 +95,8 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get user sessions' })
   @ApiResponse({ status: 200, description: 'Sessions retrieved successfully' })
+  @UsePipes(new ValidationPipe())
+  @HttpCode(HttpStatus.OK)
   async getUserSessions(@Param('id') id: string, @Req() req: CustomRequest) {
     const userId = parseInt(id, 10);
     if (req.user?.id !== userId) {
@@ -101,4 +105,6 @@ export class UsersController {
 
     return this.usersService.getUserSessions(userId);
   }
+
+ 
 }

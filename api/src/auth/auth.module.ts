@@ -22,7 +22,10 @@ import { HttpModule } from '@nestjs/axios';
     HashingModule,
     TokenModule,
     PrismaModule,
-    HttpModule,
+    HttpModule.register({
+      timeout: 50000,
+      maxRedirects: 100,
+    }),
   ],
   controllers: [AuthController],
   providers: [

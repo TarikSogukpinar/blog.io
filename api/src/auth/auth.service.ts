@@ -17,8 +17,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LogoutResponseDto } from './dto/logoutResponse.dto';
 import * as requestIp from 'request-ip';
 import { Request } from 'express';
-import { ConfigService } from '@nestjs/config';
-import ms from 'ms';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +26,7 @@ export class AuthService {
     private readonly hashingService: HashingService,
     private readonly tokenService: TokenService,
     private readonly jwtService: JwtService,
+    private readonly httpService: HttpService,
   ) {}
 
   async registerUserService(
@@ -196,8 +196,30 @@ export class AuthService {
       const clientIp = requestIp.getClientIp(req);
       const userAgent = req.headers['user-agent'] || 'unknown';
 
-      const expiresIn = 24 * 60 * 60 * 1000; // 24 saat
+      const locationData = await this.getLocationData(clientIp);
+      console.log('Location data:', locationData);
+      const expiresIn = 24 * 60 * 60 * 1000; // 24 hours
       const expiresAt = new Date(Date.now() + expiresIn);
+
+      // Find existing session and update it
+      const existingSession = await this.prismaService.session.findFirst({
+        where: { userId, isActive: true },
+      });
+
+      if (existingSession) {
+        return await this.prismaService.session.update({
+          where: { id: existingSession.id },
+          data: {
+            token,
+            ipAddress: clientIp,
+            userAgent,
+            city: locationData?.city,
+            region: locationData?.region,
+            country: locationData?.country,
+            expiresAt,
+          },
+        });
+      }
 
       const createSession = await this.prismaService.session.create({
         data: {
@@ -205,10 +227,14 @@ export class AuthService {
           token,
           ipAddress: clientIp,
           userAgent,
+          city: locationData?.city,
+          region: locationData?.region,
+          country: locationData?.country,
           expiresAt,
           isActive: true,
         },
       });
+
       return createSession;
     } catch (error) {
       console.log(error);
@@ -260,6 +286,24 @@ export class AuthService {
       return sessions;
     } catch (error) {
       console.error('Error terminating session:', error);
+      throw new InternalServerErrorException(
+        'An error occurred, please try again later',
+      );
+    }
+  }
+
+  private async getLocationData(ipAddress: string): Promise<any> {
+    try {
+      const response = await this.httpService.axiosRef.get(
+        `https://ipapi.co/${ipAddress}/json/`,
+      );
+      return {
+        city: response.data.city,
+        region: response.data.region,
+        country: response.data.country_name,
+      };
+    } catch (error) {
+      console.error('Error fetching location data:', error);
       throw new InternalServerErrorException(
         'An error occurred, please try again later',
       );
