@@ -202,17 +202,14 @@ export class AuthService {
       const userAgent = req.headers['user-agent'] || 'unknown';
 
       const locationData = await this.getLocationData(clientIp);
-      console.log('Location data:', locationData);
       const expiresIn = 24 * 60 * 60 * 1000; // 24 hours
       const expiresAt = new Date(Date.now() + expiresIn);
 
-      // Check if there's an existing active session for this user
       const existingSession = await this.prismaService.session.findFirst({
         where: { userId, isActive: true },
       });
 
       if (existingSession) {
-        // Update the existing session with new data
         return await this.prismaService.session.update({
           where: { id: existingSession.id },
           data: {
@@ -227,11 +224,10 @@ export class AuthService {
         });
       }
 
-      // Create a new session if no active session exists
       const createSession = await this.prismaService.session.create({
         data: {
           userId,
-          uuid: userUuid, // Set the user's UUID in the session
+          uuid: userUuid,
           token,
           ipAddress: clientIp,
           userAgent,

@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import { fetchPost } from "@/app/utils/post";
 import PostCard from "../elements/PostCard";
 import LoadingSpinner from "../elements/LoadingSpinner";
+import { FaExclamationCircle } from "react-icons/fa"; // İkonu import ediyoruz
 
 export default function HomePage() {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -71,11 +72,20 @@ export default function HomePage() {
         </div>
       ) : isSignedIn ? (
         <>
-          <div className="grid grid-cols-1 gap-6 md:gap-12 md:grid-cols-2 xl:grid-cols-3">
-            {posts.map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))}
-          </div>
+          {posts.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6 md:gap-12 md:grid-cols-2 xl:grid-cols-3">
+              {posts.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center mt-20">
+              <FaExclamationCircle className="text-6xl text-gray-600 mb-4" />
+              <p className="text-2xl font-semibold text-gray-600">
+                No posts available.
+              </p>
+            </div>
+          )}
 
           <div className="flex justify-between items-center mt-6">
             <button

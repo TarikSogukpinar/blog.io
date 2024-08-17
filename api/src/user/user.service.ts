@@ -56,12 +56,20 @@ export class UsersService {
     return user;
   }
 
+  //refactor this method
   async changePassword(
     uuid: string,
     changePasswordDto: ChangePasswordDto,
   ): Promise<User> {
+    // Kullanıcıyı UUID ile buluyoruz
     const user = await this.prismaService.user.findUnique({
       where: { uuid },
+      include: {
+        PasswordHistory: {
+          orderBy: { createdAt: 'desc' },
+          take: 2,
+        },
+      },
     });
 
     if (!user) {
@@ -77,13 +85,34 @@ export class UsersService {
       throw new UnauthorizedException('Current password is incorrect');
     }
 
+    for (const history of user.PasswordHistory) {
+      const isOldPassword = await this.hashingService.comparePassword(
+        changePasswordDto.newPassword,
+        history.password,
+      );
+      if (isOldPassword) {
+        throw new BadRequestException(
+          'New password cannot be the same as the last two passwords',
+        );
+      }
+    }
+
     const hashedPassword = await this.hashingService.hashPassword(
       changePasswordDto.newPassword,
     );
 
-    return await this.prismaService.user.update({
+    const updatedUser = await this.prismaService.user.update({
       where: { uuid },
       data: { password: hashedPassword },
     });
+
+    await this.prismaService.passwordHistory.create({
+      data: {
+        userId: user.id,
+        password: user.password,
+      },
+    });
+
+    return updatedUser;
   }
 }
