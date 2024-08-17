@@ -27,7 +27,7 @@ async function bootstrap() {
   app.use(hpp());
   app.use(compression());
   app.use(cookieParser());
-  app.useGlobalPipes(new ValidationPipe(validationOptions));
+  app.useGlobalPipes(new ValidationPipe());
 
   //refactor this sanitizer
   // app.useGlobalInterceptors(new SanitizeInterceptor());

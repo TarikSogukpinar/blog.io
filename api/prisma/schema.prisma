@@ -74,6 +74,7 @@ model Tag {
 model Session {
   id        Int      @id @default(autoincrement())
   userId    Int
+  uuid      String   @unique @default(uuid()) // Kullanıcı uuid'si için yeni alan
   user      User     @relation(fields: [userId], references: [id])
   ipAddress String?
   userAgent String?

@@ -92,7 +92,7 @@ export class AuthService {
         data: { accessToken: accessToken },
       });
 
-      await this.createSession(user.id, accessToken, req);
+      await this.createSession(user.id, user.uuid, accessToken, req);
 
       return {
         accessToken,
@@ -191,7 +191,12 @@ export class AuthService {
     });
   }
 
-  async createSession(userId: number, token: string, req: Request) {
+  async createSession(
+    userId: number,
+    userUuid: string,
+    token: string,
+    req: Request,
+  ) {
     try {
       const clientIp = requestIp.getClientIp(req);
       const userAgent = req.headers['user-agent'] || 'unknown';
@@ -201,12 +206,13 @@ export class AuthService {
       const expiresIn = 24 * 60 * 60 * 1000; // 24 hours
       const expiresAt = new Date(Date.now() + expiresIn);
 
-      // Find existing session and update it
+      // Check if there's an existing active session for this user
       const existingSession = await this.prismaService.session.findFirst({
         where: { userId, isActive: true },
       });
 
       if (existingSession) {
+        // Update the existing session with new data
         return await this.prismaService.session.update({
           where: { id: existingSession.id },
           data: {
@@ -221,9 +227,11 @@ export class AuthService {
         });
       }
 
+      // Create a new session if no active session exists
       const createSession = await this.prismaService.session.create({
         data: {
           userId,
+          uuid: userUuid, // Set the user's UUID in the session
           token,
           ipAddress: clientIp,
           userAgent,

@@ -1,5 +1,5 @@
-"use client";
 import React, { useState, useEffect } from "react";
+import LoadingSpinner from "./LoadingSpinner";
 import { getUserInformation } from "@/app/utils/user";
 
 export default function ProfileInformation() {
@@ -32,67 +32,76 @@ export default function ProfileInformation() {
     fetchUserData();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingSpinner />;
+
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-3xl mx-auto p-6 ">
       <div className="text-center">
         <img
-          className="w-24 h-24 object-cover rounded-full border-4 border-white mx-auto"
+          className="w-24 h-24 object-cover rounded-full border-4 border-white shadow-lg mx-auto"
           src="https://via.placeholder.com/150"
           alt="Profile"
         />
-        <h2 className="text-2xl font-semibold text-gray-900 mt-2">{`${userData.firstName} ${userData.lastName}`}</h2>
-        <p className="text-gray-600">{userData.role}</p>
+        <h2 className="text-3xl font-semibold text-gray-900 mt-4">{`${userData.firstName} ${userData.lastName}`}</h2>
+        <p className="text-lg text-gray-600 mt-2">{userData.role}</p>
       </div>
 
-      <form className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-gray-700">First Name</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Name
+            </label>
             <input
               type="text"
               value={userData.firstName}
               onChange={(e) =>
                 setUserData({ ...userData, firstName: e.target.value })
               }
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="mt-2 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
           <div>
-            <label className="block text-gray-700">Last Name</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
             <input
-              type="text"
-              value={userData.lastName}
+              type="email"
+              value={userData.email}
               onChange={(e) =>
-                setUserData({ ...userData, lastName: e.target.value })
+                setUserData({ ...userData, email: e.target.value })
               }
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="mt-2 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
         </div>
         <div>
-          <label className="block text-gray-700">Email</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Email
+          </label>
           <input
             type="email"
             value={userData.email}
             onChange={(e) =>
               setUserData({ ...userData, email: e.target.value })
             }
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            className="mt-2 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
         <div>
-          <label className="block text-gray-700">Time Zone</label>
-          <select className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+          <label className="block text-sm font-medium text-gray-700">
+            Time Zone
+          </label>
+          <select className="mt-2 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             <option>(GMT-05:00) Eastern Time (US & Canada)</option>
             <option>(GMT-06:00) Central Time (US & Canada)</option>
             <option>(GMT-07:00) Mountain Time (US & Canada)</option>
             <option>(GMT-08:00) Pacific Time (US & Canada)</option>
           </select>
         </div>
-        <button className="w-full px-4 py-2 bg-gray-950 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button className="w-full mt-6 px-4 py-2 bg-gray-950 text-white font-semibold rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
           Save Changes
         </button>
       </form>

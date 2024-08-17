@@ -21,6 +21,7 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { GetUserByUuidDto } from './dto/getUserUuid.dto';
+import { GetUserSessionDto } from './dto/getSession.dto';
 
 @Controller({ path: 'user', version: '1' })
 @ApiTags('Users')
@@ -113,18 +114,20 @@ export class UsersController {
     return this.usersService.changePassword(userId, changePasswordDto);
   }
 
-  @Get(':id/sessions')
+  @Get()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get user sessions' })
   @ApiResponse({ status: 200, description: 'Sessions retrieved successfully' })
-  @UsePipes(new ValidationPipe())
   @HttpCode(HttpStatus.OK)
-  async getUserSessions(@Param('id') id: string, @Req() req: CustomRequest) {
-    const userId = parseInt(id, 10);
-    if (req.user?.id !== userId) {
-      throw new UnauthorizedException('You can only view your own sessions');
+  async getUserSessions(
+    @Req() req: CustomRequest,
+  ): Promise<GetUserSessionDto[]> {
+    const userUuid = req.user?.uuid;
+
+    if (!userUuid) {
+      throw new NotFoundException('User UUID is missing');
     }
 
-    return this.usersService.getUserSessions(userId);
+    return this.usersService.getUserSessions(userUuid);
   }
 }
