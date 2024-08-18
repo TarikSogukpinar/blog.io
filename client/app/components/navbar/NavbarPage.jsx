@@ -1,6 +1,11 @@
 "use client";
 import { useState, useEffect, Fragment } from "react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  Bars3Icon,
+  BellIcon,
+  XMarkIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -47,27 +52,43 @@ export default function NavbarPage() {
   const homeHref = isAuthenticated ? `${localePath}home` : "/";
 
   return (
-    <Disclosure as="nav" className="bg-gray-950">
+    <Disclosure as="nav" className="bg-gray-950 fixed top-0 left-0 w-full z-50">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
             <div className="relative flex h-16 items-center justify-between">
-              <div className="flex items-center">
-                <div className="flex-shrink-0 antialiased">
-                  <img className="h-8 w-auto" src="/favicon.ico" alt="Blog" />
+              {/* Fixed logo and title */}
+              <div className="flex items-center h-16">
+                <div className="flex items-center h-16 pl-4">
+                  <img className="w-16 h-auto" src="/icon.png" alt="Blog" />
+                  <Link
+                    href={homeHref}
+                    className="ml-2 rounded-md bg-transparent px-3 py-2 text-sm text-white"
+                  >
+                    Blog.io
+                    <br />
+                    <small className="bg-opacity-35 rounded-md">
+                      Alternative Medium
+                    </small>
+                  </Link>
+                  {/* Search Input */}
+                  <div className="ml-4 flex">
+                    <input
+                      type="text"
+                      placeholder="Search..."
+                      className="rounded-full bg-gray-800 text-gray-300 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full px-4 py-2 sm:text-sm"
+                    />
+                    <button className="ml-2 text-gray-300 hover:text-white">
+                      <MagnifyingGlassIcon
+                        className="h-5 w-5"
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </div>
                 </div>
-                <Link
-                  href={homeHref}
-                  className="rounded-md bg-transparent px-3 py-2 text-sm text-white"
-                >
-                  Blog.io
-                  <br></br>
-                  <small className="bg-opacity-35 rounded-md">
-                    Alternative Medium
-                  </small>
-                </Link>
               </div>
-              <div className="flex-1 flex justify-center lg:justify-end">
+              {/* Right side menu items */}
+              <div className="flex-1 flex justify-end lg:justify-end">
                 <div className="hidden lg:flex lg:space-x-4">
                   <a
                     href="/post"
@@ -77,16 +98,14 @@ export default function NavbarPage() {
                   </a>
                   {isAuthenticated ? (
                     <Menu as="div" className="relative">
-                      <div>
-                        <Menu.Button className="flex rounded-full bg-gray-950 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                          <span className="sr-only">Open user menu</span>
-                          <img
-                            className="h-8 w-8 rounded-full"
-                            src="https://static.vecteezy.com/system/resources/thumbnails/002/387/693/small_2x/user-profile-icon-free-vector.jpg"
-                            alt=""
-                          />
-                        </Menu.Button>
-                      </div>
+                      <Menu.Button className="flex items-center justify-center rounded-full bg-gray-950 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                        <span className="sr-only">Open user menu</span>
+                        <img
+                          className="h-8 w-8 rounded-full"
+                          src="https://static.vecteezy.com/system/resources/thumbnails/002/387/693/small_2x/user-profile-icon-free-vector.jpg"
+                          alt="Profile"
+                        />
+                      </Menu.Button>
                       <Transition
                         as={Fragment}
                         enter="transition ease-out duration-100"
@@ -193,7 +212,7 @@ export default function NavbarPage() {
             </div>
           </div>
 
-          <Disclosure.Panel className="lg:hidden">
+          <Disclosure.Panel className="lg:hidden overflow-auto">
             <div className="space-y-1 px-2 pb-3 pt-2">
               <Disclosure.Button
                 as="a"

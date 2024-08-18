@@ -31,7 +31,7 @@ export default function LocaleLayout({ children, params }) {
       <body className={inter.className}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Navbar />
-          <main>{children}</main>
+          <main className="mt-10">{children}</main>
           <Footer />
         </NextIntlClientProvider>
       </body>
