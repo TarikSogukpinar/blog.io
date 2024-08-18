@@ -9,12 +9,15 @@ export const getUserInformation = async () => {
       throw new Error("No token found");
     }
 
-    const response = await axios.get(`http://localhost:5000/api/v1/user/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      withCredentials: true,
-    });
+    const response = await axios.get(
+      `https://blog.tariksogukpinar.dev/api/v1/user/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      }
+    );
 
     return response.data;
   } catch (error) {
@@ -39,7 +42,7 @@ export const getUserSessions = async (userId) => {
     }
 
     const response = await axios.get(
-      `http://localhost:5000/api/v1/sessions`,
+      `https://blog.tariksogukpinar.dev/api/v1/sessions`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

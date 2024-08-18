@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 export const loginUser = async (email, password) => {
   try {
     const response = await axios.post(
-      `http://localhost:5000/api/v1/auth/login`,
+      `https://blog.tariksogukpinar.dev/api/v1/auth/login`,
       {
         email,
         password,
@@ -23,7 +23,7 @@ export const loginUser = async (email, password) => {
 export const logoutUser = async (token) => {
   try {
     const response = await axios.post(
-      `https://blog.tariksogukpinar.dev/api/auth/logout`,
+      `https://blog.tariksogukpinar.dev/api/v1/auth/logout`,
       {},
       {
         headers: {
@@ -47,7 +47,7 @@ export const logoutUser = async (token) => {
 
 export const registerUser = async (name, email, password) => {
   return await axios.post(
-    `https://blog.tariksogukpinar.dev/api/auth/register`,
+    `https://blog.tariksogukpinar.dev/api/v1/auth/register`,
     {
       name,
       email,

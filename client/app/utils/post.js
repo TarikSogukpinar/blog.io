@@ -3,7 +3,7 @@ import axios from "axios";
 export const fetchPost = async (token, page = 1, pageSize = 10) => {
   try {
     const response = await axios.get(
-      `https://blog.tariksogukpinar.dev/api/blog/posts?page=${page}&pageSize=${pageSize}`,
+      `https://blog.tariksogukpinar.dev/api/v1/blog/posts?page=${page}&pageSize=${pageSize}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -28,7 +28,7 @@ export const fetchPost = async (token, page = 1, pageSize = 10) => {
 export const addPost = async (token, bookData) => {
   try {
     const response = await axios.post(
-      `https://blog.tariksogukpinar.dev/api/blog/posts`,
+      `https://blog.tariksogukpinar.dev/api/v1/blog/posts`,
       bookData,
       {
         headers: {
@@ -54,7 +54,7 @@ export const addPost = async (token, bookData) => {
 export const fetchPostById = async (id) => {
   try {
     const response = await axios.get(
-      `https://blog.tariksogukpinar.dev/api/blog/posts/${id}`,
+      `https://blog.tariksogukpinar.dev/api/v1/blog/posts/${id}`,
       {
         withCredentials: true,
       }

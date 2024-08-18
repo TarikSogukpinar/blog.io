@@ -23,19 +23,19 @@ export default function Session() {
     fetchSessions();
   }, []);
 
-  const handleTerminateSession = async (sessionId) => {
-    const confirmation = confirm(
-      "Are you sure you want to terminate this session?"
-    );
-    if (!confirmation) return;
+  // const handleTerminateSession = async (sessionId) => {
+  //   const confirmation = confirm(
+  //     "Are you sure you want to terminate this session?"
+  //   );
+  //   if (!confirmation) return;
 
-    const result = await terminateUserSession(sessionId);
-    if (result.error) {
-      setError(result.error);
-    } else {
-      setSessions(sessions.filter((session) => session.id !== sessionId));
-    }
-  };
+  //   const result = await terminateUserSession(sessionId);
+  //   if (result.error) {
+  //     setError(result.error);
+  //   } else {
+  //     setSessions(sessions.filter((session) => session.id !== sessionId));
+  //   }
+  // };
 
   if (loading) return <LoadingSpinner />;
   if (error) return <p>Error: {error}</p>;
@@ -62,12 +62,12 @@ export default function Session() {
                   Last Active: {new Date(session.updatedAt).toLocaleString()}
                 </p>
               </div>
-              <button
+              {/* <button
                 onClick={() => handleTerminateSession(session.id)}
                 className="ml-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
               >
                 Terminate
-              </button>
+              </button> */}
             </div>
           ))}
       </div>
