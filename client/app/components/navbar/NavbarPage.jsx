@@ -29,6 +29,7 @@ export default function NavbarPage() {
   const t = useTranslations("NavbarPage");
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -57,37 +58,34 @@ export default function NavbarPage() {
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
             <div className="relative flex h-16 items-center justify-between">
-              {/* Fixed logo and title */}
+              {/* Sol taraf logo ve arama */}
               <div className="flex items-center h-16">
-                <div className="flex items-center h-16 pl-4">
-                  <img className="w-16 h-auto" src="/icon.png" alt="Blog" />
-                  <Link
-                    href={homeHref}
-                    className="ml-2 rounded-md bg-transparent px-3 py-2 text-sm text-white"
-                  >
-                    Blog.io
-                    <br />
-                    <small className="bg-opacity-35 rounded-md">
-                      Alternative Medium
-                    </small>
-                  </Link>
-                  {/* Search Input */}
-                  <div className="ml-4 flex">
-                    <input
-                      type="text"
-                      placeholder="Search..."
-                      className="rounded-full bg-gray-800 text-gray-300 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full px-4 py-2 sm:text-sm"
+                <img className="w-16 h-auto" src="/icon.png" alt="Blog" />
+                <Link
+                  href={homeHref}
+                  className="ml-2 rounded-md bg-transparent px-3 py-2 text-sm text-white"
+                >
+                  Blog.io
+                  <br />
+                  <small className="bg-opacity-35 rounded-md">
+                    Alternative Medium
+                  </small>
+                </Link>
+                <div className="ml-4 flex">
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    className="rounded-full bg-gray-800 text-gray-300 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full px-4 py-2 sm:text-sm"
+                  />
+                  <button className="ml-2 text-gray-300 hover:text-white">
+                    <MagnifyingGlassIcon
+                      className="h-5 w-5"
+                      aria-hidden="true"
                     />
-                    <button className="ml-2 text-gray-300 hover:text-white">
-                      <MagnifyingGlassIcon
-                        className="h-5 w-5"
-                        aria-hidden="true"
-                      />
-                    </button>
-                  </div>
+                  </button>
                 </div>
               </div>
-              {/* Right side menu items */}
+              {/* Sağ taraf menü öğeleri */}
               <div className="flex-1 flex justify-end lg:justify-end">
                 <div className="hidden lg:flex lg:space-x-4">
                   <a
@@ -97,98 +95,44 @@ export default function NavbarPage() {
                     Post Article
                   </a>
                   {isAuthenticated ? (
-                    <Menu as="div" className="relative">
-                      <Menu.Button className="flex items-center justify-center rounded-full bg-gray-950 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                    <div className="relative">
+                      <button
+                        className="flex items-center justify-center rounded-full bg-gray-950 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+                        onClick={() => setMenuOpen(!menuOpen)}
+                      >
                         <span className="sr-only">Open user menu</span>
                         <img
                           className="h-8 w-8 rounded-full"
                           src="https://static.vecteezy.com/system/resources/thumbnails/002/387/693/small_2x/user-profile-icon-free-vector.jpg"
                           alt="Profile"
                         />
-                      </Menu.Button>
-                      <Transition
-                        as={Fragment}
-                        enter="transition ease-out duration-100"
-                        enterFrom="transform opacity-0 scale-95"
-                        enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-75"
-                        leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95"
-                      >
-                        <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                          <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="/profile"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "flex items-center px-4 py-2 text-sm text-gray-700"
-                                )}
-                              >
-                                <FaUser className="mr-3" />
-                                {t("Your Profile")}
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="#"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "flex items-center px-4 py-2 text-sm text-gray-700"
-                                )}
-                              >
-                                <FaBook className="mr-3" />
-                                {t("Library")}
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="#"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "flex items-center px-4 py-2 text-sm text-gray-700"
-                                )}
-                              >
-                                <FaRegNewspaper className="mr-3" />
-                                {t("Stories")}
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="/settings"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "flex items-center px-4 py-2 text-sm text-gray-700"
-                                )}
-                              >
-                                <FaCog className="mr-3" />
-                                {t("Settings")}
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({ active }) => (
-                              <button
-                                onClick={handleLogout}
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "flex items-center w-full text-left px-4 py-2 text-sm text-gray-700"
-                                )}
-                              >
-                                <FaSignOutAlt className="mr-3" />
-                                {t("Sign out")}
-                              </button>
-                            )}
-                          </Menu.Item>
-                        </Menu.Items>
-                      </Transition>
-                    </Menu>
+                      </button>
+                      {menuOpen && (
+                        <div
+                          className="absolute right-0 mt-2 w-48 rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 z-50"
+                          style={{ transform: "translateX(50%)" }}
+                        >
+                          <a
+                            href="/profile"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            {t("Your Profile")}
+                          </a>
+                          <a
+                            href="/settings"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            {t("Settings")}
+                          </a>
+                          <button
+                            onClick={handleLogout}
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            {t("Sign out")}
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   ) : (
                     <a
                       href={`${pathname}/login`}
