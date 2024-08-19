@@ -12,6 +12,9 @@ import {
   UnauthorizedException,
   HttpCode,
   HttpStatus,
+  Post,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UsersService } from './user.service';
 import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
@@ -21,11 +24,16 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { GetUserByUuidDto } from './dto/getUserUuid.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadService } from 'src/utils/upload/upload.service';
 
 @Controller({ path: 'user', version: '1' })
 @ApiTags('Users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly uploadService: UploadService,
+  ) {}
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
@@ -112,5 +120,30 @@ export class UsersController {
     }
 
     return this.usersService.changePassword(userUuid, changePasswordDto);
+  }
+
+  @Post('upload-avatar')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadAvatar(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: CustomRequest,
+  ) {
+    // Kullanıcının UUID'sini al
+    const userUuid = req.user?.uuid;
+    if (!userUuid) {
+      throw new Error('User UUID not found');
+    }
+
+    // Resmi yükleyin ve dosya yolunu alın
+    const imagePath = await this.uploadService.uploadProfileImage(
+      file,
+      userUuid,
+    );
+
+    // Dosya yolunu ve UUID'yi veritabanına kaydedin
+    await this.usersService.updateProfileImage(userUuid, imagePath);
+
+    return { imageUrl: imagePath };
   }
 }

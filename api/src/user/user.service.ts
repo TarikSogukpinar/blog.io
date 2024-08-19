@@ -11,14 +11,13 @@ import { HashingService } from 'src/utils/hashing/hashing.service';
 import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { UuidService } from 'src/utils/uuid/uuid.service';
 import { GetUserUUIDResponseDto } from './dto/getUserUuidResponse.dto';
-import { GetUserSessionDto } from '../sessions/dto/getSession.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly hashingService: HashingService,
-    private uuidService: UuidService,
+    private readonly uuidService: UuidService,
   ) {}
 
   async getUserByUuid(id: string): Promise<GetUserUUIDResponseDto> {
@@ -61,7 +60,6 @@ export class UsersService {
     uuid: string,
     changePasswordDto: ChangePasswordDto,
   ): Promise<User> {
-    // Kullanıcıyı UUID ile buluyoruz
     const user = await this.prismaService.user.findUnique({
       where: { uuid },
       include: {
@@ -114,5 +112,34 @@ export class UsersService {
     });
 
     return updatedUser;
+  }
+
+  async updateProfileImage(userUuid: string, imagePath: string): Promise<void> {
+    const user = await this.prismaService.user.findUnique({
+      where: { uuid: userUuid },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    await this.prismaService.profileImage.upsert({
+      where: {
+        userId: user.id,
+        uuid: userUuid,
+      },
+      create: {
+        userId: user.id,
+        uuid: userUuid,
+        imageUrl: imagePath,
+      },
+      update: {
+        imageUrl: imagePath,
+      },
+    });
+
+    await this.prismaService.user.update({
+      where: { id: user.id },
+      data: { image: imagePath },
+    });
   }
 }

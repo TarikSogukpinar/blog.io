@@ -9,6 +9,8 @@ import { UuidModule } from './utils/uuid/uuid.module';
 import { UsersModule } from './user/user.module';
 import { HealthModule } from './core/healthCheck/health.module';
 import { SessionsModule } from './sessions/sessions.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -32,6 +34,10 @@ import { SessionsModule } from './sessions/sessions.module';
         limit: 10,
       },
     ]),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+    }),
     PrismaModule,
     AuthModule,
     SwaggerModule,

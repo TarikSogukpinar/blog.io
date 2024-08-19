@@ -30,10 +30,22 @@ model User {
   posts           Post[]
   Session         Session[]
   PasswordHistory PasswordHistory[]
+  ProfileImage    ProfileImage[]
 
   @@index([email])
   @@index([role])
   @@index([name])
+}
+
+model ProfileImage {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  uuid      String   @unique @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  imageUrl  String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model PasswordHistory {
