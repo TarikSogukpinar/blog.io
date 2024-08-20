@@ -6,17 +6,20 @@ import {
   NotFoundException,
   HttpCode,
   HttpStatus,
+  Param,
+  Delete,
 } from '@nestjs/common';
 import { SessionsService } from './sessions.service';
 import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
-import { CustomRequest } from 'src/core/request/customRequest';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { GetUserSessionDto } from './dto/getSession.dto';
+import { Roles } from 'src/auth/guards/role.guard';
+import { Role } from '@prisma/client';
 
 @Controller({ path: 'sessions', version: '1' })
 @ApiTags('Sessions')
@@ -24,24 +27,42 @@ import { GetUserSessionDto } from './dto/getSession.dto';
 export class SessionsController {
   constructor(private readonly sessionsService: SessionsService) {}
 
-  @Get()
+  @Get(':userId')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get user sessions' })
-  @ApiResponse({ status: 200, description: 'Sessions retrieved successfully' })
+  @ApiBody({ type: Number })
+  @ApiOperation({ summary: 'Get all active sessions for a user' })
   @ApiResponse({
-    status: 404,
-    description: 'No sessions found for the provided UUID',
+    status: 200,
+    description: 'List of active sessions',
   })
   @HttpCode(HttpStatus.OK)
-  async getUserSessions(
-    @Req() req: CustomRequest,
-  ): Promise<GetUserSessionDto[]> {
-    const userUuid = req.user?.uuid;
+  @Roles(Role.ADMIN, Role.USER)
+  async getUserSessions(@Param('userId') userId: number) {
+    return await this.sessionsService.getUserSessions(userId);
+  }
 
-    if (!userUuid) {
-      throw new NotFoundException('User UUID is missing');
-    }
+  @Delete(':userId/:token')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: Number })
+  @ApiOperation({ summary: 'Terminate a session for a user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Session terminated successfully',
+  })
+  @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN, Role.USER)
+  async terminateUserSession(
+    @Param('userId') userId: number,
+    @Param('token') token: string,
+  ) {
+    const terminatedSession = await this.sessionsService.terminateSession(
+      userId,
+      token,
+    );
 
-    return this.sessionsService.getUserSessions(userUuid);
+    return {
+      message: 'Session terminated successfully',
+      sessionId: terminatedSession.id,
+    };
   }
 }

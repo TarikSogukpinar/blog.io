@@ -11,8 +11,6 @@ import {
   ValidationPipe,
   HttpCode,
   HttpStatus,
-  Param,
-  Delete,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/loginUser.dto';
@@ -33,8 +31,6 @@ import { LogoutResponseDto } from './dto/logoutResponse.dto';
 import { ConfigService } from '@nestjs/config';
 import { TokenService } from 'src/core/token/token.service';
 import { Request } from 'express';
-import { Roles } from './guards/role.guard';
-import { Role } from '@prisma/client';
 
 @Controller({ path: 'auth', version: '1' })
 @ApiTags('Auth')
@@ -161,45 +157,6 @@ export class AuthController {
   async refreshToken(@Body('refreshToken') refreshToken: string) {
     const result = await this.authService.refreshTokenService(refreshToken);
     return { message: 'Token refreshed', result };
-  }
-
-  @Get(':userId')
-  @UseGuards(JwtAuthGuard)
-  @ApiBody({ type: Number })
-  @ApiOperation({ summary: 'Get all active sessions for a user' })
-  @ApiResponse({
-    status: 200,
-    description: 'List of active sessions',
-  })
-  @HttpCode(HttpStatus.OK)
-  @Roles(Role.ADMIN, Role.USER)
-  async getUserSessions(@Param('userId') userId: number) {
-    return await this.authService.getUserSessions(userId);
-  }
-
-  @Delete(':userId/:token')
-  @UseGuards(JwtAuthGuard)
-  @ApiBody({ type: Number })
-  @ApiOperation({ summary: 'Terminate a session for a user' })
-  @ApiResponse({
-    status: 200,
-    description: 'Session terminated successfully',
-  })
-  @HttpCode(HttpStatus.OK)
-  @Roles(Role.ADMIN, Role.USER)
-  async terminateUserSession(
-    @Param('userId') userId: number,
-    @Param('token') token: string,
-  ) {
-    const terminatedSession = await this.authService.terminateSession(
-      userId,
-      token,
-    );
-
-    return {
-      message: 'Session terminated successfully',
-      sessionId: terminatedSession.id,
-    };
   }
 
   private async validateAndRedirect(jwt: string, res: any) {

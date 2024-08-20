@@ -3,10 +3,18 @@ import { SessionsService } from './sessions.service';
 import { SessionsController } from './sessions.controller';
 import { PrismaService } from 'src/database/database.service'; // Eğer Prisma kullanıyorsanız
 import { PrismaModule } from 'src/database/database.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [
+    PrismaModule,
+    HttpModule.register({
+      timeout: 50000,
+      maxRedirects: 100,
+    }),
+  ],
   providers: [SessionsService, PrismaService],
   controllers: [SessionsController],
+  exports: [SessionsService],
 })
 export class SessionsModule {}

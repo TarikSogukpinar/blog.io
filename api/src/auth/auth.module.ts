@@ -11,6 +11,7 @@ import { GithubStrategy } from './strategies/github.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { HttpModule } from '@nestjs/axios';
+import { SessionsModule } from 'src/sessions/sessions.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { HttpModule } from '@nestjs/axios';
       timeout: 50000,
       maxRedirects: 100,
     }),
+    SessionsModule,
   ],
   controllers: [AuthController],
   providers: [

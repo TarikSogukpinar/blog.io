@@ -57,3 +57,35 @@ export const getUserSessions = async (userId) => {
     };
   }
 };
+
+export const changePassword = async (userId, currentPassword, newPassword) => {
+  try {
+    const token = Cookies.get("JWT");
+
+    if (!token) {
+      throw new Error("No token found");
+    }
+
+    const response = await axios.put(
+      `https://blog.tariksogukpinar.dev/api/v1/user/${userId}/password`,
+      {
+        currentPassword,
+        newPassword,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error changing password:", error.response || error);
+    return {
+      error:
+        error.response?.data?.message ||
+        "An error occurred while changing the password.",
+    };
+  }
+};

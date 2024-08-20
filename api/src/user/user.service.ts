@@ -119,7 +119,7 @@ export class UsersService {
       where: { uuid: userUuid },
     });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(ErrorCodes.UserNotFound);
     }
 
     await this.prismaService.profileImage.upsert({
