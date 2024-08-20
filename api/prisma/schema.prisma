@@ -15,22 +15,24 @@ enum Role {
 }
 
 model User {
-  id              Int               @id @default(autoincrement())
-  uuid            String            @unique @default(uuid())
-  githubId        String?
-  provider        String?
-  email           String            @unique
-  image           String?
-  name            String?
-  password        String
-  bio             String?
-  refreshToken    String?
-  accessToken     String?
-  role            Role              @default(USER)
-  posts           Post[]
-  Session         Session[]
-  PasswordHistory PasswordHistory[]
-  ProfileImage    ProfileImage[]
+  id                Int               @id @default(autoincrement())
+  uuid              String            @unique @default(uuid())
+  githubId          String?
+  provider          String?
+  email             String            @unique
+  image             String?
+  name              String?
+  password          String
+  bio               String?
+  refreshToken      String?
+  accessToken       String?
+  role              Role              @default(USER)
+  resetToken        String?
+  resetTokenExpires DateTime?
+  posts             Post[]
+  Session           Session[]
+  PasswordHistory   PasswordHistory[]
+  ProfileImage      ProfileImage[]
 
   @@index([email])
   @@index([role])

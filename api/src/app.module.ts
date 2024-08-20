@@ -46,6 +46,7 @@ import { join } from 'path';
     HealthModule,
     UsersModule,
     SessionsModule,
+    
   ],
   controllers: [],
   providers: [],

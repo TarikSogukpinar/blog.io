@@ -67,7 +67,7 @@ export const changePassword = async (userId, currentPassword, newPassword) => {
     }
 
     const response = await axios.put(
-      `https://blog.tariksogukpinar.dev/api/v1/user/${userId}/password`,
+      `http://localhost:5000/api/v1/user/${userId}/password`,
       {
         currentPassword,
         newPassword,

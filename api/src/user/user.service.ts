@@ -20,6 +20,72 @@ export class UsersService {
     private readonly uuidService: UuidService,
   ) {}
 
+  async findUserByEmail(email: string): Promise<User | null> {
+    return this.prismaService.user.findUnique({
+      where: { email },
+    });
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    const user = await this.prismaService.user.findFirst({
+      where: { resetToken: token },
+    });
+
+    if (
+      !user ||
+      !user.resetTokenExpires ||
+      user.resetTokenExpires < new Date()
+    ) {
+      throw new Error('Token is invalid or has expired');
+    }
+
+    const hashedPassword = await this.hashingService.hashPassword(newPassword);
+    await this.prismaService.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetToken: null,
+        resetTokenExpires: null,
+      },
+    });
+  }
+
+  async saveResetToken(
+    userId: number,
+    resetToken: string,
+    resetTokenExpires: Date,
+  ): Promise<void> {
+    await this.prismaService.user.update({
+      where: { id: userId },
+      data: { resetToken, resetTokenExpires },
+    });
+  }
+
+  async findByResetToken(token: string): Promise<User | null> {
+    return this.prismaService.user.findFirst({
+      where: { resetToken: token },
+    });
+  }
+
+  // async updatePassword(userId: number, newPassword: string): Promise<void> {
+  //   const hashedPassword = await this.hashingService.hashPassword(newPassword);
+  //   await this.prismaService.user.update({
+  //     where: { id: userId },
+  //     data: {
+  //       password: hashedPassword,
+  //       resetToken: null,
+  //       resetTokenExpires: null,
+  //     },
+  //   });
+  // }
+
+  async clearResetToken(userId: number): Promise<void> {
+    await this.prismaService.user.update({
+      where: { id: userId },
+      data: { resetToken: null, resetTokenExpires: null },
+    });
+  }
+
   async getUserByUuid(id: string): Promise<GetUserUUIDResponseDto> {
     if (!(await this.uuidService.validateUuid(id))) {
       throw new BadRequestException(ErrorCodes.InvalidUuid);

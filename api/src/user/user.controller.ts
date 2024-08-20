@@ -26,6 +26,8 @@ import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { GetUserByUuidDto } from './dto/getUserUuid.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from 'src/utils/upload/upload.service';
+import { MailService } from 'src/core/mail/mail.service';
+import { PasswordResetService } from 'src/core/password-reset/password-reset.service';
 
 @Controller({ path: 'user', version: '1' })
 @ApiTags('Users')
@@ -33,6 +35,8 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly uploadService: UploadService,
+    private readonly mailService: MailService,
+    private readonly passwordResetService: PasswordResetService,
   ) {}
 
   @Get('me')
@@ -129,21 +133,30 @@ export class UsersController {
     @UploadedFile() file: Express.Multer.File,
     @Req() req: CustomRequest,
   ) {
-    // Kullanıcının UUID'sini al
     const userUuid = req.user?.uuid;
     if (!userUuid) {
       throw new Error('User UUID not found');
     }
-
-    // Resmi yükleyin ve dosya yolunu alın
     const imagePath = await this.uploadService.uploadProfileImage(
       file,
       userUuid,
     );
 
-    // Dosya yolunu ve UUID'yi veritabanına kaydedin
     await this.usersService.updateProfileImage(userUuid, imagePath);
 
     return { imageUrl: imagePath };
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body('email') email: string): Promise<void> {
+    await this.passwordResetService.sendPasswordResetLink(email);
+  }
+
+  @Post('reset-password')
+  async resetPassword(
+    @Body('token') token: string,
+    @Body('newPassword') newPassword: string,
+  ): Promise<void> {
+    await this.usersService.resetPassword(token, newPassword);
   }
 }
