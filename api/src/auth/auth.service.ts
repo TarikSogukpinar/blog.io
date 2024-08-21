@@ -17,6 +17,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LogoutResponseDto } from './dto/logoutResponse.dto';
 import { Request } from 'express';
 import { SessionsService } from 'src/sessions/sessions.service';
+import { UserNotFoundException } from 'src/core/handler/exceptions/custom-expection';
 
 @Injectable()
 export class AuthService {
@@ -73,7 +74,7 @@ export class AuthService {
         where: { email },
       });
 
-      if (!user) throw new NotFoundException(ErrorCodes.UserNotFound);
+      if (!user) throw new UserNotFoundException();
 
       const isPasswordValid = await this.hashingService.comparePassword(
         password,

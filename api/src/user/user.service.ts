@@ -4,7 +4,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Prisma, Session, User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/database/database.service';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { HashingService } from 'src/utils/hashing/hashing.service';
@@ -66,18 +66,6 @@ export class UsersService {
       where: { resetToken: token },
     });
   }
-
-  // async updatePassword(userId: number, newPassword: string): Promise<void> {
-  //   const hashedPassword = await this.hashingService.hashPassword(newPassword);
-  //   await this.prismaService.user.update({
-  //     where: { id: userId },
-  //     data: {
-  //       password: hashedPassword,
-  //       resetToken: null,
-  //       resetTokenExpires: null,
-  //     },
-  //   });
-  // }
 
   async clearResetToken(userId: number): Promise<void> {
     await this.prismaService.user.update({

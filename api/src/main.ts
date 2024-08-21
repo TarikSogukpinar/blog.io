@@ -11,6 +11,7 @@ import * as compression from 'compression';
 import * as cookieParser from 'cookie-parser';
 import { SwaggerService } from './core/swagger/swagger.service';
 import validationOptions from './utils/validate/validation-options';
+import { HttpExceptionFilter } from './core/handler/error/http-expection-filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,6 +28,7 @@ async function bootstrap() {
   app.use(hpp());
   app.use(compression());
   app.use(cookieParser());
+  app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe(validationOptions));
 
   //refactor this sanitizer
