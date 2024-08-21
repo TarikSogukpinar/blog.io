@@ -62,12 +62,13 @@ model PasswordHistory {
 
 model Post {
   id            Int       @id @default(autoincrement())
+  uuid          String    @unique @default(uuid())
   slug          String    @unique
   title         String
   content       String?
   published     Boolean   @default(false)
-  author        User      @relation(fields: [authorId], references: [id])
-  authorId      Int
+  author        User      @relation(fields: [authorUuid], references: [uuid])
+  authorUuid    String
   category      Category? @relation(fields: [categoryId], references: [id])
   categoryId    Int?
   tags          Tag[]     @relation("PostTags")
@@ -77,7 +78,7 @@ model Post {
   encrypted     Boolean?  @default(false)
 
   @@index([slug])
-  @@index([authorId])
+  @@index([authorUuid])
   @@index([categoryId])
 }
 

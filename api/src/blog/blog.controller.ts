@@ -20,6 +20,7 @@ import { UpdatePostDto } from './dto/updatePost.dto';
 import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
 import { CustomRequest } from 'src/core/request/customRequest';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UserNotFoundException } from 'src/core/handler/exceptions/custom-expection';
 
 @Controller({ path: 'blog', version: '1' })
 @ApiTags('Blog')
@@ -32,11 +33,16 @@ export class BlogController {
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   async createPost(@Body() data: CreatePostDto, @Req() req: CustomRequest) {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new UnauthorizedException('User not found');
-    }
-    return this.blogService.createPost(data, userId);
+    const userUuid = req.user?.uuid;
+
+    if (!userUuid) throw new UserNotFoundException();
+
+    const result = await this.blogService.createPost(data, userUuid);
+
+    return {
+      message: 'Post created successfully',
+      data: result,
+    };
   }
 
   @Put('update-post/:id')
@@ -45,29 +51,29 @@ export class BlogController {
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   async updatePost(
-    @Param('id') id: string,
+    @Param('uuid') uuid: string,
     @Body() data: UpdatePostDto,
     @Req() req: CustomRequest,
   ) {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw new UnauthorizedException('User not found');
+    const userUuid = req.user?.uuid; // UUID kullanımı
+    console.log('userId', userUuid);
+    if (!userUuid) {
+      throw new UserNotFoundException();
     }
-    const postId = parseInt(id, 10);
-    return this.blogService.updatePost(postId, data, userId);
+    // const postId = parseInt(id, 10);
+    return this.blogService.updatePost(uuid, data, userUuid);
   }
 
   @Delete('delete-post/:id')
   @ApiOperation({ summary: 'Delete post' })
   @ApiResponse({ status: 200, description: 'Post deleted successfully' })
   @UseGuards(JwtAuthGuard)
-  async deletePost(@Param('id') id: string, @Req() req: CustomRequest) {
-    const userId = req.user?.id;
-    if (!userId) {
+  async deletePost(@Param('uuid') uuid: string, @Req() req: CustomRequest) {
+    const userUuid = req.user?.uuid;
+    if (!userUuid) {
       throw new UnauthorizedException('User not found');
     }
-    const postId = parseInt(id, 10);
-    return this.blogService.deletePost(postId, userId);
+    return this.blogService.deletePost(uuid, userUuid);
   }
 
   @Get('posts')
@@ -107,9 +113,8 @@ export class BlogController {
   @ApiResponse({ status: 404, description: 'Post not found' })
   @ApiResponse({ status: 401, description: 'Invalid encryption key' })
   @UseGuards(JwtAuthGuard)
-  async decryptPost(@Param('id') id: string, @Query('key') key: string) {
-    const postId = parseInt(id, 10);
-    return this.blogService.decryptPost(postId, key);
+  async decryptPost(@Param('uuid') uuid: string, @Query('key') key: string) {
+    return this.blogService.decryptPost(uuid, key);
   }
 
   @Get('post/slug/:slug')
@@ -127,13 +132,12 @@ export class BlogController {
     return post;
   }
 
-  @Get('user-posts/:userId')
+  @Get('user-posts/:uuid')
   @ApiOperation({ summary: 'Get posts by user ID' })
   @ApiResponse({ status: 200, description: 'Posts retrieved successfully' })
   @UseGuards(JwtAuthGuard)
-  async getPostsByUser(@Param('userId') userId: string) {
-    const id = parseInt(userId, 10);
-    return this.blogService.getPostsByUser(id);
+  async getPostsByUser(@Param('uuid') userUuid: string) {
+    return this.blogService.getPostsByUser(userUuid);
   }
 
   @Get('category/:categoryId/posts')

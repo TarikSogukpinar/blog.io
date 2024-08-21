@@ -10,25 +10,30 @@ import {
   UnauthorizedAccessException,
   UserNotFoundException,
 } from 'src/core/handler/exceptions/custom-expection';
+import { UuidService } from 'src/utils/uuid/uuid.service';
 
 @Injectable()
 export class BlogService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly encryptionService: EncryptionService,
+    private readonly uuidService: UuidService,
   ) {}
 
-  private generateSlug(title: string): string {
+  private async generateSlug(title: string): Promise<string> {
     return title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)+/g, '');
   }
 
-  async createPost(data: CreatePostDto, userId: number) {
+  async createPost(
+    data: CreatePostDto,
+    userUuid: string,
+  ): Promise<{ uuid: string; title: string; slug: string }> {
     try {
       const user = await this.prismaService.user.findUnique({
-        where: { id: userId },
+        where: { uuid: userUuid },
       });
 
       if (!user) throw new UserNotFoundException();
@@ -64,13 +69,14 @@ export class BlogService {
           throw new TagNotFoundException();
       }
 
-      return this.prismaService.post.create({
+      const post = await this.prismaService.post.create({
         data: {
+          uuid: this.uuidService.generateUuid(),
           title: data.title,
           content: content,
-          slug: data.slug || this.generateSlug(data.title),
+          slug: data.slug || (await this.generateSlug(data.title)),
           author: {
-            connect: { id: userId },
+            connect: { uuid: userUuid }, //Connect to user with UUID
           },
           category: data.categoryId
             ? { connect: { id: data.categoryId } }
@@ -81,7 +87,14 @@ export class BlogService {
           encryptionKey: encryptionKey,
           encrypted: data.encrypted || false,
         },
+        select: {
+          uuid: true,
+          title: true,
+          slug: true,
+        },
       });
+
+      return post;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(
@@ -90,25 +103,32 @@ export class BlogService {
     }
   }
 
-  async updatePost(postId: number, data: UpdatePostDto, userId: number) {
+  async updatePost(
+    postUuid: string,
+    data: UpdatePostDto,
+    userUuid: string,
+  ): Promise<{ message: string }> {
     try {
       const post = await this.prismaService.post.findUnique({
-        where: { id: postId },
+        where: { uuid: postUuid },
       });
 
       if (!post) throw new PostNotFoundException();
 
-      if (post.authorId !== userId) {
+      if (post.authorUuid !== userUuid) {
         throw new UnauthorizedAccessException();
       }
 
-      return this.prismaService.post.update({
-        where: { id: postId },
+      await this.prismaService.post.update({
+        where: { uuid: postUuid },
         data: {
           title: data.title,
           content: data.content,
+          slug: data.slug || (await this.generateSlug(data.title)),
         },
       });
+
+      return { message: 'Post updated successfully' };
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(
@@ -117,22 +137,22 @@ export class BlogService {
     }
   }
 
-  async deletePost(postId: number, userId: number) {
+  async deletePost(postUuid: string, userUuid: string) {
     try {
       const post = await this.prismaService.post.findUnique({
-        where: { id: postId },
+        where: { uuid: postUuid },
       });
 
       if (!post) {
         throw new PostNotFoundException();
       }
 
-      if (post.authorId !== userId) {
+      if (post.authorUuid !== userUuid) {
         throw new UnauthorizedAccessException();
       }
 
       return this.prismaService.post.delete({
-        where: { id: postId },
+        where: { uuid: postUuid },
       });
     } catch (error) {
       console.log(error);
@@ -142,10 +162,10 @@ export class BlogService {
     }
   }
 
-  async decryptPost(postId: number, key: string) {
+  async decryptPost(postUuid: string, key: string) {
     try {
       const post = await this.prismaService.post.findUnique({
-        where: { id: postId },
+        where: { uuid: postUuid },
         include: {
           author: true,
           category: true,
@@ -184,10 +204,9 @@ export class BlogService {
     page: number = 1,
     pageSize: number = 10,
   ) {
-    //*added published only true*\\
     try {
       const posts = await this.prismaService.post.findMany({
-        where: publishedOnly ? { published: false } : {},
+        where: publishedOnly ? { published: true } : {},
         include: {
           author: {
             select: {
@@ -261,10 +280,10 @@ export class BlogService {
     }
   }
 
-  async getPostsByUser(userId: number) {
+  async getPostsByUser(userUuid: string) {
     try {
       return this.prismaService.post.findMany({
-        where: { authorId: userId },
+        where: { authorUuid: userUuid },
         include: {
           author: true,
           category: true,

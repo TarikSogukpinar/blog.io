@@ -46,13 +46,8 @@ import { join } from 'path';
     HealthModule,
     UsersModule,
     SessionsModule,
-    
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {
-  constructor(private readonly configService: ConfigService) {
-    console.log(`NODE_ENV: ${this.configService.get('NODE_ENV')}`);
-  }
-}
+export class AppModule {}
