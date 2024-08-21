@@ -30,7 +30,6 @@ export default function ChangePassword({ userId }) {
       setNewPassword("");
       setConfirmPassword("");
     } catch (error) {
-      // Hata mesajını state'e set ediyoruz
       setError(error.message || "An error occurred. Please try again.");
     } finally {
       setLoading(false);

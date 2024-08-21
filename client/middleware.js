@@ -9,7 +9,7 @@ const I18nMiddleware = createIntlMiddleware({
 });
 
 const AUTH_PAGES = ["/login", "/register"];
-const PROTECTED_PAGES = ["/home", "/settings", "/admin"];
+const PROTECTED_PAGES = ["/home", "/settings", "/admin", "/post", "/profile"];
 
 const isAuthPage = (url) => AUTH_PAGES.includes(url);
 const isProtectedPage = (url) =>

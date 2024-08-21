@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import axios from "axios";
-import QuillEditor from "@/app/utils/QuillEditor"; // QuillEditor yolunuza dikkat edin
+import QuillEditor from "@/app/utils/QuillEditor";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 
@@ -16,7 +16,7 @@ export default function PostPage() {
     try {
       const token = Cookies.get("JWT");
       const response = await axios.post(
-        "/api/create-post",
+        "/api/v1/create-post",
         { title, content },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -24,7 +24,7 @@ export default function PostPage() {
       if (response.data.error) {
         setError(response.data.error);
       } else {
-        router.push("/"); // Başarılıysa ana sayfaya yönlendir
+        router.push("/");
       }
     } catch (error) {
       console.error("Error creating post:", error);

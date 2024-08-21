@@ -77,9 +77,13 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-white py-12 px-4 sm:px-6 lg:px-8">
       <Toaster position="top-right" reverseOrder={false} />
       <div className="w-full max-w-md space-y-8">
+      
         <h2 className="flex text-black text-4xl justify-center items-center ">
           {t("welcome")}
         </h2>
+        <small class="flex justify-center ms-3 text-md font-medium text-gray-950 ">
+          This application still under development{" "}
+        </small>
 
         <div className="bg-white px-6 py-5 shadow sm:rounded-lg sm:px-12">
           <form onSubmit={handleLoginSubmit} className="space-y-6">
