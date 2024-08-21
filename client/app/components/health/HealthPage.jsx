@@ -5,15 +5,15 @@ import {
   FaCloud,
   FaServer,
   FaExclamationTriangle,
-} from "react-icons/fa"; // İkonları import edin
+} from "react-icons/fa";
 import LoadingSpinner from "../elements/LoadingSpinner";
-import { GrStatusGood, GrInProgress } from "react-icons/gr"; // Yeni ikon eklendi
+import { GrStatusGood, GrInProgress } from "react-icons/gr";
 
 export default function HealthPage() {
   const [systemStatus, setSystemStatus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [allSystemsOperational, setAllSystemsOperational] = useState(true); // Yeni state
+  const [allSystemsOperational, setAllSystemsOperational] = useState(true);
 
   useEffect(() => {
     const fetchSystemStatus = async () => {
@@ -43,7 +43,6 @@ export default function HealthPage() {
         ];
 
         const updatedSystemStatus = fetchedSystemStatus.map((system) => {
-          // Eğer sistem 200 döndürmüyorsa allSystemsOperational false yap
           if (system.status !== 200) {
             setAllSystemsOperational(false);
           }
