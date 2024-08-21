@@ -18,7 +18,7 @@ export class PasswordResetService {
 
     const resetToken = uuidv4();
     const resetTokenExpires = new Date(Date.now() + 3600000); // 1 hour
-    const resetUrl = `http://localhost:5000/api/user/reset-password?token=${resetToken}`;
+    const resetUrl = `http://localhost:5000/api/v1/user/reset-password?token=${resetToken}`;
 
     await this.usersService.saveResetToken(
       user.id,

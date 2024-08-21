@@ -64,11 +64,13 @@ export default function LoginPage() {
   };
 
   const handleGithubLogin = () => {
-    window.location.href = "https://blog.tariksogukpinar.dev/api/auth/github";
+    window.location.href =
+      "https://blog.tariksogukpinar.dev/api/v1/auth/github";
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "https://blog.tariksogukpinar.dev/api/auth/google";
+    window.location.href =
+      "https://blog.tariksogukpinar.dev/api/v1/auth/google";
   };
 
   return (
