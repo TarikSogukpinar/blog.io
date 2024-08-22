@@ -19,7 +19,10 @@ export class HealthService {
     return await this.health.check([
       async () => await this.prismaHealthService.isHealthy('database'),
       async () =>
-        await this.http.pingCheck('nestjs-docs', 'https://docs.nestjs.com'),
+        await this.http.pingCheck(
+          'nestjs-docs',
+          'https://blog.tariksogukpinar.dev/',
+        ),
     ]);
   }
 }

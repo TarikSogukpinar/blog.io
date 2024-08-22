@@ -11,6 +11,8 @@ import {
   UserNotFoundException,
 } from 'src/core/handler/exceptions/custom-expection';
 import { UuidService } from 'src/utils/uuid/uuid.service';
+import { InjectRedis } from '@nestjs-modules/ioredis';
+import Redis from 'ioredis';
 
 @Injectable()
 export class BlogService {
@@ -18,6 +20,7 @@ export class BlogService {
     private readonly prismaService: PrismaService,
     private readonly encryptionService: EncryptionService,
     private readonly uuidService: UuidService,
+    @InjectRedis() private readonly redis: Redis,
   ) {}
 
   private async generateSlug(title: string): Promise<string> {
@@ -206,7 +209,7 @@ export class BlogService {
   ) {
     try {
       const posts = await this.prismaService.post.findMany({
-        where: publishedOnly ? { published: true } : {},
+        where: publishedOnly ? { published: false } : {},
         include: {
           author: {
             select: {

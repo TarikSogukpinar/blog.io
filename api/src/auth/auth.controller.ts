@@ -31,6 +31,8 @@ import { LogoutResponseDto } from './dto/logoutResponse.dto';
 import { ConfigService } from '@nestjs/config';
 import { TokenService } from 'src/core/token/token.service';
 import { Request } from 'express';
+import { InjectRedis } from '@nestjs-modules/ioredis';
+import Redis from 'ioredis';
 
 @Controller({ path: 'auth', version: '1' })
 @ApiTags('Auth')
@@ -42,6 +44,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
     private readonly tokenService: TokenService,
+  
   ) {
     this.redirectUrl = this.configService.get<string>('REDIRECT_URL');
   }

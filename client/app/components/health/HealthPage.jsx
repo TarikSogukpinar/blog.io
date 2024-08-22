@@ -8,6 +8,8 @@ import {
 } from "react-icons/fa";
 import LoadingSpinner from "../elements/LoadingSpinner";
 import { GrStatusGood, GrInProgress } from "react-icons/gr";
+import { SiNestjs } from "react-icons/si";
+import { DiRedis } from "react-icons/di";
 
 export default function HealthPage() {
   const [systemStatus, setSystemStatus] = useState([]);
@@ -18,27 +20,29 @@ export default function HealthPage() {
   useEffect(() => {
     const fetchSystemStatus = async () => {
       try {
-        // Simulate fetching system status from an API
+        const response = await fetch("http://localhost:5000/api/v1/health");
+        const data = await response.json();
+
         const fetchedSystemStatus = [
           {
             name: "Database",
-            status: 200, // API'den gelen HTTP status kodu
-            icon: <FaDatabase size={30} />,
+            status: data.details.database.status === "up" ? 200 : 500,
+            icon: <FaDatabase size={50} />,
           },
           {
             name: "API Gateway",
-            status: 200, // API'den gelen HTTP status kodu
-            icon: <FaCloud size={30} />,
+            status: 200,
+            icon: <FaCloud size={50} />,
+          },
+          {
+            name: "NestJS API",
+            status: data.details["nestjs-docs"].status === "up" ? 200 : 500,
+            icon: <SiNestjs size={50} />,
           },
           {
             name: "Cache Server",
-            status: 503, // API'den gelen HTTP status kodu
-            icon: <FaServer size={30} />,
-          },
-          {
-            name: "Third-Party API",
-            status: 500, // API'den gelen HTTP status kodu
-            icon: <FaExclamationTriangle size={30} />,
+            status: data.details["nestjs-docs"].status === "up" ? 200 : 500,
+            icon: <DiRedis size={50} />,
           },
         ];
 
@@ -49,7 +53,8 @@ export default function HealthPage() {
           return {
             ...system,
             statusText: system.status === 200 ? "Operational" : "Down",
-            color: system.status === 200 ? "bg-green-900" : "bg-red-500",
+            textColor:
+              system.status === 200 ? "text-green-600" : "text-red-600",
           };
         });
 
@@ -65,67 +70,68 @@ export default function HealthPage() {
   }, []);
 
   if (loading) {
-    return <LoadingSpinner />;
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (error) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <p className="text-red-500">{error}</p>
+        <p className="text-red-500 text-2xl">{error}</p>
       </div>
     );
   }
 
   return (
-    <main className="flex items-center justify-center">
-      <div className="relative isolate">
-        <div
-          className="absolute left-1/2 right-0 top-0 -z-10 -ml-24 transform-gpu  blur-3xl lg:ml-24 xl:ml-48"
-          aria-hidden="true"
-        ></div>
-        <div className="flex flex-col items-center text-center">
-          <div className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32">
+    <main className="flex items-center justify-center min-h-screen">
+      <div className="relative isolate w-full h-full flex items-center justify-center">
+        <div className="flex flex-col items-center text-center w-full">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-32 pt-8 sm:pt-24 lg:pt-8">
             <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
               <div className="relative w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
-                {/* Durum mesajı */}
                 <div
-                  className={`flex items-center justify-center p-4 text-2xl rounded-lg ${
-                    allSystemsOperational
-                      ? "text-green-800 bg-gray-50"
-                      : "text-yellow-800 bg-yellow-50"
+                  className={`flex items-center justify-center p-6 text-3xl sm:text-4xl rounded-lg ${
+                    allSystemsOperational ? "text-green-800" : "text-yellow-800"
                   }`}
                   role="alert"
                 >
-                  {!allSystemsOperational ? (
+                  {allSystemsOperational ? (
                     <>
-                      <GrStatusGood size={30} />
-                      <span className="font-medium ml-2 mr-2">
+                      <GrStatusGood size={50} className="sm:size-70" />
+                      <span className="ml-4 font-bold text-xl sm:text-2xl">
                         All Systems Operational
                       </span>
                     </>
                   ) : (
                     <>
-                      <GrInProgress size={30} />
-                      <span className="font-medium ml-2 mr-2">
-                        Şuanda araştırıyoruz...
+                      <GrInProgress size={50} className="sm:size-70" />
+                      <span className="ml-4 font-bold text-xl sm:text-2xl">
+                        We are currently investigating...
                       </span>
                     </>
                   )}
                 </div>
 
-                <div className="mt-10 flex flex-col items-center gap-x-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="mt-10 sm:mt-16 flex flex-col items-center gap-x-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
                     {systemStatus.map((system, index) => (
                       <div
                         key={index}
-                        className={`${system.color} text-white text-2xl font-semibold p-4 rounded-lg text-center transition duration-300 ease-in-out flex items-center justify-center space-x-3`}
+                        className={`flex flex-col items-center justify-center space-x-3 text-center`}
                       >
                         {system.icon} {/* İkonu ekleyin */}
                         <div>
-                          <h2 className="text-2xl font-bold mb-2">
+                          <h2 className="text-2xl sm:text-3xl font-bold mb-2">
                             {system.name}
                           </h2>
-                          <p>{system.statusText}</p>
+                          <p
+                            className={`text-lg sm:text-2xl font-semibold ${system.textColor}`}
+                          >
+                            {system.statusText}
+                          </p>
                         </div>
                       </div>
                     ))}

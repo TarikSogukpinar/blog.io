@@ -11,9 +11,12 @@ import { HealthModule } from './core/healthCheck/health.module';
 import { SessionsModule } from './sessions/sessions.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { RedisModule } from '@nestjs-modules/ioredis';
+import { GracefulShutdownModule } from 'nestjs-graceful-shutdown';
 
 @Module({
   imports: [
+    GracefulShutdownModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: (() => {
@@ -46,6 +49,17 @@ import { join } from 'path';
     HealthModule,
     UsersModule,
     SessionsModule,
+    RedisModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'single',
+        url: configService.get<string>('REDIS_HOST'),
+        keepAlive: 1000,
+        socketTimeout: 1000,
+        lazyConnect: true,
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [],
   providers: [],

@@ -25,8 +25,10 @@ export default function HomePage() {
     }
   }, [page]);
 
-  const loadPosts = (token, page) => {
-    fetchPost(token, page, pageSize).then((data) => {
+  const loadPosts = async (token, page) => {
+    console.log("Loading posts...");
+
+    await fetchPost(token, page, pageSize).then((data) => {
       if (data.error) {
         setError(data.error);
       } else {
