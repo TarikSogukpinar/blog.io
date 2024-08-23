@@ -9,16 +9,17 @@ import {
   TagNotFoundException,
   UnauthorizedAccessException,
   UserNotFoundException,
+  UUIDCannotBeNotEmptyException,
 } from 'src/core/handler/exceptions/custom-expection';
 import { UuidService } from 'src/utils/uuid/uuid.service';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
 import { CreatePostResponseDto } from './dto/createPostResponse.dto';
 import { UpdatePostResponseDto } from './dto/updatePostResponse.dto';
-import { DeletePostDto } from './dto/deletePost.dto';
 import { DeletePostResponseDto } from './dto/deletePostResponse.dto';
 import { GetPostByUuidResponseDto } from './dto/getPostByUuidResponse.dto';
 import { GetPostBySlugResponseDto } from './dto/getPostBySlugResponse.dto';
+import { GetPostByUserResponseDto } from './dto/getPostsByUser.dto';
 
 @Injectable()
 export class BlogService {
@@ -340,39 +341,61 @@ export class BlogService {
     }
   }
 
-  async getPostsByUser(userUuid: string) {
+  async getPostsByUser(userUuid: string): Promise<GetPostByUserResponseDto[]> {
     try {
-      return this.prismaService.post.findMany({
+      if (!userUuid) throw new UUIDCannotBeNotEmptyException();
+
+      const posts = await this.prismaService.post.findMany({
         where: { authorUuid: userUuid },
-        include: {
-          author: true,
-          category: true,
-          tags: true,
+        select: {
+          uuid: true,
+          slug: true,
+          title: true,
+          content: true,
+          published: true,
+          createdAt: true,
+          updatedAt: true,
+          category: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          tags: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
       });
+
+      if (!posts || posts.length === 0) throw new PostNotFoundException();
+
+      return posts;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw new InternalServerErrorException(
         'An error occurred, please try again later',
       );
     }
   }
 
-  async getPostsByCategory(categoryId: number) {
-    try {
-      return this.prismaService.post.findMany({
-        where: { categoryId },
-        include: {
-          author: true,
-          category: true,
-          tags: true,
-        },
-      });
-    } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException(
-        'An error occurred, please try again later',
-      );
-    }
-  }
+  // async getPostsByCategory(categoryId: number) {
+  //   try {
+  //     return this.prismaService.post.findMany({
+  //       where: { categoryId },
+  //       include: {
+  //         author: true,
+  //         category: true,
+  //         tags: true,
+  //       },
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //     throw new InternalServerErrorException(
+  //       'An error occurred, please try again later',
+  //     );
+  //   }
+  // }
 }

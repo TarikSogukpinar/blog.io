@@ -30,9 +30,9 @@ export class BlogController {
 
   @Post('create-post')
   @ApiOperation({ summary: 'Create post' })
-  @ApiResponse({ status: 201, description: 'Post created successfully' })
+  @ApiResponse({ status: 200, description: 'Post created successfully' })
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(HttpStatus.OK)
   async createPost(@Body() data: CreatePostDto, @Req() req: CustomRequest) {
     const userUuid = req.user?.uuid;
@@ -51,7 +51,8 @@ export class BlogController {
   @ApiOperation({ summary: 'Update post' })
   @ApiResponse({ status: 200, description: 'Post updated successfully' })
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @HttpCode(HttpStatus.OK)
   async updatePost(
     @Param('uuid') uuid: string,
     @Body() data: UpdatePostDto,
@@ -73,6 +74,8 @@ export class BlogController {
   @ApiOperation({ summary: 'Delete post' })
   @ApiResponse({ status: 200, description: 'Post deleted successfully' })
   @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @HttpCode(HttpStatus.OK)
   async deletePost(@Param('uuid') uuid: string, @Req() req: CustomRequest) {
     const userUuid = req.user?.uuid;
     if (!userUuid) {
@@ -90,6 +93,8 @@ export class BlogController {
   @ApiOperation({ summary: 'Get all posts' })
   @ApiResponse({ status: 200, description: 'Posts retrieved successfully' })
   @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @HttpCode(HttpStatus.OK)
   async getAllPosts(
     @Query('publishedOnly') publishedOnly: string,
     @Query('page') page: string,
@@ -104,8 +109,9 @@ export class BlogController {
   @Get('post/:uuid')
   @ApiOperation({ summary: 'Get post by ID' })
   @ApiResponse({ status: 200, description: 'Post retrieved successfully' })
-  @ApiResponse({ status: 404, description: 'Post not found' })
   @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @HttpCode(HttpStatus.OK)
   async getPostByUuid(@Param('uuid') uuid: string, @Req() req: CustomRequest) {
     const result = await this.blogService.getPostByUuid(uuid);
 
@@ -115,9 +121,9 @@ export class BlogController {
   @Get('decrypt-post/:uuid')
   @ApiOperation({ summary: 'Decrypt post by ID' })
   @ApiResponse({ status: 200, description: 'Post decrypted successfully' })
-  @ApiResponse({ status: 404, description: 'Post not found' })
-  @ApiResponse({ status: 401, description: 'Invalid encryption key' })
   @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @HttpCode(HttpStatus.OK)
   async decryptPost(@Param('uuid') uuid: string, @Query('key') key: string) {
     const result = await this.blogService.decryptPost(uuid, key);
 
@@ -127,8 +133,9 @@ export class BlogController {
   @Get('post/slug/:slug')
   @ApiOperation({ summary: 'Get post by slug' })
   @ApiResponse({ status: 200, description: 'Post retrieved successfully' })
-  @ApiResponse({ status: 404, description: 'Post not found' })
   @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @HttpCode(HttpStatus.OK)
   async getPostBySlug(@Param('slug') slug: string) {
     const result = await this.blogService.getPostBySlug(slug);
 
@@ -139,16 +146,10 @@ export class BlogController {
   @ApiOperation({ summary: 'Get posts by user ID' })
   @ApiResponse({ status: 200, description: 'Posts retrieved successfully' })
   @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @HttpCode(HttpStatus.OK)
   async getPostsByUser(@Param('uuid') userUuid: string) {
     return this.blogService.getPostsByUser(userUuid);
   }
 
-  @Get('category/:categoryId/posts')
-  @ApiOperation({ summary: 'Get posts by category ID' })
-  @ApiResponse({ status: 200, description: 'Posts retrieved successfully' })
-  @UseGuards(JwtAuthGuard)
-  async getPostsByCategory(@Param('categoryId') categoryId: string) {
-    const id = parseInt(categoryId, 10);
-    return this.blogService.getPostsByCategory(id);
-  }
 }

@@ -6,7 +6,6 @@ import {
 } from '@nestjs/terminus';
 import { PrismaService } from './database.service';
 
-
 @Injectable()
 export class PrismaHealthIndicator extends HealthIndicator {
   constructor(private readonly prismaService: PrismaService) {
@@ -15,11 +14,9 @@ export class PrismaHealthIndicator extends HealthIndicator {
 
   async isHealthy(key: string): Promise<HealthIndicatorResult> {
     try {
-      // Basit bir SELECT sorgusu ile veritabanı bağlantısını kontrol ediyoruz
-      await this.prismaService.$queryRaw`SELECT 1`;
+      const result = await this.prismaService.$queryRaw`SELECT 1`;
       return this.getStatus(key, true);
     } catch (error) {
-      // Bağlantı hatası durumunda HealthCheckError fırlatıyoruz
       throw new HealthCheckError(
         'PrismaHealthIndicator failed',
         this.getStatus(key, false),

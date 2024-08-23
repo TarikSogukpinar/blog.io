@@ -47,3 +47,9 @@ export class UnauthorizedAccessException extends HttpException {
     super('Unauthorized this resource', HttpStatus.UNAUTHORIZED);
   }
 }
+
+export class UUIDCannotBeNotEmptyException extends HttpException {
+  constructor() {
+    super('UUID cannot be not empty found', HttpStatus.NOT_FOUND);
+  }
+}

@@ -42,7 +42,6 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
     private readonly tokenService: TokenService,
-  
   ) {
     this.redirectUrl = this.configService.get<string>('REDIRECT_URL');
   }
