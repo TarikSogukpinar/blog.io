@@ -13,6 +13,12 @@ import {
 import { UuidService } from 'src/utils/uuid/uuid.service';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
+import { CreatePostResponseDto } from './dto/createPostResponse.dto';
+import { UpdatePostResponseDto } from './dto/updatePostResponse.dto';
+import { DeletePostDto } from './dto/deletePost.dto';
+import { DeletePostResponseDto } from './dto/deletePostResponse.dto';
+import { GetPostByUuidResponseDto } from './dto/getPostByUuidResponse.dto';
+import { GetPostBySlugResponseDto } from './dto/getPostBySlugResponse.dto';
 
 @Injectable()
 export class BlogService {
@@ -33,7 +39,7 @@ export class BlogService {
   async createPost(
     data: CreatePostDto,
     userUuid: string,
-  ): Promise<{ uuid: string; title: string; slug: string }> {
+  ): Promise<CreatePostResponseDto> {
     try {
       const user = await this.prismaService.user.findUnique({
         where: { uuid: userUuid },
@@ -110,7 +116,7 @@ export class BlogService {
     postUuid: string,
     data: UpdatePostDto,
     userUuid: string,
-  ): Promise<{ message: string }> {
+  ): Promise<UpdatePostResponseDto> {
     try {
       const post = await this.prismaService.post.findUnique({
         where: { uuid: postUuid },
@@ -118,11 +124,9 @@ export class BlogService {
 
       if (!post) throw new PostNotFoundException();
 
-      if (post.authorUuid !== userUuid) {
-        throw new UnauthorizedAccessException();
-      }
+      if (post.authorUuid !== userUuid) throw new UnauthorizedAccessException();
 
-      await this.prismaService.post.update({
+      const updatedPost = await this.prismaService.post.update({
         where: { uuid: postUuid },
         data: {
           title: data.title,
@@ -131,7 +135,12 @@ export class BlogService {
         },
       });
 
-      return { message: 'Post updated successfully' };
+      return {
+        uuid: updatedPost.uuid,
+        title: updatedPost.title,
+        slug: updatedPost.slug,
+        content: updatedPost.content,
+      };
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(
@@ -140,7 +149,10 @@ export class BlogService {
     }
   }
 
-  async deletePost(postUuid: string, userUuid: string) {
+  async deletePost(
+    postUuid: string,
+    userUuid: string,
+  ): Promise<DeletePostResponseDto> {
     try {
       const post = await this.prismaService.post.findUnique({
         where: { uuid: postUuid },
@@ -154,9 +166,14 @@ export class BlogService {
         throw new UnauthorizedAccessException();
       }
 
-      return this.prismaService.post.delete({
+      await this.prismaService.post.delete({
         where: { uuid: postUuid },
       });
+
+      return {
+        postUuid: postUuid,
+        userUuid: userUuid,
+      };
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(
@@ -165,7 +182,7 @@ export class BlogService {
     }
   }
 
-  async decryptPost(postUuid: string, key: string) {
+  async decryptPost(postUuid: string, key: string): Promise<any> {
     try {
       const post = await this.prismaService.post.findUnique({
         where: { uuid: postUuid },
@@ -188,12 +205,20 @@ export class BlogService {
         throw new UnauthorizedAccessException();
       }
 
-      post.content = await this.encryptionService.decrypt(
+      const decryptedContent = await this.encryptionService.decrypt(
         post.content,
         post.encryptionKey,
       );
 
-      return post;
+      const updatedPost = await this.prismaService.post.update({
+        where: { uuid: postUuid },
+        data: {
+          content: decryptedContent,
+          encrypted: false,
+        },
+      });
+
+      return updatedPost;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(
@@ -247,16 +272,43 @@ export class BlogService {
     }
   }
 
-  async getPostById(postId: number) {
+  async getPostByUuid(postUuid: string): Promise<GetPostByUuidResponseDto> {
     try {
-      return this.prismaService.post.findUnique({
-        where: { id: postId },
-        include: {
-          author: true,
-          category: true,
-          tags: true,
+      if (!postUuid) {
+        throw new PostNotFoundException();
+      }
+
+      const post = await this.prismaService.post.findUnique({
+        where: { uuid: postUuid },
+        select: {
+          uuid: true,
+          slug: true,
+          title: true,
+          content: true,
+          published: true,
+          createdAt: true,
+          updatedAt: true,
+          encrypted: true,
+          category: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          tags: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
       });
+
+      if (!post) {
+        throw new PostNotFoundException();
+      }
+
+      return post;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(
@@ -265,16 +317,21 @@ export class BlogService {
     }
   }
 
-  async getPostBySlug(slug: string) {
+  async getPostBySlug(slug: string): Promise<GetPostBySlugResponseDto> {
     try {
-      return this.prismaService.post.findUnique({
+      if (!slug) {
+        throw new PostNotFoundException();
+      }
+      const result = this.prismaService.post.findUnique({
         where: { slug },
         include: {
-          author: true,
+          author: false,
           category: true,
           tags: true,
         },
       });
+
+      return result;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(

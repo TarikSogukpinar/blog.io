@@ -13,6 +13,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { RedisModule } from '@nestjs-modules/ioredis';
 import { GracefulShutdownModule } from 'nestjs-graceful-shutdown';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { GracefulShutdownModule } from 'nestjs-graceful-shutdown';
     HealthModule,
     UsersModule,
     SessionsModule,
+    CategoryModule,
     RedisModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({

@@ -31,8 +31,6 @@ import { LogoutResponseDto } from './dto/logoutResponse.dto';
 import { ConfigService } from '@nestjs/config';
 import { TokenService } from 'src/core/token/token.service';
 import { Request } from 'express';
-import { InjectRedis } from '@nestjs-modules/ioredis';
-import Redis from 'ioredis';
 
 @Controller({ path: 'auth', version: '1' })
 @ApiTags('Auth')

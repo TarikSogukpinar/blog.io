@@ -12,7 +12,8 @@ import {
   UsePipes,
   ValidationPipe,
   NotFoundException,
-  UnauthorizedException,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { CreatePostDto } from './dto/createPost.dto';
@@ -32,6 +33,7 @@ export class BlogController {
   @ApiResponse({ status: 201, description: 'Post created successfully' })
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
+  @HttpCode(HttpStatus.OK)
   async createPost(@Body() data: CreatePostDto, @Req() req: CustomRequest) {
     const userUuid = req.user?.uuid;
 
@@ -41,11 +43,11 @@ export class BlogController {
 
     return {
       message: 'Post created successfully',
-      data: result,
+      result,
     };
   }
 
-  @Put('update-post/:id')
+  @Put(':uuid')
   @ApiOperation({ summary: 'Update post' })
   @ApiResponse({ status: 200, description: 'Post updated successfully' })
   @UseGuards(JwtAuthGuard)
@@ -55,25 +57,33 @@ export class BlogController {
     @Body() data: UpdatePostDto,
     @Req() req: CustomRequest,
   ) {
-    const userUuid = req.user?.uuid; // UUID kullanımı
-    console.log('userId', userUuid);
+    const userUuid = req.user?.uuid;
     if (!userUuid) {
       throw new UserNotFoundException();
     }
-    // const postId = parseInt(id, 10);
-    return this.blogService.updatePost(uuid, data, userUuid);
+    const result = await this.blogService.updatePost(uuid, data, userUuid);
+
+    return {
+      message: 'Post updated successfully',
+      result,
+    };
   }
 
-  @Delete('delete-post/:id')
+  @Delete(':uuid')
   @ApiOperation({ summary: 'Delete post' })
   @ApiResponse({ status: 200, description: 'Post deleted successfully' })
   @UseGuards(JwtAuthGuard)
   async deletePost(@Param('uuid') uuid: string, @Req() req: CustomRequest) {
     const userUuid = req.user?.uuid;
     if (!userUuid) {
-      throw new UnauthorizedException('User not found');
+      throw new UserNotFoundException();
     }
-    return this.blogService.deletePost(uuid, userUuid);
+    const result = await this.blogService.deletePost(uuid, userUuid);
+
+    return {
+      message: 'Post deleted successfully',
+      result,
+    };
   }
 
   @Get('posts')
@@ -91,30 +101,27 @@ export class BlogController {
     return this.blogService.getAllPosts(published, pageNum, size);
   }
 
-  @Get('post/:id')
+  @Get('post/:uuid')
   @ApiOperation({ summary: 'Get post by ID' })
   @ApiResponse({ status: 200, description: 'Post retrieved successfully' })
   @ApiResponse({ status: 404, description: 'Post not found' })
   @UseGuards(JwtAuthGuard)
-  async getPostById(@Param('id') id: string) {
-    const postId = parseInt(id, 10);
-    const post = await this.blogService.getPostById(postId);
+  async getPostByUuid(@Param('uuid') uuid: string, @Req() req: CustomRequest) {
+    const result = await this.blogService.getPostByUuid(uuid);
 
-    if (!post) {
-      throw new NotFoundException('Post not found');
-    }
-
-    return post;
+    return { result, message: 'Post retrieved successfully' };
   }
 
-  @Get('decrypt-post/:id')
+  @Get('decrypt-post/:uuid')
   @ApiOperation({ summary: 'Decrypt post by ID' })
   @ApiResponse({ status: 200, description: 'Post decrypted successfully' })
   @ApiResponse({ status: 404, description: 'Post not found' })
   @ApiResponse({ status: 401, description: 'Invalid encryption key' })
   @UseGuards(JwtAuthGuard)
   async decryptPost(@Param('uuid') uuid: string, @Query('key') key: string) {
-    return this.blogService.decryptPost(uuid, key);
+    const result = await this.blogService.decryptPost(uuid, key);
+
+    return { result, message: 'Post decrypted successfully' };
   }
 
   @Get('post/slug/:slug')
@@ -123,13 +130,9 @@ export class BlogController {
   @ApiResponse({ status: 404, description: 'Post not found' })
   @UseGuards(JwtAuthGuard)
   async getPostBySlug(@Param('slug') slug: string) {
-    const post = await this.blogService.getPostBySlug(slug);
+    const result = await this.blogService.getPostBySlug(slug);
 
-    if (!post) {
-      throw new NotFoundException('Post not found');
-    }
-
-    return post;
+    return { result, message: 'Post retrieved successfully' };
   }
 
   @Get('user-posts/:uuid')
