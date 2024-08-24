@@ -11,7 +11,6 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
-  NotFoundException,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -151,5 +150,4 @@ export class BlogController {
   async getPostsByUser(@Param('uuid') userUuid: string) {
     return this.blogService.getPostsByUser(userUuid);
   }
-
 }

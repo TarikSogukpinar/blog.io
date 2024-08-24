@@ -54,6 +54,8 @@ export class AuthService {
         },
       });
 
+      await this.redis.set(user.uuid, user.email);
+
       return { uuid: user.uuid, email: user.email, role: user.role };
     } catch (error) {
       console.log(error);
