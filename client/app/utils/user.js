@@ -33,7 +33,7 @@ export const getUserInformation = async () => {
   }
 };
 
-export const getUserSessions = async (userId) => {
+export const getUserSessions = async () => {
   try {
     const token = Cookies.get("JWT");
 
@@ -41,15 +41,12 @@ export const getUserSessions = async (userId) => {
       throw new Error("No token found");
     }
 
-    const response = await axios.get(
-      `https://blog.tariksogukpinar.dev/api/v1/sessions`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return response.data;
+    const response = await axios.get(`http://localhost:5000/api/v1/sessions`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.result;
   } catch (error) {
     console.error("Error fetching user sessions:", error);
     return {

@@ -9,6 +9,7 @@ import * as requestIp from 'request-ip';
 import { Request } from 'express';
 import { HttpService } from '@nestjs/axios';
 import { GetUserSessionDto } from './dto/getSession.dto';
+import { Session } from 'inspector';
 
 @Injectable()
 export class SessionsService {
@@ -102,24 +103,29 @@ export class SessionsService {
     }
   }
 
-  async getUserSessions(userId: number) {
-    try {
-      const sessions = await this.prismaService.session.findMany({
-        where: { userId, isActive: true },
-        select: {
-          ipAddress: true,
-          userAgent: true,
-          createdAt: true,
-          expiresAt: true,
-        },
-      });
-      return sessions;
-    } catch (error) {
-      console.error('Error terminating session:', error);
-      throw new InternalServerErrorException(
-        'An error occurred, please try again later',
+  async getUserSessions(userUuid: string): Promise<any> {
+    const user = await this.prismaService.user.findUnique({
+      where: { uuid: userUuid },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with UUID ${userUuid} not found`);
+    }
+
+    const sessions = await this.prismaService.session.findMany({
+      where: {
+        userId: user.id,
+        isActive: true,
+      },
+    });
+
+    if (sessions.length === 0) {
+      throw new NotFoundException(
+        `No active sessions found for user with UUID ${userUuid}`,
       );
     }
+
+    return sessions;
   }
 
   private async getLocationData(ipAddress: string): Promise<any> {

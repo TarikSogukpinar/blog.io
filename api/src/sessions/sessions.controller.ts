@@ -20,6 +20,8 @@ import {
 } from '@nestjs/swagger';
 import { Roles } from 'src/auth/guards/role.guard';
 import { Role } from '@prisma/client';
+import { CustomRequest } from 'src/core/request/customRequest';
+import { UserNotFoundException } from 'src/core/handler/exceptions/custom-expection';
 
 @Controller({ path: 'sessions', version: '1' })
 @ApiTags('Sessions')
@@ -27,18 +29,26 @@ import { Role } from '@prisma/client';
 export class SessionsController {
   constructor(private readonly sessionsService: SessionsService) {}
 
-  @Get(':userId')
+  @Get()
   @UseGuards(JwtAuthGuard)
-  @ApiBody({ type: Number })
+  @ApiBody({ type: String })
   @ApiOperation({ summary: 'Get all active sessions for a user' })
   @ApiResponse({
     status: 200,
-    description: 'List of active sessions',
+    description: 'List of active user sessions',
   })
   @HttpCode(HttpStatus.OK)
-  @Roles(Role.ADMIN, Role.USER)
-  async getUserSessions(@Param('userId') userId: number) {
-    return await this.sessionsService.getUserSessions(userId);
+  async getUserSessions(@Req() req: CustomRequest) {
+    const userUuid = req.user?.uuid;
+    if (!userUuid) {
+      throw new UserNotFoundException();
+    }
+
+    const result = await this.sessionsService.getUserSessions(userUuid);
+    return {
+      message: 'List of active user sessions',
+      result,
+    };
   }
 
   @Delete(':userId/:token')

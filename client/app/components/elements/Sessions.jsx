@@ -1,41 +1,63 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import LoadingSpinner from "./LoadingSpinner";
-import { getUserSessions, terminateUserSession } from "@/app/utils/user";
 import { VscVmActive } from "react-icons/vsc";
+import Cookies from "js-cookie";
+import axios from "axios";
+import { getUserSessions } from "@/app/utils/user";
 
-export default function Session() {
+export default function Session({ userId }) {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchSessions = async () => {
-      const data = await getUserSessions();
-      if (data.error) {
-        setError(data.error);
-      } else {
-        setSessions(data);
+      try {
+        const data = await getUserSessions();
+
+        if (Array.isArray(data)) {
+          setSessions(data);
+        } else if (data.error) {
+          setError(data.error);
+        } else {
+          setError("Beklenmeyen veri formatı alındı.");
+        }
+      } catch (err) {
+        setError("Oturumları alırken bir hata oluştu.");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchSessions();
-  }, []);
+  }, [userId]);
 
-  // const handleTerminateSession = async (sessionId) => {
-  //   const confirmation = confirm(
-  //     "Are you sure you want to terminate this session?"
-  //   );
-  //   if (!confirmation) return;
+  const handleTerminateSession = async (sessionId) => {
+    const confirmation = confirm(
+      "Bu oturumu sonlandırmak istediğinizden emin misiniz?"
+    );
+    if (!confirmation) return;
 
-  //   const result = await terminateUserSession(sessionId);
-  //   if (result.error) {
-  //     setError(result.error);
-  //   } else {
-  //     setSessions(sessions.filter((session) => session.id !== sessionId));
-  //   }
-  // };
+    try {
+      const response = await axios.delete(
+        `http://localhost:5000/api/v1/sessions/${sessionId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("JWT")}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setSessions(sessions.filter((session) => session.id !== sessionId));
+      } else {
+        setError("Oturum sonlandırılamadı.");
+      }
+    } catch (error) {
+      setError(error.message || "Oturumu sonlandırırken bir hata oluştu.");
+    }
+  };
 
   if (loading) return <LoadingSpinner />;
   if (error) return <p>Error: {error}</p>;
@@ -43,9 +65,9 @@ export default function Session() {
   return (
     <div className="space-y-8 max-w-3xl mx-auto p-4">
       <h3 className="flex items-center text-2xl font-semibold text-gray-900 mb-1">
-        <VscVmActive className="mr-2" /> Active Session
+        <VscVmActive className="mr-2" /> Active Sessions
       </h3>
-      <div className="rounded-lg p-6 mb-8 ">
+      <div className="rounded-lg p-6 mb-8">
         {sessions
           .filter((session) => session.isActive)
           .map((session) => (
@@ -62,12 +84,12 @@ export default function Session() {
                   Last Active: {new Date(session.updatedAt).toLocaleString()}
                 </p>
               </div>
-              {/* <button
+              <button
                 onClick={() => handleTerminateSession(session.id)}
                 className="ml-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
               >
                 Terminate
-              </button> */}
+              </button>
             </div>
           ))}
       </div>
