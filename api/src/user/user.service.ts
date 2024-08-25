@@ -93,6 +93,9 @@ export class UsersService {
         role: true,
         name: true,
         bio: true,
+        githubUrl: true,
+        twitterUrl: true,
+        linkedinUrl: true,
         accountType: true,
         isActiveAccount: true,
         ProfileImage: {
@@ -116,6 +119,9 @@ export class UsersService {
       imageUrl: user.ProfileImage?.[0]?.imageUrl || null,
       accountType: user.accountType,
       isActiveAccount: user.isActiveAccount,
+      githubUrl: user.githubUrl,
+      twitterUrl: user.twitterUrl,
+      linkedinUrl: user.linkedinUrl,
     };
   }
 

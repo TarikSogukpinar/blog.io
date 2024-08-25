@@ -24,4 +24,15 @@ export class GetUserUUIDResponseDto {
 
   @IsBoolean()
   isActiveAccount: boolean;
+
+  @IsString()
+  githubUrl: string;
+
+  @IsString()
+  twitterUrl: string;
+
+  @IsString()
+  linkedinUrl: string;
+
+
 }

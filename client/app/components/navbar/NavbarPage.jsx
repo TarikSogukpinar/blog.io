@@ -1,24 +1,17 @@
 "use client";
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect } from "react";
 import {
   Bars3Icon,
   BellIcon,
   XMarkIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { Disclosure } from "@headlessui/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { logoutUser } from "../../utils/auth";
 import { usePathname } from "next/navigation";
-import {
-  FaBook,
-  FaCog,
-  FaRegNewspaper,
-  FaSignOutAlt,
-  FaUser,
-} from "react-icons/fa";
 import Link from "next/link";
 
 function classNames(...classes) {
@@ -31,6 +24,7 @@ export default function NavbarPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const isLoginPage = pathname.includes("/login");
 
   useEffect(() => {
     const token = Cookies.get("JWT");
@@ -134,12 +128,14 @@ export default function NavbarPage() {
                       )}
                     </div>
                   ) : (
-                    <a
-                      href={`${pathname}/login`}
-                      className="bg-gray-950 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-900 hover:text-white"
-                    >
-                      {t("StartHere")}
-                    </a>
+                    !isLoginPage && (
+                      <a
+                        href={`${localePath}login`}
+                        className="bg-gray-950 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-900 hover:text-white"
+                      >
+                        {t("StartHere")}
+                      </a>
+                    )
                   )}
                 </div>
               </div>

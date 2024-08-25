@@ -11,6 +11,9 @@ export default function ProfileInformation() {
     imageUrl: "",
     accountType: "",
     isActiveAccount: "",
+    githubUrl: "",
+    linkedinUrl: "",
+    twitterUrl: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -35,6 +38,9 @@ export default function ProfileInformation() {
               data.result.isActiveAccount !== undefined
                 ? data.isActiveAccount
                 : true,
+            githubUrl: data.result.githubUrl || "",
+            linkedinUrl: data.result.linkedinUrl || "",
+            twitterUrl: data.result.twitterUrl || "",
           });
         }
       } catch (err) {
@@ -112,6 +118,7 @@ export default function ProfileInformation() {
             </label>
             <input
               type="text"
+              disabled
               value={userData.name}
               onChange={(e) =>
                 setUserData({ ...userData, name: e.target.value })
@@ -126,6 +133,7 @@ export default function ProfileInformation() {
             </label>
             <input
               type="text"
+              disabled
               value={userData.email}
               onChange={(e) =>
                 setUserData({ ...userData, email: e.target.value })
@@ -134,26 +142,26 @@ export default function ProfileInformation() {
             />
           </div>
         </div>
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium text-gray-700">
             Email
           </label>
           <input
             type="email"
+            disabled
             value={userData.email}
             onChange={(e) =>
               setUserData({ ...userData, email: e.target.value })
             }
             className="mt-2 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
-        </div>
+        </div> */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Biography
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Bio</label>
           <input
             type="text"
-            value={userData.bio}
+            disabled
+            value={userData.bio || "....."}
             onChange={(e) => setUserData({ ...userData, bio: e.target.value })}
             className="mt-2 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
@@ -177,8 +185,41 @@ export default function ProfileInformation() {
             className="mt-2 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Linkedin
+          </label>
+          <input
+            type="text"
+            disabled
+            value={userData.linkedinUrl || "....."}
+            onChange={(e) => setUserData({ ...userData, linkedinUrl: e.target.value })}
+            className="mt-2 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Github
+          </label>
+          <input
+            type="text"
+            disabled
+            value={userData.githubUrl || "....."}
+            onChange={(e) => setUserData({ ...userData, githubUrl: e.target.value })}
+            className="mt-2 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Twitter</label>
+          <input
+            type="text"
+            disabled
+            value={userData.twitterUrl || "....."}
+            onChange={(e) => setUserData({ ...userData, twitterUrl: e.target.value })}
+            className="mt-2 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
 
-        {/* Ek Seçenekler */}
         <div className="flex flex-col space-y-4">
           <label className="inline-flex items-center cursor-pointer">
             <input
