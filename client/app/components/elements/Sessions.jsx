@@ -11,8 +11,8 @@ export default function Session({ userId }) {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showModal, setShowModal] = useState(false); // Modal'ın gösterim durumu için state
-  const [selectedSessionId, setSelectedSessionId] = useState(null); // Seçilen oturumun ID'si
+  const [showModal, setShowModal] = useState(false);
+  const [selectedSessionId, setSelectedSessionId] = useState(null);
 
   useEffect(() => {
     const fetchSessions = async () => {
@@ -57,7 +57,7 @@ export default function Session({ userId }) {
     } catch (error) {
       setError(error.message || "An error occurred while ending the session.");
     } finally {
-      setShowModal(false); // Modal'ı kapat
+      setShowModal(false);
     }
   };
 
@@ -101,7 +101,6 @@ export default function Session({ userId }) {
           ))}
       </div>
 
-      {/* Modal Bileşeni */}
       <ConfirmationModal
         show={showModal}
         onClose={() => setShowModal(false)}

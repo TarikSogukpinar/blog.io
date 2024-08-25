@@ -48,8 +48,20 @@ export class UnauthorizedAccessException extends HttpException {
   }
 }
 
+export class InvalidUUIDException extends HttpException {
+  constructor() {
+    super('Invalid UUID', HttpStatus.BAD_REQUEST);
+  }
+}
+
 export class UUIDCannotBeNotEmptyException extends HttpException {
   constructor() {
     super('UUID cannot be not empty found', HttpStatus.NOT_FOUND);
+  }
+}
+
+export class AccountIsAlreadyDeactivatedException extends HttpException {
+  constructor() {
+    super('Account is already deactivated', HttpStatus.CONFLICT);
   }
 }

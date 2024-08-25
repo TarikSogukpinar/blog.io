@@ -1,4 +1,4 @@
-import { IsUUID, IsEmail, IsString } from 'class-validator';
+import { IsUUID, IsEmail, IsString, IsBoolean } from 'class-validator';
 
 export class GetUserUUIDResponseDto {
   @IsUUID()
@@ -18,4 +18,10 @@ export class GetUserUUIDResponseDto {
 
   @IsString()
   imageUrl: string;
+
+  @IsString()
+  accountType: string;
+
+  @IsBoolean()
+  isActiveAccount: boolean;
 }

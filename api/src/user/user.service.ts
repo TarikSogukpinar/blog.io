@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -11,6 +12,11 @@ import { HashingService } from 'src/utils/hashing/hashing.service';
 import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import { UuidService } from 'src/utils/uuid/uuid.service';
 import { GetUserUUIDResponseDto } from './dto/getUserUuidResponse.dto';
+import {
+  AccountIsAlreadyDeactivatedException,
+  UserNotFoundException,
+} from 'src/core/handler/exceptions/custom-expection';
+import { UpdateUserAccountStatusResponseDto } from './dto/updateUserAccountStatusResponse.dto';
 
 @Injectable()
 export class UsersService {
@@ -74,19 +80,21 @@ export class UsersService {
     });
   }
 
-  async getUserByUuid(id: string): Promise<GetUserUUIDResponseDto> {
-    if (!(await this.uuidService.validateUuid(id))) {
+  async getUserByUuid(uuid: string): Promise<GetUserUUIDResponseDto> {
+    if (!(await this.uuidService.validateUuid(uuid))) {
       throw new BadRequestException(ErrorCodes.InvalidUuid);
     }
 
     const user = await this.prismaService.user.findUnique({
-      where: { uuid: id },
+      where: { uuid: uuid },
       select: {
         uuid: true,
         email: true,
         role: true,
         name: true,
         bio: true,
+        accountType: true,
+        isActiveAccount: true,
         ProfileImage: {
           select: {
             imageUrl: true,
@@ -106,6 +114,8 @@ export class UsersService {
       role: user.role,
       bio: user.bio,
       imageUrl: user.ProfileImage?.[0]?.imageUrl || null,
+      accountType: user.accountType,
+      isActiveAccount: user.isActiveAccount,
     };
   }
 
@@ -203,5 +213,36 @@ export class UsersService {
       where: { id: user.id },
       data: { image: imagePath },
     });
+  }
+
+  async updateUserAccountStatus(
+    userUuid: string,
+    isActive: boolean,
+  ): Promise<UpdateUserAccountStatusResponseDto> {
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: { uuid: userUuid },
+        select: {
+          isActiveAccount: true,
+        },
+      });
+
+      if (!user) throw new UserNotFoundException();
+
+      if (user.isActiveAccount === isActive)
+        throw new AccountIsAlreadyDeactivatedException();
+
+      const result = await this.prismaService.user.update({
+        where: { uuid: userUuid },
+        data: { isActiveAccount: isActive },
+      });
+
+      return { isActiveAccount: result.isActiveAccount };
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(
+        'An error occurred, please try again later',
+      );
+    }
   }
 }

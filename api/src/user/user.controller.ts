@@ -15,6 +15,7 @@ import {
   Post,
   UseInterceptors,
   UploadedFile,
+  Patch,
 } from '@nestjs/common';
 import { UsersService } from './user.service';
 import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
@@ -28,6 +29,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from 'src/utils/upload/upload.service';
 import { MailService } from 'src/core/mail/mail.service';
 import { PasswordResetService } from 'src/core/password-reset/password-reset.service';
+import { InvalidUUIDException } from 'src/core/handler/exceptions/custom-expection';
 
 @Controller({ path: 'user', version: '1' })
 @ApiTags('Users')
@@ -52,13 +54,13 @@ export class UsersController {
       throw new NotFoundException(ErrorCodes.InvalidCredentials);
     }
 
-    const user = await this.usersService.getUserByUuid(userUuid);
+    const result = await this.usersService.getUserByUuid(userUuid);
 
-    if (!user) {
+    if (!result) {
       throw new NotFoundException(ErrorCodes.UserNotFound);
     }
 
-    return user;
+    return { message: 'User Information retrieved successfully', result };
   }
 
   @Get(':id')
@@ -158,5 +160,27 @@ export class UsersController {
     @Body('newPassword') newPassword: string,
   ): Promise<void> {
     await this.usersService.resetPassword(token, newPassword);
+  }
+
+  @Patch('deactivate-account')
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'Account deactivated successfully' })
+  @ApiOperation({ summary: 'Deactivate account' })
+  @UsePipes(new ValidationPipe())
+  @HttpCode(HttpStatus.OK)
+  async deactivateAccount(@Req() req: CustomRequest) {
+    const userUuid = req.user?.uuid;
+
+    if (!userUuid) throw new InvalidUUIDException();
+
+    const result = await this.usersService.updateUserAccountStatus(
+      userUuid,
+      false,
+    );
+
+    return {
+      message: 'Account deactivated successfully',
+      result,
+    };
   }
 }

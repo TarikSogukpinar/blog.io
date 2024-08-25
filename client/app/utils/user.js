@@ -30,6 +30,33 @@ export const getUserInformation = async () => {
   }
 };
 
+export const deactivateAccount = async () => {
+  try {
+    const token = Cookies.get("JWT");
+
+    const response = await axios.patch(
+      "http://localhost:5000/api/v1/user/deactivate-account",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to deactivate account.");
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error deactivating account:", error);
+    return {
+      error: error.message || "An error occurred while fetching sessions.",
+    };
+  }
+};
+
 export const getUserSessions = async () => {
   try {
     const token = Cookies.get("JWT");
