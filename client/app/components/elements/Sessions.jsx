@@ -5,11 +5,14 @@ import { VscVmActive } from "react-icons/vsc";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { getUserSessions } from "@/app/utils/user";
+import ConfirmationModal from "./ConformationModal";
 
 export default function Session({ userId }) {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false); // Modal'ın gösterim durumu için state
+  const [selectedSessionId, setSelectedSessionId] = useState(null); // Seçilen oturumun ID'si
 
   useEffect(() => {
     const fetchSessions = async () => {
@@ -21,10 +24,10 @@ export default function Session({ userId }) {
         } else if (data.error) {
           setError(data.error);
         } else {
-          setError("Beklenmeyen veri formatı alındı.");
+          setError("Unexpected data format received.");
         }
       } catch (err) {
-        setError("Oturumları alırken bir hata oluştu.");
+        setError("An error occurred while retrieving sessions.");
       } finally {
         setLoading(false);
       }
@@ -33,15 +36,10 @@ export default function Session({ userId }) {
     fetchSessions();
   }, [userId]);
 
-  const handleTerminateSession = async (sessionId) => {
-    const confirmation = confirm(
-      "Bu oturumu sonlandırmak istediğinizden emin misiniz?"
-    );
-    if (!confirmation) return;
-
+  const handleTerminateSession = async () => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/v1/sessions/${sessionId}`,
+        `http://localhost:5000/api/v1/sessions/${selectedSessionId}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("JWT")}`,
@@ -50,13 +48,22 @@ export default function Session({ userId }) {
       );
 
       if (response.status === 200) {
-        setSessions(sessions.filter((session) => session.id !== sessionId));
+        setSessions(
+          sessions.filter((session) => session.id !== selectedSessionId)
+        );
       } else {
-        setError("Oturum sonlandırılamadı.");
+        setError("The session could not be terminated.");
       }
     } catch (error) {
-      setError(error.message || "Oturumu sonlandırırken bir hata oluştu.");
+      setError(error.message || "An error occurred while ending the session.");
+    } finally {
+      setShowModal(false); // Modal'ı kapat
     }
+  };
+
+  const openModal = (sessionId) => {
+    setSelectedSessionId(sessionId);
+    setShowModal(true);
   };
 
   if (loading) return <LoadingSpinner />;
@@ -85,7 +92,7 @@ export default function Session({ userId }) {
                 </p>
               </div>
               <button
-                onClick={() => handleTerminateSession(session.id)}
+                onClick={() => openModal(session.id)}
                 className="ml-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
               >
                 Terminate
@@ -93,6 +100,13 @@ export default function Session({ userId }) {
             </div>
           ))}
       </div>
+
+      {/* Modal Bileşeni */}
+      <ConfirmationModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={handleTerminateSession}
+      />
     </div>
   );
 }

@@ -12,4 +12,10 @@ export class GetUserUUIDResponseDto {
 
   @IsString()
   role: string;
+
+  @IsString()
+  bio: string;
+
+  @IsString()
+  imageUrl: string;
 }

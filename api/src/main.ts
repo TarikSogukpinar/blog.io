@@ -26,7 +26,13 @@ async function bootstrap() {
   app.enableVersioning({
     type: VersioningType.URI,
   });
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
+      crossOriginEmbedderPolicy: false,
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+    }),
+  );
   app.use(hpp());
   app.use(compression());
   app.use(cookieParser());
@@ -45,6 +51,7 @@ async function bootstrap() {
       configService.get<string>('CORS_ORIGIN', { infer: true }),
       configService.get<string>('CORS_ORIGIN_LOCAL', { infer: true }),
     ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
 

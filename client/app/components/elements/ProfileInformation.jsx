@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import LoadingSpinner from "./LoadingSpinner";
-import { getUserInformation } from "@/app/utils/user";
+import { getUserInformation, uploadUserProfileImage } from "@/app/utils/user";
 
 export default function ProfileInformation() {
   const [userData, setUserData] = useState({
@@ -8,6 +8,8 @@ export default function ProfileInformation() {
     lastName: "",
     email: "",
     role: "",
+    bio: "",
+    imageUrl: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -15,18 +17,25 @@ export default function ProfileInformation() {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const data = await getUserInformation();
-      if (data.error) {
-        setError(data.error);
-      } else {
-        setUserData({
-          firstName: data.name.split(" ")[0] || "",
-          lastName: data.name.split(" ")[1] || "",
-          email: data.email,
-          role: data.role,
-        });
+      try {
+        const data = await getUserInformation();
+        if (data.error) {
+          setError(data.error);
+        } else {
+          setUserData({
+            firstName: data.name.split(" ")[0] || "",
+            lastName: data.name.split(" ")[1] || "",
+            email: data.email,
+            role: data.role,
+            bio: data.bio || "",
+            imageUrl: data.imageUrl || "https://via.placeholder.com/150",
+          });
+        }
+      } catch (err) {
+        setError("An error occurred while fetching user data.");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchUserData();
@@ -43,23 +52,50 @@ export default function ProfileInformation() {
     console.log("Deleting account...");
   };
 
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await uploadUserProfileImage(formData);
+        setUserData({ ...userData, imageUrl: response.imageUrl });
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        setError("An error occurred while uploading the image.");
+      }
+    }
+  };
+
+  const baseURL = "http://localhost:5000"; // Base URL
+  const fullImageUrl = `${baseURL}${userData.imageUrl}`;
+
   return (
     <div className="space-y-6 max-w-3xl mx-auto p-6">
       <div className="text-center">
-        <img
-          className="w-24 h-24 object-cover rounded-full border-4 border-white shadow-lg mx-auto"
-          src="https://via.placeholder.com/150"
-          alt="Profile"
-        />
+        <label htmlFor="file-upload">
+          <img
+            className="w-24 h-24 object-cover rounded-full border-4 border-white shadow-lg mx-auto cursor-pointer"
+            src={fullImageUrl}
+            alt="Profile"
+          />
+          <input
+            id="file-upload"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageUpload}
+          />
+        </label>
         <h2 className="text-3xl font-semibold text-gray-900 mt-4">{`${userData.firstName} ${userData.lastName}`}</h2>
-        <p className="text-lg text-gray-600 mt-2">{userData.role}</p>
       </div>
 
       <form className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              First Name
+              Name
             </label>
             <input
               type="text"
@@ -94,6 +130,17 @@ export default function ProfileInformation() {
             onChange={(e) =>
               setUserData({ ...userData, email: e.target.value })
             }
+            className="mt-2 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Biography
+          </label>
+          <input
+            type="bio"
+            value={userData.bio}
+            onChange={(e) => setUserData({ ...userData, bio: e.target.value })}
             className="mt-2 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
         </div>

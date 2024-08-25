@@ -86,6 +86,12 @@ export class UsersService {
         email: true,
         role: true,
         name: true,
+        bio: true,
+        ProfileImage: {
+          select: {
+            imageUrl: true,
+          },
+        },
       },
     });
 
@@ -98,6 +104,8 @@ export class UsersService {
       name: user.name,
       email: user.email,
       role: user.role,
+      bio: user.bio,
+      imageUrl: user.ProfileImage?.[0]?.imageUrl || null,
     };
   }
 

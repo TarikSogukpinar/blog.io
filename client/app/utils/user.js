@@ -9,15 +9,12 @@ export const getUserInformation = async () => {
       throw new Error("No token found");
     }
 
-    const response = await axios.get(
-      `https://blog.tariksogukpinar.dev/api/v1/user/me`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      }
-    );
+    const response = await axios.get(`http://localhost:5000/api/v1/user/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    });
 
     return response.data;
   } catch (error) {
@@ -86,3 +83,18 @@ export const changePassword = async (userId, currentPassword, newPassword) => {
     };
   }
 };
+
+export async function uploadUserProfileImage(formData) {
+  const token = Cookies.get("JWT");
+  const response = await axios.post(
+    "http://localhost:5000/api/v1/user/upload-avatar",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+}
