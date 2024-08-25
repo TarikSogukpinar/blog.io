@@ -24,11 +24,30 @@ export default function NavbarPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const [profileImageUrl, setProfileImageUrl] = useState("");
   const isLoginPage = pathname.includes("/login");
 
   useEffect(() => {
     const token = Cookies.get("JWT");
     setIsAuthenticated(!!token);
+
+    if (token) {
+      const fetchProfileImage = async () => {
+        try {
+          const response = await fetch("http://localhost:5000/api/v1/user/me", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          const data = await response.json();
+          setProfileImageUrl(data.result.imageUrl);
+        } catch (error) {
+          console.error("Error fetching profile image:", error);
+        }
+      };
+
+      fetchProfileImage();
+    }
   }, []);
 
   const handleLogout = async () => {
@@ -46,13 +65,15 @@ export default function NavbarPage() {
 
   const homeHref = isAuthenticated ? `${localePath}home` : "/";
 
+  const baseURL = "http://localhost:5000"; // Base URL
+  const fullImageUrl = `${baseURL}${profileImageUrl}`;
+
   return (
     <Disclosure as="nav" className="bg-gray-950 fixed top-0 left-0 w-full z-50">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
             <div className="relative flex h-16 items-center justify-between">
-              {/* Sol taraf logo ve arama */}
               <div className="flex items-center h-16">
                 <img className="w-16 h-auto" src="/icon.png" alt="Blog" />
                 <Link
@@ -79,7 +100,7 @@ export default function NavbarPage() {
                   </button>
                 </div>
               </div>
-              {/* Sağ taraf menü öğeleri */}
+
               <div className="flex-1 flex justify-end lg:justify-end">
                 <div className="hidden lg:flex lg:space-x-4">
                   <a
@@ -97,7 +118,7 @@ export default function NavbarPage() {
                         <span className="sr-only">Open user menu</span>
                         <img
                           className="h-8 w-8 rounded-full"
-                          src="https://static.vecteezy.com/system/resources/thumbnails/002/387/693/small_2x/user-profile-icon-free-vector.jpg"
+                          src={fullImageUrl}
                           alt="Profile"
                         />
                       </button>
@@ -188,7 +209,10 @@ export default function NavbarPage() {
                     <div className="flex-shrink-0">
                       <img
                         className="h-10 w-10 rounded-full"
-                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&q=80"
+                        src={
+                          profileImageUrl ||
+                          "https://static.vecteezy.com/system/resources/thumbnails/002/387/693/small_2x/user-profile-icon-free-vector.jpg"
+                        }
                         alt="Profile"
                       />
                     </div>

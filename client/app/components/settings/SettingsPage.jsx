@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import ProfileInformation from "../elements/ProfileInformation";
 import ChangePassword from "../elements/ChangePassword";
 import Session from "../elements/Sessions";
-import Notification from "../elements/Notification";
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");
@@ -13,7 +12,6 @@ export default function SettingsPage() {
       <div className="bg-white rounded-lg p-6">
         <h2 className="text-3xl font-semibold text-gray-800 mb-4">Settings</h2>
 
-        {/* Tabs */}
 
         <div className="mb-6 border-b ">
           <div
@@ -33,7 +31,6 @@ export default function SettingsPage() {
             <span className="sr-only">Info</span>
             <div className="ms-3 text-md font-medium text-gray-950 ">
               This dashboard still under development{" "}
-              
             </div>
           </div>
 
@@ -68,7 +65,7 @@ export default function SettingsPage() {
             >
               Sessions
             </button>
-            <button
+            {/* <button
               onClick={() => setActiveTab("notifications")}
               className={`text-gray-500 py-2 px-1 border-b-2 font-medium text-sm ${
                 activeTab === "notifications"
@@ -77,7 +74,7 @@ export default function SettingsPage() {
               }`}
             >
               Notifications Settings
-            </button>
+            </button> */}
           </nav>
         </div>
 
@@ -86,7 +83,7 @@ export default function SettingsPage() {
           {activeTab === "profile" && <ProfileInformation />}
           {activeTab === "password" && <ChangePassword />}
           {activeTab === "sessions" && <Session />}
-          {activeTab === "notifications" && <Notification />}
+          {/* {activeTab === "notifications" && <Notification />} */}
         </div>
       </div>
     </div>
