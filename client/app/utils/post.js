@@ -3,7 +3,7 @@ import axios from "axios";
 export const fetchPost = async (token, page = 1, pageSize = 10) => {
   try {
     const response = await axios.get(
-      `http://localhost:5000/api/v1/blog/posts?page=${page}&pageSize=${pageSize}`,
+      `https://blog.tariksogukpinar.dev/api/v1/blog/posts?page=${page}&pageSize=${pageSize}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

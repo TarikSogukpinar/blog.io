@@ -9,7 +9,7 @@ export const getUserInformation = async () => {
       throw new Error("No token found");
     }
 
-    const response = await axios.get(`http://localhost:5000/api/v1/user/me`, {
+    const response = await axios.get(`https://blog.tariksogukpinar.dev/api/v1/user/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -35,7 +35,7 @@ export const deactivateAccount = async () => {
     const token = Cookies.get("JWT");
 
     const response = await axios.patch(
-      "http://localhost:5000/api/v1/user/deactivate-account",
+      `https://blog.tariksogukpinar.dev/api/v1/user/deactivate-account`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -65,7 +65,7 @@ export const getUserSessions = async () => {
       throw new Error("No token found");
     }
 
-    const response = await axios.get(`http://localhost:5000/api/v1/sessions`, {
+    const response = await axios.get(`https://blog.tariksogukpinar.dev/api/v1/sessions`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -88,7 +88,7 @@ export const changePassword = async (userId, currentPassword, newPassword) => {
     }
 
     const response = await axios.put(
-      `http://localhost:5000/api/v1/user/${userId}/password`,
+      `https://blog.tariksogukpinar.dev/api/v1/user/${userId}/password`,
       {
         currentPassword,
         newPassword,
@@ -114,7 +114,7 @@ export const changePassword = async (userId, currentPassword, newPassword) => {
 export async function uploadUserProfileImage(formData) {
   const token = Cookies.get("JWT");
   const response = await axios.post(
-    "http://localhost:5000/api/v1/user/upload-avatar",
+    "https://blog.tariksogukpinar.dev/api/v1/user/upload-avatar",
     formData,
     {
       headers: {

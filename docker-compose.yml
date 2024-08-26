@@ -12,6 +12,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./api:/usr/src/app
+      - ./api/uploads:/usr/src/app/uploads
     depends_on:
       - mysql
     command: /bin/sh

@@ -5,7 +5,7 @@ import { VscVmActive } from "react-icons/vsc";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { getUserSessions } from "@/app/utils/user";
-import ConfirmationModal from "./ConformationModal";
+import ConfirmationModal from "./ConfirmationModal";
 
 export default function Session({ userId }) {
   const [sessions, setSessions] = useState([]);
@@ -39,7 +39,7 @@ export default function Session({ userId }) {
   const handleTerminateSession = async () => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/v1/sessions/${selectedSessionId}`,
+        `https://blog.tariksogukpinar.dev/api/v1/sessions/${selectedSessionId}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("JWT")}`,

@@ -11,14 +11,14 @@ RUN npm install -g pnpm \
 # Copy the package files
 COPY package*.json ./
 
-
-
 # Install dependencies using pnpm
 RUN pnpm install
 
 # Copy the rest of the application code
 COPY . .
 
+# Uploads klasörünü kopyala
+COPY uploads ./uploads
 
 # Ensure CLI dependencies are installed (if needed)
 RUN pnpm add @nestjs/cli

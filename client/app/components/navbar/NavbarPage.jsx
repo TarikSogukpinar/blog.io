@@ -34,7 +34,7 @@ export default function NavbarPage() {
     if (token) {
       const fetchProfileImage = async () => {
         try {
-          const response = await fetch("http://localhost:5000/api/v1/user/me", {
+          const response = await fetch("https://blog.tariksogukpinar.dev/api/v1/user/me", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -65,7 +65,7 @@ export default function NavbarPage() {
 
   const homeHref = isAuthenticated ? `${localePath}home` : "/";
 
-  const baseURL = "http://localhost:5000"; // Base URL
+  const baseURL = "https://blog.tariksogukpinar.dev/api"; // Base URL
   const fullImageUrl = `${baseURL}${profileImageUrl}`;
 
   return (

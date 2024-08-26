@@ -87,8 +87,11 @@ export default function ProfileInformation() {
     }
   };
 
-  const baseURL = "http://localhost:5000"; // Base URL
-  const fullImageUrl = `${baseURL}${userData.imageUrl}`;
+  const baseURL = "https://blog.tariksogukpinar.dev/api"; // Base URL
+  const placeholderImage = "https://via.placeholder.com/150";
+  const fullImageUrl = userData.imageUrl
+    ? `${baseURL}${userData.imageUrl}`
+    : placeholderImage;
 
   return (
     <div className="space-y-6 max-w-3xl mx-auto p-6">
@@ -142,20 +145,7 @@ export default function ProfileInformation() {
             />
           </div>
         </div>
-        {/* <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Email
-          </label>
-          <input
-            type="email"
-            disabled
-            value={userData.email}
-            onChange={(e) =>
-              setUserData({ ...userData, email: e.target.value })
-            }
-            className="mt-2 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div> */}
+
         <div>
           <label className="block text-sm font-medium text-gray-700">Bio</label>
           <input
