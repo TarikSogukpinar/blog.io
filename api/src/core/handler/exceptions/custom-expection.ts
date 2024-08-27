@@ -65,3 +65,4 @@ export class AccountIsAlreadyDeactivatedException extends HttpException {
     super('Account is already deactivated', HttpStatus.CONFLICT);
   }
 }
+

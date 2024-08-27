@@ -16,6 +16,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Patch,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './user.service';
 import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
@@ -30,6 +31,7 @@ import { UploadService } from 'src/utils/upload/upload.service';
 import { MailService } from 'src/core/mail/mail.service';
 import { PasswordResetService } from 'src/core/password-reset/password-reset.service';
 import { InvalidUUIDException } from 'src/core/handler/exceptions/custom-expection';
+import { GetAllUsersPaginationDto } from './dto/getAllUsersPagination.dto';
 
 @Controller({ path: 'user', version: '1' })
 @ApiTags('Users')
@@ -40,6 +42,18 @@ export class UsersController {
     private readonly mailService: MailService,
     private readonly passwordResetService: PasswordResetService,
   ) {}
+
+  @Get('users')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({ status: 200, description: 'Users retrieved successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @HttpCode(HttpStatus.OK)
+  async getAllUsers(@Query() paginationParams: GetAllUsersPaginationDto) {
+    const result = await this.usersService.getAllUsers(paginationParams);
+
+    return { message: 'Users retrieved successfully', result };
+  }
 
   @Get('me')
   @UseGuards(JwtAuthGuard)

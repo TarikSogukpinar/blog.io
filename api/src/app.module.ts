@@ -56,8 +56,8 @@ import { CategoryModule } from './category/category.module';
       useFactory: (configService: ConfigService) => ({
         type: 'single',
         url: configService.get<string>('REDIS_HOST'),
-        keepAlive: 1000,
-        socketTimeout: 1000,
+        keepAlive: 5000,
+        socketTimeout: 5000,
         lazyConnect: true,
       }),
       inject: [ConfigService],

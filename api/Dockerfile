@@ -26,6 +26,9 @@ RUN pnpm add @nestjs/cli
 # Generate Prisma client
 RUN pnpm exec prisma generate
 
+# Install Artillery globally
+RUN npm install -g artillery
+
 # TypeScript derleme
 RUN pnpm run build
 

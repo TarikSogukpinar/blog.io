@@ -23,7 +23,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migrate:postgres": "npx prisma migrate dev --name init",
-    "seed": "node prisma/seed.js"
+    "seed": "ts-node -r tsconfig-paths/register seeder.ts"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.14.0",

@@ -17,6 +17,10 @@ import {
   UserNotFoundException,
 } from 'src/core/handler/exceptions/custom-expection';
 import { UpdateUserAccountStatusResponseDto } from './dto/updateUserAccountStatusResponse.dto';
+import { GetAllUsersResponseDto } from './dto/getAllUsers.dto';
+import { InjectRedis } from '@nestjs-modules/ioredis';
+import Redis from 'ioredis';
+import { GetAllUsersPaginationDto } from './dto/getAllUsersPagination.dto';
 
 @Injectable()
 export class UsersService {
@@ -24,7 +28,75 @@ export class UsersService {
     private readonly prismaService: PrismaService,
     private readonly hashingService: HashingService,
     private readonly uuidService: UuidService,
+    @InjectRedis() private readonly redisService: Redis,
   ) {}
+
+  async getAllUsers(
+    paginationParams: GetAllUsersPaginationDto,
+  ): Promise<GetAllUsersResponseDto> {
+    const { page, limit } = paginationParams;
+    const offset = (page - 1) * limit;
+    const cacheKey = `all_users_page_${page}_limit_${limit}`;
+
+    const cachedUsers = await this.redisService.get(cacheKey);
+
+    if (cachedUsers) return JSON.parse(cachedUsers);
+
+    const [users, totalUsers] = await Promise.all([
+      this.prismaService.user.findMany({
+        skip: offset,
+        take: limit,
+        select: {
+          uuid: true,
+          email: true,
+          role: true,
+          name: true,
+          bio: true,
+          githubUrl: true,
+          twitterUrl: true,
+          linkedinUrl: true,
+          accountType: true,
+          isActiveAccount: true,
+          ProfileImage: {
+            select: {
+              imageUrl: true,
+            },
+          },
+        },
+      }),
+      this.prismaService.user.count(),
+    ]);
+
+    if (users.length === 0) throw new UserNotFoundException();
+
+    const result = users.map((user) => ({
+      uuid: user.uuid,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      bio: user.bio,
+      imageUrl: user.ProfileImage?.[0]?.imageUrl || null,
+      accountType: user.accountType,
+      isActiveAccount: user.isActiveAccount,
+      githubUrl: user.githubUrl,
+      twitterUrl: user.twitterUrl,
+      linkedinUrl: user.linkedinUrl,
+    }));
+
+    const totalPages = Math.ceil(totalUsers / limit);
+
+    //refactor this response
+    const response: any = {
+      users: result,
+      totalPages,
+      currentPage: page,
+      totalUsers,
+    };
+
+    await this.redisService.set(cacheKey, JSON.stringify(response), 'EX', 3600);
+
+    return response;
+  }
 
   async findUserByEmail(email: string): Promise<User | null> {
     return this.prismaService.user.findUnique({

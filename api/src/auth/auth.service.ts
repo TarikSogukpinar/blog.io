@@ -28,7 +28,7 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly jwtService: JwtService,
     private readonly sessionsService: SessionsService,
-    @InjectRedis() private readonly redis: Redis,
+    @InjectRedis() private readonly redisService: Redis,
   ) {}
 
   async registerUserService(
@@ -54,7 +54,6 @@ export class AuthService {
         },
       });
 
-      await this.redis.set(user.uuid, user.email);
 
       return { uuid: user.uuid, email: user.email, role: user.role };
     } catch (error) {
