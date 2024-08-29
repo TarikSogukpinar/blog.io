@@ -28,14 +28,6 @@ services:
       - /usr/src/app/node_modules
     depends_on:
       - api
-  redis:
-    image: redis:alpine
-    container_name: blogio-redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis-data:/data
-    restart: unless-stopped
 
 volumes:
   mysql-data:
