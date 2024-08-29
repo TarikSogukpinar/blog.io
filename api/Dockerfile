@@ -23,17 +23,18 @@ COPY uploads ./uploads
 # Ensure CLI dependencies are installed (if needed)
 RUN pnpm add @nestjs/cli
 
-# Generate Prisma client
-RUN pnpm exec prisma generate
-
 # Install Artillery globally
 RUN npm install -g artillery
 
 # TypeScript derleme
 RUN pnpm run build
 
+RUN ls -la dist
+
+RUN pnpm exec prisma generate
+
 ENV NODE_ENV=production
 
 # Expose port and define command to run the app
 EXPOSE 5000
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/src/main.js"]

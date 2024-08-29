@@ -51,17 +51,7 @@ import { CategoryModule } from './category/category.module';
     UsersModule,
     SessionsModule,
     CategoryModule,
-    RedisModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'single',
-        url: configService.get<string>('REDIS_HOST'),
-        keepAlive: 5000,
-        socketTimeout: 5000,
-        lazyConnect: true,
-      }),
-      inject: [ConfigService],
-    }),
+    RedisModule,
   ],
   controllers: [],
   providers: [],

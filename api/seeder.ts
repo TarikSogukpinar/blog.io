@@ -3,7 +3,7 @@ import { AppModule } from 'src/app.module';
 import { PrismaService } from 'src/database/database.service';
 import { faker } from '@faker-js/faker';
 
-async function bootstrapSeeder() {
+async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
   const prismaService = app.get(PrismaService);
 
@@ -44,4 +44,4 @@ async function bootstrapSeeder() {
   await app.close();
 }
 
-bootstrapSeeder();
+bootstrap();

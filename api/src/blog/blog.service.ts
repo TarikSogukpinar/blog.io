@@ -12,8 +12,6 @@ import {
   UUIDCannotBeNotEmptyException,
 } from 'src/core/handler/exceptions/custom-expection';
 import { UuidService } from 'src/utils/uuid/uuid.service';
-import { InjectRedis } from '@nestjs-modules/ioredis';
-import Redis from 'ioredis';
 import { CreatePostResponseDto } from './dto/createPostResponse.dto';
 import { UpdatePostResponseDto } from './dto/updatePostResponse.dto';
 import { DeletePostResponseDto } from './dto/deletePostResponse.dto';
@@ -27,7 +25,6 @@ export class BlogService {
     private readonly prismaService: PrismaService,
     private readonly encryptionService: EncryptionService,
     private readonly uuidService: UuidService,
-    @InjectRedis() private readonly redis: Redis,
   ) {}
 
   private async generateSlug(title: string): Promise<string> {

@@ -12,6 +12,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { HttpModule } from '@nestjs/axios';
 import { SessionsModule } from 'src/sessions/sessions.module';
+import { RedisModule } from 'src/core/cache/cache.module';
+import { RedisService } from 'src/core/cache/cache.service';
 
 @Module({
   imports: [
@@ -28,6 +30,7 @@ import { SessionsModule } from 'src/sessions/sessions.module';
       maxRedirects: 100,
     }),
     SessionsModule,
+    RedisModule,
   ],
   controllers: [AuthController],
   providers: [

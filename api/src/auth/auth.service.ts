@@ -17,8 +17,6 @@ import {
   UserAlreadyExistsException,
   UserNotFoundException,
 } from 'src/core/handler/exceptions/custom-expection';
-import { InjectRedis } from '@nestjs-modules/ioredis';
-import Redis from 'ioredis';
 
 @Injectable()
 export class AuthService {
@@ -28,7 +26,6 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly jwtService: JwtService,
     private readonly sessionsService: SessionsService,
-    @InjectRedis() private readonly redisService: Redis,
   ) {}
 
   async registerUserService(

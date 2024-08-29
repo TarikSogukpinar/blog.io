@@ -21,6 +21,7 @@ import { GetAllUsersResponseDto } from './dto/getAllUsers.dto';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
 import { GetAllUsersPaginationDto } from './dto/getAllUsersPagination.dto';
+import { RedisService } from 'src/core/cache/cache.service';
 
 @Injectable()
 export class UsersService {
@@ -28,7 +29,7 @@ export class UsersService {
     private readonly prismaService: PrismaService,
     private readonly hashingService: HashingService,
     private readonly uuidService: UuidService,
-    @InjectRedis() private readonly redisService: Redis,
+    private readonly redisService: RedisService,
   ) {}
 
   async getAllUsers(
@@ -39,7 +40,7 @@ export class UsersService {
       const offset = (page - 1) * limit;
       const cacheKey = `all_users_page_${page}_limit_${limit}`;
 
-      const cachedUsers = await this.redisService.get(cacheKey);
+      const cachedUsers = await this.redisService.getValue(cacheKey);
 
       if (cachedUsers) return JSON.parse(cachedUsers);
 
@@ -94,12 +95,7 @@ export class UsersService {
         totalUsers,
       };
 
-      await this.redisService.set(
-        cacheKey,
-        JSON.stringify(response),
-        'EX',
-        3600,
-      );
+      await this.redisService.setValue(cacheKey, JSON.stringify(response), 3600);
 
       return response;
     } catch (error) {
