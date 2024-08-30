@@ -89,12 +89,13 @@ export class AuthService {
         data: { accessToken: accessToken },
       });
 
-      await this.sessionsService.createSession(
-        user.id,
-        user.uuid,
-        accessToken,
-        req,
-      );
+      // await this.sessionsService.createSession(
+      //   user.id,
+      //   user.uuid,
+      //   accessToken,
+      //   req,
+      // );
+
       return {
         accessToken,
         refreshToken,

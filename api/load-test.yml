@@ -2,17 +2,45 @@ config:
   target: http://localhost:5000
   processor: './load-test.js'
   phases:
-    - arrivalCount: 100
-      duration: 60
+    - arrivalCount: 200
+      duration: 120
 
 before:
   flow:
     - function: 'generateSharedToken'
+    - function: 'generateVUToken'
+    - function: 'generatePostData'
 
 scenarios:
   - flow:
       - function: 'generateVUToken'
+      - function: 'generateSharedToken'
+      - function: 'generatePostData'
+
       - get:
           headers:
-            Authorization: '{{ sharedToken }}'
+            Authorization: 'Bearer {{ sharedToken }}'
           url: '/api/v1/user/users?page=1&limit=300'
+      - post:
+          headers:
+            Content-Type: 'application/json'
+          url: '/api/v1/auth/login'
+          json:
+            email: 'johndoe@gmail.com'
+            password: '123456'
+      - post:
+          headers:
+            Authorization: 'Bearer {{ sharedToken }}'
+            Content-Type: 'application/json'
+          url: '/api/v1/blog/create-post'
+          json:
+            title: '{{ title }}'
+            content: '{{ content }}'
+            slug: '{{ slug }}'
+            categoryId: '{{ categoryId }}'
+            tagIds: '{{ tagIds }}'
+            encrypted: '{{ encrypted }}'
+      - get:
+          headers:
+            Authorization: 'Bearer {{ sharedToken }}'
+          url: '/api/v1/blog/posts'

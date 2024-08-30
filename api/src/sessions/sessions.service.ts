@@ -8,8 +8,8 @@ import { ErrorCodes } from 'src/core/handler/error/error-codes';
 import * as requestIp from 'request-ip';
 import { Request } from 'express';
 import { HttpService } from '@nestjs/axios';
-import { GetUserSessionDto } from './dto/getSession.dto';
-import { Session } from 'inspector';
+import { lastValueFrom } from 'rxjs';
+import { timeout, catchError, retry } from 'rxjs/operators';
 
 @Injectable()
 export class SessionsService {
@@ -69,6 +69,14 @@ export class SessionsService {
       return createSession;
     } catch (error) {
       console.log(error);
+      console.error('Error in createSession:', error.message, {
+        userId,
+        userUuid,
+        token,
+        ip: requestIp.getClientIp(req),
+        userAgent: req.headers['user-agent'],
+      });
+
       throw new InternalServerErrorException(
         'An error occurred, please try again later',
       );
@@ -130,8 +138,17 @@ export class SessionsService {
 
   private async getLocationData(ipAddress: string): Promise<any> {
     try {
-      const response = await this.httpService.axiosRef.get(
-        `https://ipapi.co/${ipAddress}/json/`,
+      const response = await lastValueFrom(
+        this.httpService.get(`https://ipapi.co/${ipAddress}/json/`).pipe(
+          timeout(5000),
+          retry(2),
+          catchError((error) => {
+            console.error('Failed to fetch location data:', error.message);
+            throw new InternalServerErrorException(
+              'Failed to fetch location data',
+            );
+          }),
+        ),
       );
       return {
         city: response.data.city,
@@ -139,6 +156,11 @@ export class SessionsService {
         country: response.data.country_name,
       };
     } catch (error) {
+      console.error(
+        `Error fetching location data for IP ${ipAddress}:`,
+        error.message,
+        error.response?.data,
+      );
       console.error('Error fetching location data:', error);
       throw new InternalServerErrorException(
         'An error occurred, please try again later',
