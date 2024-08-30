@@ -17,9 +17,7 @@ import {
   UserNotFoundException,
 } from 'src/core/handler/exceptions/custom-expection';
 import { UpdateUserAccountStatusResponseDto } from './dto/updateUserAccountStatusResponse.dto';
-import { GetAllUsersResponseDto } from './dto/getAllUsers.dto';
-import { InjectRedis } from '@nestjs-modules/ioredis';
-import Redis from 'ioredis';
+import { GetAllUsersResponseDto } from './dto/getAllUsersResponse.dto';
 import { GetAllUsersPaginationDto } from './dto/getAllUsersPagination.dto';
 import { RedisService } from 'src/core/cache/cache.service';
 
@@ -71,31 +69,22 @@ export class UsersService {
 
       if (users.length === 0) throw new UserNotFoundException();
 
-      const result = users.map((user) => ({
-        uuid: user.uuid,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        bio: user.bio,
-        imageUrl: user.ProfileImage?.[0]?.imageUrl || null,
-        accountType: user.accountType,
-        isActiveAccount: user.isActiveAccount,
-        githubUrl: user.githubUrl,
-        twitterUrl: user.twitterUrl,
-        linkedinUrl: user.linkedinUrl,
-      }));
-
-      const totalPages = Math.ceil(totalUsers / limit);
-
-      //refactor this response
-      const response: any = {
-        users: result,
-        totalPages,
+      const response = {
+        users: users.map((user) => ({
+          ...user,
+          imageUrl: user.ProfileImage?.[0]?.imageUrl || null,
+          ProfileImage: undefined,
+        })),
+        totalPages: Math.ceil(totalUsers / limit),
         currentPage: page,
         totalUsers,
       };
 
-      await this.redisService.setValue(cacheKey, JSON.stringify(response), 3600);
+      await this.redisService.setValue(
+        cacheKey,
+        JSON.stringify(response),
+        3600,
+      );
 
       return response;
     } catch (error) {

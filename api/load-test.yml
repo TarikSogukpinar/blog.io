@@ -1,18 +1,18 @@
 config:
   target: http://localhost:5000
-  processor: "./load-test.js"
+  processor: './load-test.js'
   phases:
     - arrivalCount: 100
-      duration: 120
-      
+      duration: 60
+
 before:
   flow:
-    - function: "generateSharedToken"
+    - function: 'generateSharedToken'
 
 scenarios:
   - flow:
-      - function: "generateVUToken"
+      - function: 'generateVUToken'
       - get:
           headers:
-            Authorization: "Bearer {{ sharedToken }}"
-          url: "/api/v1/user/users?page=1&limit=300"
+            Authorization: '{{ sharedToken }}'
+          url: '/api/v1/user/users?page=1&limit=300'
