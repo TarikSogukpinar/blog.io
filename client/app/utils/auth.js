@@ -1,10 +1,12 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export const loginUser = async (email, password) => {
   try {
     const response = await axios.post(
-      `https://blog.tariksogukpinar.dev/api/v1/auth/login`,
+      `${API_URL}/auth/login`,
       {
         email,
         password,
@@ -23,7 +25,7 @@ export const loginUser = async (email, password) => {
 export const logoutUser = async (token) => {
   try {
     const response = await axios.post(
-      `https://blog.tariksogukpinar.dev/api/v1/auth/logout`,
+      `${API_URL}/auth/logout`,
       {},
       {
         headers: {
@@ -47,7 +49,7 @@ export const logoutUser = async (token) => {
 
 export const registerUser = async (name, email, password) => {
   return await axios.post(
-    `https://blog.tariksogukpinar.dev/api/v1/auth/register`,
+    `${API_URL}/auth/register`,
     {
       name,
       email,

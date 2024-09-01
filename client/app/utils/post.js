@@ -1,9 +1,11 @@
 import axios from "axios";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export const fetchPost = async (token, page = 1, pageSize = 10) => {
   try {
     const response = await axios.get(
-      `https://blog.tariksogukpinar.dev/api/v1/blog/posts?page=${page}&pageSize=${pageSize}`,
+      `${API_URL}/blog/posts?page=${page}&pageSize=${pageSize}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -27,16 +29,12 @@ export const fetchPost = async (token, page = 1, pageSize = 10) => {
 
 export const addPost = async (token, bookData) => {
   try {
-    const response = await axios.post(
-      `https://blog.tariksogukpinar.dev/api/v1/blog/posts`,
-      bookData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      }
-    );
+    const response = await axios.post(`${API_URL}/blog/posts`, bookData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    });
     return response.data;
   } catch (error) {
     console.error(
@@ -53,12 +51,9 @@ export const addPost = async (token, bookData) => {
 
 export const fetchPostById = async (id) => {
   try {
-    const response = await axios.get(
-      `https://blog.tariksogukpinar.dev/api/v1/blog/posts/${id}`,
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axios.get(`${API_URL}/blog/posts/${id}`, {
+      withCredentials: true,
+    });
     return response.data;
   } catch (error) {
     console.error(

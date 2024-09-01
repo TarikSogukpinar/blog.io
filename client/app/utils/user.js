@@ -1,6 +1,8 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export const getUserInformation = async () => {
   try {
     const token = Cookies.get("JWT");
@@ -9,12 +11,15 @@ export const getUserInformation = async () => {
       throw new Error("No token found");
     }
 
-    const response = await axios.get(`https://blog.tariksogukpinar.dev/api/v1/user/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      withCredentials: true,
-    });
+    const response = await axios.get(
+      `${API_URL}/user/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      }
+    );
 
     return response.data;
   } catch (error) {
@@ -35,7 +40,7 @@ export const deactivateAccount = async () => {
     const token = Cookies.get("JWT");
 
     const response = await axios.patch(
-      `https://blog.tariksogukpinar.dev/api/v1/user/deactivate-account`,
+      `${API_URL}/user/deactivate-account`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -65,11 +70,14 @@ export const getUserSessions = async () => {
       throw new Error("No token found");
     }
 
-    const response = await axios.get(`https://blog.tariksogukpinar.dev/api/v1/sessions`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get(
+      `${API_URL}/sessions`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data.result;
   } catch (error) {
     console.error("Error fetching user sessions:", error);
@@ -88,7 +96,7 @@ export const changePassword = async (userId, currentPassword, newPassword) => {
     }
 
     const response = await axios.put(
-      `https://blog.tariksogukpinar.dev/api/v1/user/${userId}/password`,
+      `${API_URL}/user/${userId}/password`,
       {
         currentPassword,
         newPassword,
@@ -114,7 +122,7 @@ export const changePassword = async (userId, currentPassword, newPassword) => {
 export async function uploadUserProfileImage(formData) {
   const token = Cookies.get("JWT");
   const response = await axios.post(
-    "https://blog.tariksogukpinar.dev/api/v1/user/upload-avatar",
+    "${API_URL}/user/upload-avatar",
     formData,
     {
       headers: {

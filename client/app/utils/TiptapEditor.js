@@ -41,7 +41,7 @@ const MenuBar = ({ editor }) => {
         onClick={() => editor.chain().focus().toggleBold().run()}
         className={`px-3 py-2 rounded-md border text-sm font-medium flex items-center gap-1 ${
           editor.isActive("bold")
-            ? "bg-blue-500 text-white border-blue-500"
+            ? "bg-gray-950 text-white border-gray-600"
             : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
         }`}
       >
@@ -51,7 +51,7 @@ const MenuBar = ({ editor }) => {
         onClick={() => editor.chain().focus().toggleItalic().run()}
         className={`px-3 py-2 rounded-md border text-sm font-medium flex items-center gap-1 ${
           editor.isActive("italic")
-            ? "bg-blue-500 text-white border-blue-500"
+            ? "bg-gray-950 text-white border-blue-500"
             : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
         }`}
       >
@@ -61,7 +61,7 @@ const MenuBar = ({ editor }) => {
         onClick={() => editor.chain().focus().toggleUnderline().run()}
         className={`px-3 py-2 rounded-md border text-sm font-medium flex items-center gap-1 ${
           editor.isActive("underline")
-            ? "bg-blue-500 text-white border-blue-500"
+            ? "bg-gray-950 text-white border-blue-500"
             : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
         }`}
       >
@@ -71,7 +71,7 @@ const MenuBar = ({ editor }) => {
         onClick={() => editor.chain().focus().setTextAlign("left").run()}
         className={`px-3 py-2 rounded-md border text-sm font-medium flex items-center gap-1 ${
           editor.isActive({ textAlign: "left" })
-            ? "bg-blue-500 text-white border-blue-500"
+            ? "bg-gray-950 text-white border-blue-500"
             : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
         }`}
       >
@@ -81,7 +81,7 @@ const MenuBar = ({ editor }) => {
         onClick={() => editor.chain().focus().setTextAlign("center").run()}
         className={`px-3 py-2 rounded-md border text-sm font-medium flex items-center gap-1 ${
           editor.isActive({ textAlign: "center" })
-            ? "bg-blue-500 text-white border-blue-500"
+            ? "bg-gray-950 text-white border-blue-500"
             : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
         }`}
       >
@@ -91,7 +91,7 @@ const MenuBar = ({ editor }) => {
         onClick={() => editor.chain().focus().setTextAlign("right").run()}
         className={`px-3 py-2 rounded-md border text-sm font-medium flex items-center gap-1 ${
           editor.isActive({ textAlign: "right" })
-            ? "bg-blue-500 text-white border-blue-500"
+            ? "bg-gray-950 text-white border-blue-500"
             : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
         }`}
       >
@@ -101,7 +101,7 @@ const MenuBar = ({ editor }) => {
         onClick={() => editor.chain().focus().setTextAlign("justify").run()}
         className={`px-3 py-2 rounded-md border text-sm font-medium flex items-center gap-1 ${
           editor.isActive({ textAlign: "justify" })
-            ? "bg-blue-500 text-white border-blue-500"
+            ? "bg-gray-950 text-white border-blue-500"
             : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
         }`}
       >
@@ -111,7 +111,7 @@ const MenuBar = ({ editor }) => {
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         className={`px-3 py-2 rounded-md border text-sm font-medium flex items-center gap-1 ${
           editor.isActive("bulletList")
-            ? "bg-blue-500 text-white border-blue-500"
+            ? "bg-gray-950 text-white border-blue-500"
             : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
         }`}
       >
@@ -121,7 +121,7 @@ const MenuBar = ({ editor }) => {
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
         className={`px-3 py-2 rounded-md border text-sm font-medium flex items-center gap-1 ${
           editor.isActive("orderedList")
-            ? "bg-blue-500 text-white border-blue-500"
+            ? "bg-gray-950 text-white border-blue-500"
             : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
         }`}
       >
@@ -131,7 +131,7 @@ const MenuBar = ({ editor }) => {
         onClick={() => editor.chain().focus().toggleTaskList().run()}
         className={`px-3 py-2 rounded-md border text-sm font-medium flex items-center gap-1 ${
           editor.isActive("taskList")
-            ? "bg-blue-500 text-white border-blue-500"
+            ? "bg-gray-950 text-white border-blue-500"
             : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
         }`}
       >
@@ -141,7 +141,7 @@ const MenuBar = ({ editor }) => {
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
         className={`px-3 py-2 rounded-md border text-sm font-medium flex items-center gap-1 ${
           editor.isActive("blockquote")
-            ? "bg-blue-500 text-white border-blue-500"
+            ? "bg-gray-950 text-white border-blue-500"
             : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
         }`}
       >
@@ -151,7 +151,7 @@ const MenuBar = ({ editor }) => {
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
         className={`px-3 py-2 rounded-md border text-sm font-medium flex items-center gap-1 ${
           editor.isActive("codeBlock")
-            ? "bg-blue-500 text-white border-blue-500"
+            ? "bg-gray-950 text-white border-blue-500"
             : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
         }`}
       >
@@ -164,7 +164,7 @@ const MenuBar = ({ editor }) => {
         }}
         className={`px-3 py-2 rounded-md border text-sm font-medium flex items-center gap-1 ${
           editor.isActive("link")
-            ? "bg-blue-500 text-white border-blue-500"
+            ? "bg-gray-950 text-white border-blue-500"
             : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
         }`}
       >
@@ -225,6 +225,7 @@ export default function TiptapEditor() {
       TextStyle.configure({ types: [ListItem.name] }),
       Color.configure({ types: [TextStyle.name, ListItem.name] }),
     ],
+
     content: `
       <h2>Editörünüze Hoş Geldiniz</h2>
       <p>
@@ -237,6 +238,7 @@ export default function TiptapEditor() {
       </p>
        <p class="mb-8"></p> <!-- Ekstra boşluk için -->
     `,
+    immediatelyRender: false,
     editorProps: {
       attributes: {
         class:
@@ -246,9 +248,7 @@ export default function TiptapEditor() {
   });
 
   return (
-    <div className="p-4 border rounded-md shadow-sm">
-      <h1 className="text-2xl font-bold mb-4">Tiptap Editör</h1>
-
+    <div className="p-4 border rounded-xl shadow-sm">
       <MenuBar editor={editor} />
 
       {/* BubbleMenu'yu burada tanımlayın */}
