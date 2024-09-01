@@ -41,7 +41,7 @@ export default function PostPage() {
           Publish
         </button>
       </div>
-      <TiptapEditor />
+      <TiptapEditor/>
     </div>
   );
 }
