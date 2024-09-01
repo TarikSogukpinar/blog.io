@@ -7,12 +7,18 @@ import {
   Body,
   Patch,
   Delete,
+  HttpCode,
+  HttpStatus,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/createCategory.dto';
 import { UpdateCategoryDto } from './dto/updateCategory.dto';
+import { DeleteCategoryDto } from './dto/deleteCategory.dto';
+import { DeleteCategoryResponseDto } from './dto/deleteCategoryResponse.dto';
 
 @Controller({ path: 'category', version: '1' })
 @ApiTags('Category')
@@ -26,14 +32,17 @@ export class CategoryController {
     description: 'Categories retrieved successfully',
   })
   @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
   async getAllCategories() {
-    return this.categoryService.getAllCategories();
+    const result = await this.categoryService.getAllCategories();
+    return { message: 'Categories retrieved successfully', data: result };
   }
 
   @Get('category/:categoryId/posts')
   @ApiOperation({ summary: 'Get posts by category ID' })
   @ApiResponse({ status: 200, description: 'Posts retrieved successfully' })
   @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
   async getPostsByCategory(@Param('categoryId') categoryId: string) {
     const id = parseInt(categoryId, 10);
     return this.categoryService.getPostsByCategory(id);
@@ -43,14 +52,18 @@ export class CategoryController {
   @ApiOperation({ summary: 'Create a new category' })
   @ApiResponse({ status: 201, description: 'Category created successfully' })
   @UseGuards(JwtAuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @HttpCode(HttpStatus.OK)
   async createCategory(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.createCategory(createCategoryDto);
+    const result = await this.categoryService.createCategory(createCategoryDto);
+    return { message: 'Category created successfully', result };
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a category' })
   @ApiResponse({ status: 200, description: 'Category updated successfully' })
   @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
   async updateCategory(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
@@ -63,9 +76,21 @@ export class CategoryController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a category' })
-  @ApiResponse({ status: 200, description: 'Category deleted successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Category deleted successfully',
+    type: DeleteCategoryDto,
+  })
   @UseGuards(JwtAuthGuard)
-  async deleteCategory(@Param('id') id: string) {
-    return this.categoryService.deleteCategory(parseInt(id, 10));
+  @HttpCode(HttpStatus.OK)
+  async deleteCategory(
+    @Param('id') id: string,
+    @Body() deleteCategoryDto: DeleteCategoryDto,
+  ): Promise<any> {
+    const result = await this.categoryService.deleteCategory(deleteCategoryDto);
+    return {
+      message: 'Category deleted successfully',
+      result,
+    };
   }
 }

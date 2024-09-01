@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
@@ -7,52 +7,104 @@ import TiptapEditor from "@/app/utils/TiptapEditor";
 import { GrDocumentCloud } from "react-icons/gr";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import toast, { Toaster } from "react-hot-toast"; 
+import toast, { Toaster } from "react-hot-toast";
 
 export default function PostPage() {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [categoryId, setCategoryId] = useState(1);
+  const [categories, setCategories] = useState([]);
   const [tagIds, setTagIds] = useState([1]);
   const [encrypted, setEncrypted] = useState(true);
   const [error, setError] = useState("");
   const router = useRouter();
 
+  const defaultContent = `
+    <h2>Editörünüze Hoş Geldiniz</h2>
+    <p>
+      Bu, Tiptap editörünün varsayılan bir içeriğidir. Bu içerik, editör yüklendiğinde otomatik olarak görünür. 
+      Metni düzenlemek veya kendi içeriğinizi yazmak için tıklayın ve başlayın.
+    </p>
+    <p>
+      Aşağıdaki menüyü kullanarak metni kalın, italik veya altı çizili yapabilirsiniz.
+      Aynı zamanda metni hizalayabilir, listeler oluşturabilir veya bağlantılar ekleyebilirsiniz.
+    </p>
+    <p class="mb-8"></p>
+  `;
+
   const editor = useEditor({
     extensions: [StarterKit],
-    content: "<p>Start typing your content...</p>",
+    content: defaultContent,
   });
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const token = Cookies.get("JWT");
+      const response = await axios.get(
+        "http://localhost:5000/api/v1/category/getAllCategories",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      toast.error("Error fetching categories");
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const content = editor.getHTML(); // Tiptap editöründen içeriği alıyoruz
-
-    const postData = {
-      title,
-      content,
-      slug,
-      categoryId,
-      tagIds,
-      encrypted,
-    };
-
     try {
+      const content = editor?.getHTML(); // HTML içeriğini al
+
+      const postData = {
+        post: {
+          title,
+          content,
+          slug,
+          categoryId: parseInt(categoryId),
+          tagIds: tagIds.map((id) => parseInt(id)),
+          encrypted,
+        },
+      };
+
       const token = Cookies.get("JWT");
       const response = await axios.post(
         "http://localhost:5000/api/v1/blog/create-post",
         postData,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
       );
       toast.success("Post created successfully!");
       console.log("Post created successfully:", response.data);
+      // Başarılı gönderimden sonra formu sıfırla
+      resetForm();
     } catch (error) {
       console.error("Error creating post:", error);
       setError("An error occurred while creating the post.");
       toast.error("Error creating post!");
     }
+  };
+
+  const resetForm = () => {
+    setTitle("");
+    setSlug("");
+    setCategoryId(1);
+    setTagIds([1]);
+    setEncrypted(false);
+    editor?.commands.setContent(defaultContent);
   };
 
   return (
@@ -93,16 +145,24 @@ export default function PostPage() {
         </div>
         <div className="mb-4">
           <label htmlFor="categoryId" className="block text-sm font-medium">
-            Category ID
+            Category
           </label>
-          <input
-            type="number"
+          <select
             id="categoryId"
             value={categoryId}
-            onChange={(e) => setCategoryId(Number(e.target.value))}
+            onChange={(e) => setCategoryId(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border rounded-md"
             required
-          />
+          >
+            <option value="" disabled>
+              Select a category
+            </option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-4">
           <label htmlFor="tagIds" className="block text-sm font-medium">
@@ -111,11 +171,9 @@ export default function PostPage() {
           <input
             type="text"
             id="tagIds"
-            value={tagIds}
+            value={tagIds.join(", ")}
             onChange={(e) =>
-              setTagIds(
-                e.target.value.split(",").map((id) => Number(id.trim()))
-              )
+              setTagIds(e.target.value.split(",").map((id) => id.trim()))
             }
             className="mt-1 block w-full px-3 py-2 border rounded-md"
             placeholder="Enter tag IDs separated by commas"

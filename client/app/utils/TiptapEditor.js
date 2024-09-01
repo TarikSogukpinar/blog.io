@@ -32,7 +32,7 @@ import {
   FaUnlink,
 } from "react-icons/fa";
 
-const MenuBar = ({ editor }) => {
+const MenuBar = ({ editor, content }) => {
   if (!editor) return null;
 
   return (
@@ -188,7 +188,7 @@ const MenuBar = ({ editor }) => {
   );
 };
 
-export default function TiptapEditor() {
+export default function TiptapEditor({ content }) {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -226,18 +226,7 @@ export default function TiptapEditor() {
       Color.configure({ types: [TextStyle.name, ListItem.name] }),
     ],
 
-    content: `
-      <h2>Editörünüze Hoş Geldiniz</h2>
-      <p>
-        Bu, Tiptap editörünün varsayılan bir içeriğidir. Bu içerik, editör yüklendiğinde otomatik olarak görünür. 
-        Metni düzenlemek veya kendi içeriğinizi yazmak için tıklayın ve başlayın.
-      </p>
-      <p>
-        Aşağıdaki menüyü kullanarak metni kalın, italik veya altı çizili yapabilirsiniz.
-        Aynı zamanda metni hizalayabilir, listeler oluşturabilir veya bağlantılar ekleyebilirsiniz.
-      </p>
-       <p class="mb-8"></p> <!-- Ekstra boşluk için -->
-    `,
+    content: content,
     immediatelyRender: false,
     editorProps: {
       attributes: {
