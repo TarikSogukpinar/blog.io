@@ -11,15 +11,12 @@ export const getUserInformation = async () => {
       throw new Error("No token found");
     }
 
-    const response = await axios.get(
-      `${API_URL}/user/me`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      }
-    );
+    const response = await axios.get(`${API_URL}/user/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    });
 
     return response.data;
   } catch (error) {
@@ -39,15 +36,12 @@ export const deactivateAccount = async () => {
   try {
     const token = Cookies.get("JWT");
 
-    const response = await axios.patch(
-      `${API_URL}/user/deactivate-account`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      }
-    );
+    const response = await axios.patch(`${API_URL}/user/deactivate-account`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    });
 
     if (!response.ok) {
       throw new Error("Failed to deactivate account.");
@@ -70,14 +64,11 @@ export const getUserSessions = async () => {
       throw new Error("No token found");
     }
 
-    const response = await axios.get(
-      `${API_URL}/sessions`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axios.get(`${API_URL}/sessions`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data.result;
   } catch (error) {
     console.error("Error fetching user sessions:", error);
@@ -121,15 +112,11 @@ export const changePassword = async (userId, currentPassword, newPassword) => {
 
 export async function uploadUserProfileImage(formData) {
   const token = Cookies.get("JWT");
-  const response = await axios.post(
-    "${API_URL}/user/upload-avatar",
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await axios.post("${API_URL}/user/upload-avatar", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 }
