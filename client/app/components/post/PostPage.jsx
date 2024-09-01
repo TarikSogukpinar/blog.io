@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import EditorCustom from "@/app/utils/TiptapEditor";
 import TiptapEditor from "@/app/utils/TiptapEditor";
 
 export default function PostPage() {
@@ -33,8 +34,14 @@ export default function PostPage() {
   };
 
   return (
-    <div className="w-auto h-auto mt-5">
-      <TiptapEditor value={content} onChange={setContent} />
+    <div className="max-w-4xl mx-auto mt-20 mb-20 p-4 bg-white rounded-lg">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Create a New Post</h1>
+        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          Publish
+        </button>
+      </div>
+      <TiptapEditor />
     </div>
   );
 }

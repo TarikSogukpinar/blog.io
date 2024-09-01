@@ -1,11 +1,22 @@
 "use client";
-
+import React, { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 export default function FooterPage() {
   const t = useTranslations("FooterPage");
   const router = useRouter();
+  const [showFooter, setShowFooter] = useState(true);
+
+  useEffect(() => {
+    if (router.pathname === "/post") {
+      setShowFooter(false);
+    } else {
+      setShowFooter(true);
+    }
+  }, [router.pathname]);
+
+  if (!showFooter) return null;
 
   const navigation = {
     main: [
