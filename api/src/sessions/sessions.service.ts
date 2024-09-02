@@ -10,6 +10,11 @@ import { Request } from 'express';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import { timeout, catchError, retry } from 'rxjs/operators';
+import { GetUserSessionResponseDto } from './dto/getUserSessionsResponse.dto';
+import {
+  NoActiveSessionsFoundException,
+  UserNotFoundException,
+} from 'src/core/handler/exceptions/custom-expection';
 
 @Injectable()
 export class SessionsService {
@@ -111,13 +116,15 @@ export class SessionsService {
     }
   }
 
-  async getUserSessions(userUuid: string): Promise<any> {
+  async getUserSessions(
+    userUuid: string,
+  ): Promise<GetUserSessionResponseDto[]> {
     const user = await this.prismaService.user.findUnique({
       where: { uuid: userUuid },
     });
 
     if (!user) {
-      throw new NotFoundException(`User with UUID ${userUuid} not found`);
+      throw new UserNotFoundException();
     }
 
     const sessions = await this.prismaService.session.findMany({
@@ -127,13 +134,19 @@ export class SessionsService {
       },
     });
 
-    if (sessions.length === 0) {
-      throw new NotFoundException(
-        `No active sessions found for user with UUID ${userUuid}`,
-      );
-    }
+    if (sessions.length === 0) throw new NoActiveSessionsFoundException();
 
-    return sessions;
+    return sessions.map((session) => ({
+      ipAddress: session.ipAddress,
+      userAgent: session.userAgent,
+      city: session.city,
+      region: session.region,
+      country: session.country,
+      createdAt: session.createdAt.toISOString(),
+      updatedAt: session.updatedAt.toISOString(),
+      expiresAt: session.expiresAt.toISOString(),
+      isActive: session.isActive,
+    }));
   }
 
   private async getLocationData(ipAddress: string): Promise<any> {

@@ -51,7 +51,6 @@ export class AuthService {
         },
       });
 
-
       return { uuid: user.uuid, email: user.email, role: user.role };
     } catch (error) {
       console.log(error);
@@ -89,12 +88,12 @@ export class AuthService {
         data: { accessToken: accessToken },
       });
 
-      // await this.sessionsService.createSession(
-      //   user.id,
-      //   user.uuid,
-      //   accessToken,
-      //   req,
-      // );
+      await this.sessionsService.createSession(
+        user.id,
+        user.uuid,
+        accessToken,
+        req,
+      );
 
       return {
         accessToken,

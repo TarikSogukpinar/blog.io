@@ -20,7 +20,9 @@ export default function HealthPage() {
   useEffect(() => {
     const fetchSystemStatus = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/v1/health");
+        const response = await fetch(
+          `https://blog.tariksogukpinar.dev/api/v1/health`
+        );
         const data = await response.json();
 
         const fetchedSystemStatus = [

@@ -66,3 +66,9 @@ export class AccountIsAlreadyDeactivatedException extends HttpException {
   }
 }
 
+export class NoActiveSessionsFoundException extends HttpException {
+  constructor() {
+    super('No active sessions found', HttpStatus.NOT_FOUND);
+  }
+}
+

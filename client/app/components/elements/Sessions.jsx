@@ -39,7 +39,7 @@ export default function Session({ userId }) {
   const handleTerminateSession = async () => {
     try {
       const response = await axios.delete(
-        `https://blog.tariksogukpinar.dev/api/v1/sessions/${selectedSessionId}`,
+        `http://localhost:5000/api/v1/sessions/${selectedSessionId}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("JWT")}`,
@@ -69,15 +69,16 @@ export default function Session({ userId }) {
   if (loading) return <LoadingSpinner />;
   if (error) return <p>Error: {error}</p>;
 
+  const activeSessions = sessions.filter((session) => session.isActive);
+
   return (
     <div className="space-y-8 max-w-3xl mx-auto p-4">
       <h3 className="flex items-center text-2xl font-semibold text-gray-900 mb-1">
         <VscVmActive className="mr-2" /> Active Sessions
       </h3>
       <div className="rounded-lg p-6 mb-8">
-        {sessions
-          .filter((session) => session.isActive)
-          .map((session) => (
+        {activeSessions.length > 0 ? (
+          activeSessions.map((session) => (
             <div
               key={session.id}
               className="flex justify-between items-center mb-4"
@@ -98,7 +99,10 @@ export default function Session({ userId }) {
                 Terminate
               </button>
             </div>
-          ))}
+          ))
+        ) : (
+          <p className="text-gray-600 text-center">No active sessions found.</p>
+        )}
       </div>
 
       <ConfirmationModal
