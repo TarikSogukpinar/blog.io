@@ -9,7 +9,6 @@ import { ImageProcessingService } from 'src/utils/image/image-process.service';
 import { MailService } from 'src/core/mail/mail.service';
 import { PasswordResetService } from 'src/core/password-reset/password-reset.service';
 import { RedisModule } from 'src/core/cache/cache.module';
-import { RedisService } from 'src/core/cache/cache.service';
 
 @Module({
   imports: [PrismaModule, UuidModule, RedisModule],

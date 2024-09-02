@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const truncateContent = (content, limit) => {
   if (content.length > limit) {
@@ -11,14 +12,17 @@ const truncateContent = (content, limit) => {
 const PostCard = ({ post }) => {
   return (
     <Link
-      href={`/post/${post.id}`}
+      href={`/post/${post.uuid}`}
       className="bg-white shadow-md rounded-lg p-6 mb-4 w-full max-w-md block hover:shadow-lg transition-shadow duration-200"
     >
       <div className="mb-4 overflow-hidden rounded">
-        <img
+        <Image
           src={post.image || "https://via.placeholder.com/300"}
           alt="Post Image"
           className="w-full h-48 object-cover"
+          width={300}
+          height={200}
+          priority={true}
         />
       </div>
       <div>

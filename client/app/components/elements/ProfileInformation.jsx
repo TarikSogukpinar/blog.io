@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import { getUserInformation, uploadUserProfileImage } from "@/app/utils/user";
+import Image from "next/image";
 
 export default function ProfileInformation() {
   const [userData, setUserData] = useState({
@@ -97,10 +98,14 @@ export default function ProfileInformation() {
     <div className="space-y-6 max-w-3xl mx-auto p-6">
       <div className="text-center">
         <label htmlFor="file-upload">
-          <img
+          <Image
             className="w-24 h-24 object-cover rounded-full border-4 border-white shadow-lg mx-auto cursor-pointer"
             src={fullImageUrl}
             alt="Profile"
+            width={48}
+            height={48}
+            priority={true}
+            unoptimized={true}
           />
           <input
             id="file-upload"

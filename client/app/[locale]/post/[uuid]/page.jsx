@@ -4,26 +4,27 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useParams } from "next/navigation";
 import LoadingSpinner from "@/app/components/elements/LoadingSpinner";
+import Image from "next/image";
 
 const truncateContent = (content, limit) => {
-  if (content.length > limit) {
+  if (content > limit) {
     return content.substring(0, limit) + "...";
   }
   return content;
 };
 
 const PostDetail = () => {
-  const { id } = useParams();
+  const { uuid } = useParams();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (id) {
-      console.log("Fetching post with id:", id);
+    if (uuid) {
+      console.log("Fetching post with id:", uuid);
       const token = Cookies.get("JWT");
       axios
-        .get(`https://blog.tariksogukpinar.dev/api/blog/post/${id}`, {
+        .get(`https://blog.tariksogukpinar.dev/api/v1/blog/post/${uuid}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
@@ -37,7 +38,7 @@ const PostDetail = () => {
           setLoading(false);
         });
     }
-  }, [id]);
+  }, [uuid]);
 
   return (
     <div className="w-full p-6 md:p-12 bg-white">
@@ -63,9 +64,13 @@ const PostDetail = () => {
       ) : (
         <>
           <div className="mb-4 overflow-hidden rounded-lg shadow-md">
-            <img
+            <Image
               src={post.image || "https://via.placeholder.com/300"}
               alt="Post Image"
+              width={800}
+              height={400}
+              priority={true}
+              unoptimized={true}
               className="w-full h-64 object-cover transition-transform duration-300 hover:scale-105"
             />
           </div>
@@ -80,9 +85,9 @@ const PostDetail = () => {
               {truncateContent(post.content, 20)}
             </p>
             <div className="mt-4 border-t pt-4">
-              <p className="text-sm text-gray-600">
+              {/* <p className="text-sm text-gray-600">
                 Created by:{" "}
-                <span className="font-semibold">{post.author.name}</span> <br />
+                <span className="font-semibold">{post.name}</span> <br />
                 Created on:{" "}
                 <span className="font-semibold">
                   {new Date(post.createdAt).toLocaleString()}
@@ -90,7 +95,7 @@ const PostDetail = () => {
                 <br />
                 Encryption:{" "}
                 <span className="font-semibold">{post.encryption}</span>
-              </p>
+              </p> */}
             </div>
           </div>
         </>

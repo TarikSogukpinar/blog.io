@@ -202,13 +202,13 @@ export default function PostPage() {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [categoryId, setCategoryId] = useState(1);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState();
   const [tagIds, setTagIds] = useState([1]);
-  const [encrypted, setEncrypted] = useState(false); // Varsayılan olarak false
+  const [encrypted, setEncrypted] = useState(false);
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true); // Başlangıçta true, çünkü veriler yükleniyor
-  const [isSubmitting, setIsSubmitting] = useState(false); // Form gönderim durumu
+  const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
   const editor = useEditor({
@@ -247,7 +247,7 @@ export default function PostPage() {
       TextStyle.configure({ types: [ListItem.name] }),
       Color.configure({ types: [TextStyle.name, ListItem.name] }),
     ],
-    content: `<h2>Editörünüze Hoş Geldiniz</h2><p>Bu, Tiptap editörünün varsayılan bir içeriğidir. Bu içerik, editör yüklendiğinde otomatik olarak görünür. Metni düzenlemek veya kendi içeriğinizi yazmak için tıklayın ve başlayın.</p><p>Aşağıdaki menüyü kullanarak metni kalın, italik veya altı çizili yapabilirsiniz. Aynı zamanda metni hizalayabilir, listeler oluşturabilir veya bağlantılar ekleyebilirsiniz.</p><p></p>`,
+    content: `<h2>Welcome to your editor, this is a default content of the TipTap editor. This content appears automatically when the editor is installed. Click to edit the text or write your own content. You can also align the text, create lists, or add links..</p><p></p>`,
     immediatelyRender: false,
     editorProps: {
       attributes: {
@@ -269,12 +269,12 @@ export default function PostPage() {
             },
           }
         );
-        setCategories(response.data.data);
+        setCategories(response.data.result);
       } catch (error) {
         console.error("Error fetching categories:", error);
         toast.error("Error fetching categories");
       } finally {
-        setLoading(false); // Veriler yüklendiğinde spinner'ı gizle
+        setLoading(false);
       }
     };
 
@@ -283,7 +283,7 @@ export default function PostPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true); // Form gönderilirken spinner'ı göster
+    setIsSubmitting(true);
 
     try {
       const content = editor?.getHTML();
@@ -317,7 +317,7 @@ export default function PostPage() {
       setError("An error occurred while creating the post.");
       toast.error("Error creating post!");
     } finally {
-      setIsSubmitting(false); // Form gönderimi bittiğinde spinner'ı gizle
+      setIsSubmitting(false);
     }
   };
 
@@ -454,7 +454,6 @@ export default function PostPage() {
                     >
                       Italic
                     </button>
-                    {/* Diğer butonları burada ekleyin */}
                   </div>
                 </BubbleMenu>
               )}

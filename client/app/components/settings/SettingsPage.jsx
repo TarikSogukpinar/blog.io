@@ -65,16 +65,6 @@ export default function SettingsPage() {
             >
               Sessions
             </button>
-            {/* <button
-              onClick={() => setActiveTab("notifications")}
-              className={`text-gray-500 py-2 px-1 border-b-2 font-medium text-sm ${
-                activeTab === "notifications"
-                  ? "border-blue-500 text-blue-600"
-                  : "border-transparent"
-              }`}
-            >
-              Notifications Settings
-            </button> */}
           </nav>
         </div>
 
@@ -83,7 +73,6 @@ export default function SettingsPage() {
           {activeTab === "profile" && <ProfileInformation />}
           {activeTab === "password" && <ChangePassword />}
           {activeTab === "sessions" && <Session />}
-          {/* {activeTab === "notifications" && <Notification />} */}
         </div>
       </div>
     </div>

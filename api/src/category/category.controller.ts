@@ -35,7 +35,7 @@ export class CategoryController {
   @HttpCode(HttpStatus.OK)
   async getAllCategories() {
     const result = await this.categoryService.getAllCategories();
-    return { message: 'Categories retrieved successfully', data: result };
+    return { message: 'Categories retrieved successfully', result };
   }
 
   @Get('category/:categoryId/posts')

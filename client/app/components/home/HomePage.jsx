@@ -77,7 +77,7 @@ export default function HomePage() {
           {posts.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 md:gap-12 md:grid-cols-2 xl:grid-cols-3">
               {posts.map((post) => (
-                <PostCard key={post.id} post={post} />
+                <PostCard key={post.uuid} post={post} />
               ))}
             </div>
           ) : (

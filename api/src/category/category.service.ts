@@ -12,23 +12,45 @@ import { CreateCategoryResponseDto } from './dto/createCategoryResponse.dto';
 import { UpdateCategoryResponseDto } from './dto/updateCategoryResponse.dto';
 import { DeleteCategoryDto } from './dto/deleteCategory.dto';
 import { DeleteCategoryResponseDto } from './dto/deleteCategoryResponse.dto';
+import { RedisService } from 'src/core/cache/cache.service';
 
 @Injectable()
 export class CategoryService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly redisService: RedisService,
+  ) {}
 
   async getAllCategories(): Promise<CategoryResponseDto[]> {
     try {
+      const cacheKey = 'categories';
+
+      const cachedCategories = await this.redisService.getValue(cacheKey);
+
+      if (cachedCategories) {
+        return JSON.parse(cachedCategories);
+      }
+
       const categories = await this.prismaService.category.findMany();
 
-      if (categories.length === 0) {
+      if (!categories || categories.length === 0) {
         throw new InternalServerErrorException('No categories found');
       }
 
-      return categories.map((category) => ({
-        id: category.id,
-        name: category.name,
-      }));
+      const categoryResponse: CategoryResponseDto[] = categories.map(
+        (category) => ({
+          id: category.id,
+          name: category.name,
+        }),
+      );
+
+      await this.redisService.setValue(
+        cacheKey,
+        JSON.stringify(categoryResponse),
+        3600,
+      );
+
+      return categoryResponse;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(

@@ -13,6 +13,7 @@ import Cookies from "js-cookie";
 import { logoutUser } from "../../utils/auth";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -34,11 +35,14 @@ export default function NavbarPage() {
     if (token) {
       const fetchProfileImage = async () => {
         try {
-          const response = await fetch("https://blog.tariksogukpinar.dev/api/v1/user/me", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          const response = await fetch(
+            "https://blog.tariksogukpinar.dev/api/v1/user/me",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
           const data = await response.json();
           setProfileImageUrl(data.result.imageUrl);
         } catch (error) {
@@ -75,7 +79,15 @@ export default function NavbarPage() {
           <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
             <div className="relative flex h-16 items-center justify-between">
               <div className="flex items-center h-16">
-                <img className="w-16 h-auto" src="/icon.png" alt="Blog" />
+                <Image
+                  src="/icon.png"
+                  alt="Blog"
+                  width={64}
+                  height={64}
+                  className="h-auto"
+                  unoptimized={true}
+                  priority={true}
+                />
                 <Link
                   href={homeHref}
                   className="ml-2 rounded-md bg-transparent px-3 py-2 text-sm text-white"
@@ -90,7 +102,7 @@ export default function NavbarPage() {
                   <input
                     type="text"
                     placeholder="Search..."
-                    className="rounded-full bg-gray-800 text-gray-300 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full px-4 py-2 sm:text-sm"
+                    className="w-32 lg:w-48 transition-all duration-300 ease-in-out focus:w-64 rounded-full bg-gray-800 text-gray-300 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block px-4 py-2 sm:text-sm"
                   />
                   <button className="ml-2 text-gray-300 hover:text-white">
                     <MagnifyingGlassIcon
@@ -103,12 +115,12 @@ export default function NavbarPage() {
 
               <div className="flex-1 flex justify-end lg:justify-end">
                 <div className="hidden lg:flex lg:space-x-4">
-                  <a
+                  <Link
                     href="/post"
                     className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                   >
                     Post Article
-                  </a>
+                  </Link>
                   {isAuthenticated ? (
                     <div className="relative">
                       <button
@@ -127,18 +139,12 @@ export default function NavbarPage() {
                           className="absolute right-0 mt-2 w-48 rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 z-50"
                           style={{ transform: "translateX(50%)" }}
                         >
-                          <a
-                            href="/profile"
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          >
-                            {t("Your Profile")}
-                          </a>
-                          <a
+                          <Link
                             href="/settings"
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                           >
                             {t("Settings")}
-                          </a>
+                          </Link>
                           <button
                             onClick={handleLogout}
                             className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -150,12 +156,12 @@ export default function NavbarPage() {
                     </div>
                   ) : (
                     !isLoginPage && (
-                      <a
+                      <Link
                         href={`${localePath}login`}
                         className="bg-gray-950 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-900 hover:text-white"
                       >
                         {t("StartHere")}
-                      </a>
+                      </Link>
                     )
                   )}
                 </div>
@@ -224,13 +230,13 @@ export default function NavbarPage() {
                         tom@example.com
                       </div>
                     </div>
-                    <button
+                    {/* <button
                       type="button"
                       className="ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                     >
                       <span className="sr-only">View notifications</span>
                       <BellIcon className="h-6 w-6" aria-hidden="true" />
-                    </button>
+                    </button> */}
                   </div>
                   <div className="mt-3 space-y-1 px-2">
                     <Disclosure.Button

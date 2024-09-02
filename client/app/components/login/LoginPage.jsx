@@ -77,7 +77,6 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-white py-12 px-4 sm:px-6 lg:px-8">
       <Toaster position="top-right" reverseOrder={false} />
       <div className="w-full max-w-md space-y-8">
-      
         <h2 className="flex text-black text-4xl justify-center items-center ">
           {t("welcome")}
         </h2>

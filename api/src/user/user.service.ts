@@ -154,6 +154,13 @@ export class UsersService {
       throw new BadRequestException(ErrorCodes.InvalidUuid);
     }
 
+    const cacheKey = `user:${uuid}`;
+    const cachedUser = await this.redisService.getValue(cacheKey);
+
+    if (cachedUser) {
+      return JSON.parse(cachedUser);
+    }
+
     const user = await this.prismaService.user.findUnique({
       where: { uuid: uuid },
       select: {
@@ -179,7 +186,7 @@ export class UsersService {
       throw new NotFoundException(ErrorCodes.UserNotFound);
     }
 
-    return {
+    const userResponse: GetUserUUIDResponseDto = {
       uuid: user.uuid,
       name: user.name,
       email: user.email,
@@ -192,6 +199,14 @@ export class UsersService {
       twitterUrl: user.twitterUrl,
       linkedinUrl: user.linkedinUrl,
     };
+
+    await this.redisService.setValue(
+      cacheKey,
+      JSON.stringify(userResponse),
+      3600,
+    );
+
+    return userResponse;
   }
 
   async updateUser(id: number, data: Prisma.UserUpdateInput): Promise<User> {
