@@ -6,7 +6,26 @@ import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { FaSpinner } from "react-icons/fa";
+import {
+  FaSpinner,
+  FaFileAlt,
+  FaLock,
+  FaUnlock,
+  FaBold,
+  FaItalic,
+  FaUnderline,
+  FaAlignLeft,
+  FaAlignCenter,
+  FaAlignRight,
+  FaAlignJustify,
+  FaListOl,
+  FaListUl,
+  FaTasks,
+  FaQuoteRight,
+  FaCode,
+  FaLink,
+  FaUnlink,
+} from "react-icons/fa";
 import Bold from "@tiptap/extension-bold";
 import Italic from "@tiptap/extension-italic";
 import Underline from "@tiptap/extension-underline";
@@ -21,22 +40,6 @@ import TaskList from "@tiptap/extension-task-list";
 import TaskItem from "@tiptap/extension-task-item";
 import Color from "@tiptap/extension-color";
 import TextStyle from "@tiptap/extension-text-style";
-import {
-  FaBold,
-  FaItalic,
-  FaUnderline,
-  FaAlignLeft,
-  FaAlignCenter,
-  FaAlignRight,
-  FaAlignJustify,
-  FaListUl,
-  FaListOl,
-  FaTasks,
-  FaQuoteRight,
-  FaCode,
-  FaLink,
-  FaUnlink,
-} from "react-icons/fa";
 import LoadingSpinner from "../elements/LoadingSpinner";
 
 const MenuBar = ({ editor }) => {
@@ -336,7 +339,28 @@ export default function PostPage() {
         </div>
       ) : (
         <form onSubmit={handleSubmit}>
-         
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-medium flex items-center">
+              <FaFileAlt className="mr-2" />
+              New Post
+            </h1>
+            <button
+              type="button"
+              onClick={() => setEncrypted(!encrypted)}
+              className={`flex items-center px-4 py-2 rounded-lg ${
+                encrypted
+                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+              }`}
+            >
+              {encrypted ? (
+                <FaLock className="mr-2" />
+              ) : (
+                <FaUnlock className="mr-2" />
+              )}
+              {encrypted ? "Encrypted" : "Not Encrypted"}
+            </button>
+          </div>
           <div className="mb-4">
             <label htmlFor="title" className="block text-sm font-medium">
               Title
@@ -438,33 +462,18 @@ export default function PostPage() {
               <EditorContent editor={editor} className="mb-48" />
             </div>
           </div>
-          <div className="flex items-center mb-4">
-            <input
-              type="checkbox"
-              id="encrypted"
-              checked={encrypted}
-              onChange={(e) => setEncrypted(e.target.checked)}
-              className="mr-2 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-            />
-            <label
-              htmlFor="encrypted"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Encrypt Post
-            </label>
-          </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <button
             type="submit"
-            className={`bg-gray-950 text-white px-4 py-2 rounded-lg ${
-              isSubmitting ? "hover:bg-gray-700" : "hover:bg-blue-600"
+            className={`bg-gray-950 text-white px-4 py-2 rounded-lg  ${
+              isSubmitting ? "hover:bg-gray-700" : "hover:bg-gray-600"
             } focus:outline-none focus:ring-2 focus:ring-blue-500`}
             disabled={isSubmitting}
           >
             {isSubmitting ? (
               <FaSpinner className="animate-spin inline-block mr-2" />
             ) : (
-              "Publish"
+              "Publish Article"
             )}
           </button>
         </form>
