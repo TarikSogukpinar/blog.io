@@ -93,10 +93,3 @@ export const handleOAuthCallback = () => {
   }
 };
 
-export default {
-  loginUser,
-  registerUser,
-  logoutUser,
-  handleGithubCallback,
-  handleOAuthCallback,
-};

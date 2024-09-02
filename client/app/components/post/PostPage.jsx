@@ -262,7 +262,7 @@ export default function PostPage() {
       try {
         const token = Cookies.get("JWT");
         const response = await axios.get(
-          "http://localhost:5000/api/v1/category/getAllCategories",
+          `https://blog.tariksogukpinar.dev/api/v1/category/getAllCategories`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -300,7 +300,7 @@ export default function PostPage() {
 
       const token = Cookies.get("JWT");
       const response = await axios.post(
-        "http://localhost:5000/api/v1/blog/create-post",
+        `https://blog.tariksogukpinar.dev/api/v1/blog/create-post`,
         postData,
         {
           headers: {

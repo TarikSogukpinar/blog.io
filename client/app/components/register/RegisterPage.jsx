@@ -4,7 +4,7 @@ import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/20/solid";
 import { toast, Toaster } from "react-hot-toast";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { RegisterUser } from "../../utils/auth";
+import { registerUser } from "../../utils/auth";
 
 export default function RegisterPage() {
   const t = useTranslations("RegisterPage");
@@ -25,7 +25,7 @@ export default function RegisterPage() {
     setLoading(true);
 
     toast.promise(
-      await RegisterUser(
+      await registerUser(
         registerValues.name,
         registerValues.email,
         registerValues.password

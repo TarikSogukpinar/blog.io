@@ -128,8 +128,10 @@ export default function NavbarPage() {
                         onClick={() => setMenuOpen(!menuOpen)}
                       >
                         <span className="sr-only">Open user menu</span>
-                        <img
+                        <Image
                           className="h-8 w-8 rounded-full"
+                          width={8}
+                          height={8}
                           src={fullImageUrl}
                           alt="Profile"
                         />
@@ -213,8 +215,10 @@ export default function NavbarPage() {
                 <div className="border-t border-gray-700 pt-4 pb-3">
                   <div className="flex items-center px-5">
                     <div className="flex-shrink-0">
-                      <img
+                      <Image
                         className="h-10 w-10 rounded-full"
+                        width={10}
+                        height={10}
                         src={
                           profileImageUrl ||
                           "https://static.vecteezy.com/system/resources/thumbnails/002/387/693/small_2x/user-profile-icon-free-vector.jpg"
