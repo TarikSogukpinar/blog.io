@@ -15,6 +15,7 @@ export default function ProfileInformation() {
     githubUrl: "",
     linkedinUrl: "",
     twitterUrl: "",
+    createdAt: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -42,6 +43,7 @@ export default function ProfileInformation() {
             githubUrl: data.result.githubUrl || "",
             linkedinUrl: data.result.linkedinUrl || "",
             twitterUrl: data.result.twitterUrl || "",
+            createdAt: data.result.createdAt || "",
           });
         }
       } catch (err) {
@@ -53,6 +55,15 @@ export default function ProfileInformation() {
 
     fetchUserData();
   }, []);
+
+  const formatCreatedAtDate = new Date(userData.createdAt).toLocaleDateString(
+    "en-US",
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
+  );
 
   if (loading) return <LoadingSpinner />;
   if (error) return <p>{error}</p>;
@@ -116,6 +127,9 @@ export default function ProfileInformation() {
           />
         </label>
         <h2 className="text-3xl font-semibold text-gray-900 mt-4">{`${userData.name}`}</h2>
+        <p className="text-sm text-gray-500 mt-1">
+          Joined on : {formatCreatedAtDate}
+        </p>
       </div>
 
       <form className="space-y-6">

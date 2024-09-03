@@ -82,11 +82,11 @@ export default function NavbarPage() {
                 <Image
                   src="/icon.png"
                   alt="Blog"
-                  width={64}
-                  height={64}
+                  width={24}
+                  height={24}
                   className="h-auto"
-                  unoptimized={true}
                   priority={true}
+                  unoptimized={true}
                 />
                 <Link
                   href={homeHref}

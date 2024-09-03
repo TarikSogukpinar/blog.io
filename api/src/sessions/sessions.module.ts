@@ -4,6 +4,7 @@ import { SessionsController } from './sessions.controller';
 import { PrismaService } from 'src/database/database.service'; // Eğer Prisma kullanıyorsanız
 import { PrismaModule } from 'src/database/database.module';
 import { HttpModule } from '@nestjs/axios';
+import { RedisService } from 'src/core/cache/cache.service';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { HttpModule } from '@nestjs/axios';
       maxRedirects: 100,
     }),
   ],
-  providers: [SessionsService, PrismaService],
+  providers: [SessionsService, PrismaService, RedisService],
   controllers: [SessionsController],
   exports: [SessionsService],
 })

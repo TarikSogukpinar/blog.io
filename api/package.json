@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Blog.io Medium Alternative",
   "author": "TarikSogukpinar",
-  "private": true,
+  "private": false,
   "license": "UNLICENSED",
   "scripts": {
     "dev": "cross-env NODE_ENV=development dotenv -e .env.development -- pnpm prisma generate && nest start --debug --watch",

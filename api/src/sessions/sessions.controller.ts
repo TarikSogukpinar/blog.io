@@ -51,7 +51,7 @@ export class SessionsController {
     };
   }
 
-  @Delete(':userId/:token')
+  @Delete(':userUuid/:token')
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: Number })
   @ApiOperation({ summary: 'Terminate a session for a user' })
@@ -62,17 +62,14 @@ export class SessionsController {
   @HttpCode(HttpStatus.OK)
   @Roles(Role.ADMIN, Role.USER)
   async terminateUserSession(
-    @Param('userId') userId: number,
+    @Param('userUuid') userUuid: string,
     @Param('token') token: string,
   ) {
-    const terminatedSession = await this.sessionsService.terminateSession(
-      userId,
-      token,
-    );
+    const result = await this.sessionsService.terminateSession(userUuid, token);
 
     return {
       message: 'Session terminated successfully',
-      sessionId: terminatedSession.id,
+      sessionId: result,
     };
   }
 }

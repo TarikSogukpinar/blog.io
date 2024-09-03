@@ -15,12 +15,14 @@ import {
   NoActiveSessionsFoundException,
   UserNotFoundException,
 } from 'src/core/handler/exceptions/custom-expection';
+import { RedisService } from 'src/core/cache/cache.service';
 
 @Injectable()
 export class SessionsService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly httpService: HttpService,
+    private readonly redisService: RedisService,
   ) {}
 
   async createSession(
@@ -88,11 +90,11 @@ export class SessionsService {
     }
   }
 
-  async terminateSession(userId: number, token: string) {
+  async terminateSession(userUuid: string, token: string) {
     try {
       const session = await this.prismaService.session.findFirst({
         where: {
-          userId,
+          uuid: userUuid,
           token,
           isActive: true,
         },
@@ -101,10 +103,20 @@ export class SessionsService {
       if (!session) {
         throw new NotFoundException(ErrorCodes.InvalidSessions);
       }
-
       const terminatedSession = await this.prismaService.session.update({
         where: { id: session.id },
         data: { isActive: false },
+      });
+
+      await this.prismaService.blacklistedToken.create({
+        data: {
+          token: session.token,
+          expiresAt: session.expiresAt,
+        },
+      });
+
+      await this.prismaService.session.delete({
+        where: { id: session.id },
       });
 
       return terminatedSession;
@@ -119,13 +131,19 @@ export class SessionsService {
   async getUserSessions(
     userUuid: string,
   ): Promise<GetUserSessionResponseDto[]> {
+    const cacheKey = `user_sessions:${userUuid}`;
+
+    const cachedSessions = await this.redisService.getValue(cacheKey);
+
+    if (cachedSessions) {
+      return JSON.parse(cachedSessions);
+    }
+
     const user = await this.prismaService.user.findUnique({
       where: { uuid: userUuid },
     });
 
-    if (!user) {
-      throw new UserNotFoundException();
-    }
+    if (!user) throw new UserNotFoundException();
 
     const sessions = await this.prismaService.session.findMany({
       where: {
@@ -136,7 +154,7 @@ export class SessionsService {
 
     if (sessions.length === 0) throw new NoActiveSessionsFoundException();
 
-    return sessions.map((session) => ({
+    const sessionDtos = sessions.map((session) => ({
       ipAddress: session.ipAddress,
       userAgent: session.userAgent,
       city: session.city,
@@ -147,6 +165,14 @@ export class SessionsService {
       expiresAt: session.expiresAt.toISOString(),
       isActive: session.isActive,
     }));
+
+    await this.redisService.setValue(
+      cacheKey,
+      JSON.stringify(sessionDtos),
+      3600,
+    );
+
+    return sessionDtos;
   }
 
   private async getLocationData(ipAddress: string): Promise<any> {

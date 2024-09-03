@@ -174,6 +174,8 @@ export class UsersService {
         linkedinUrl: true,
         accountType: true,
         isActiveAccount: true,
+        createdAt: true,
+        updatedAt: true,
         ProfileImage: {
           select: {
             imageUrl: true,
@@ -198,6 +200,8 @@ export class UsersService {
       githubUrl: user.githubUrl,
       twitterUrl: user.twitterUrl,
       linkedinUrl: user.linkedinUrl,
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString(),
     };
 
     await this.redisService.setValue(

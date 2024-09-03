@@ -34,5 +34,11 @@ export class GetUserUUIDResponseDto {
   @IsString()
   linkedinUrl: string;
 
+  @IsString()
+  createdAt: string;
+
+  @IsString()
+  updatedAt: string;
+
 
 }
