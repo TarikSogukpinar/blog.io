@@ -138,7 +138,7 @@ export class BlogController {
   async getPostBySlug(@Param('slug') slug: string) {
     const result = await this.blogService.getPostBySlug(slug);
 
-    return { result, message: 'Post retrieved successfully' };
+    return { result, message: 'Post retrieved successfully'  };
   }
 
   @Get('user-posts/:uuid')

@@ -118,9 +118,11 @@ model Category {
 }
 
 model Tag {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  posts Post[] @relation("PostTags")
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  posts     Post[]   @relation("PostTags")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([name])
 }

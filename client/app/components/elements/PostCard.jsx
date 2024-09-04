@@ -12,7 +12,7 @@ const truncateContent = (content, limit) => {
 const PostCard = ({ post }) => {
   return (
     <Link
-      href={`/post/${post.uuid}`}
+      href={`/post/${post.slug}`}
       className="bg-white shadow-md rounded-lg p-6 mb-4 w-full max-w-md block hover:shadow-lg transition-shadow duration-200"
     >
       <div className="mb-4 overflow-hidden rounded">

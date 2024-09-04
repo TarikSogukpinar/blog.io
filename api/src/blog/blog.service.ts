@@ -29,9 +29,10 @@ export class BlogService {
 
   private async generateSlug(title: string): Promise<string> {
     return title
+      .trim()
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)+/g, '');
+      .replace(/(^-|-$)/g, '');
   }
 
   async createPost(
@@ -76,12 +77,16 @@ export class BlogService {
           throw new TagNotFoundException();
       }
 
+      const formattedSlug = data.slug
+        ? await this.generateSlug(data.slug)
+        : await this.generateSlug(data.title);
+
       const post = await this.prismaService.post.create({
         data: {
           uuid: this.uuidService.generateUuid(),
           title: data.title,
           content: content,
-          slug: data.slug || (await this.generateSlug(data.title)),
+          slug: formattedSlug,
           author: {
             connect: { uuid: userUuid }, //Connect to user with UUID
           },
@@ -315,27 +320,39 @@ export class BlogService {
     }
   }
 
-  async getPostBySlug(slug: string): Promise<GetPostBySlugResponseDto> {
-    try {
-      if (!slug) {
-        throw new PostNotFoundException();
-      }
-      const result = this.prismaService.post.findUnique({
-        where: { slug },
-        include: {
-          author: false,
-          category: true,
-          tags: true,
+  //refactor this method
+  async getPostBySlug(slug: string): Promise<GetPostByUuidResponseDto> {
+    const post = await this.prismaService.post.findUnique({
+      where: { slug },
+      select: {
+        uuid: true,
+        slug: true,
+        title: true,
+        content: true,
+        published: true,
+        createdAt: true,
+        updatedAt: true,
+        encrypted: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
         },
-      });
+        tags: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
 
-      return result;
-    } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException(
-        'An error occurred, please try again later',
-      );
+    if (!post) {
+      throw new PostNotFoundException();
     }
+
+    return post;
   }
 
   async getPostsByUser(userUuid: string): Promise<GetPostByUserResponseDto[]> {

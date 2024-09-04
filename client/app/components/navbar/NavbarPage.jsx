@@ -82,8 +82,8 @@ export default function NavbarPage() {
                 <Image
                   src="/icon.png"
                   alt="Blog"
-                  width={24}
-                  height={24}
+                  width={64}
+                  height={64}
                   className="h-auto"
                   priority={true}
                   unoptimized={true}
