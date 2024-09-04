@@ -103,6 +103,7 @@ model Post {
   updatedAt     DateTime  @updatedAt
   encryptionKey String?
   encrypted     Boolean?  @default(false)
+  expireAt      DateTime?
 
   @@index([slug])
   @@index([authorUuid])

@@ -8,6 +8,7 @@ import {
   IsArray,
   ArrayMinSize,
   IsBoolean,
+  IsDate,
 } from 'class-validator';
 
 export class CreatePostDto {
@@ -38,4 +39,8 @@ export class CreatePostDto {
   @IsOptional()
   @IsBoolean({ message: 'Encrypted must be a boolean' })
   encrypted?: boolean;
+
+  @IsDate()
+  @IsOptional()
+  expireAt?: Date;
 }

@@ -23,6 +23,8 @@ import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
 import { TagService } from './tag.service';
 import { CreateTagDto } from './dto/createTag.dto';
 import { CustomRequest } from 'src/core/request/customRequest';
+import { UpdateTagDto } from './dto/updateTag.dto';
+import { DeleteTagDto } from './dto/deleteTag.dto';
 
 @Controller({ path: 'tag', version: '1' })
 @ApiTags('Tag')
@@ -39,8 +41,8 @@ export class TagController {
     description: 'Tag created successfully',
   })
   @HttpCode(HttpStatus.OK)
-  async createTag(@Body() data: CreateTagDto, @Req() req: CustomRequest) {
-    const result = await this.tagService.createTag(data);
+  async createTag(@Body() createTagDto: CreateTagDto) {
+    const result = await this.tagService.createTag(createTagDto);
     return {
       message: 'List of active user sessions',
       result,
@@ -55,7 +57,14 @@ export class TagController {
     status: 200,
     description: 'Tag updated successfully',
   })
-  async updateTag() {}
+  @HttpCode(HttpStatus.OK)
+  async updateTag(@Body() updateTagDto: UpdateTagDto) {
+    const result = await this.tagService.updateTag(updateTagDto);
+    return {
+      message: 'Tag updated successfully',
+      result,
+    };
+  }
 
   @Delete(':tagId')
   @UseGuards(JwtAuthGuard)
@@ -65,5 +74,12 @@ export class TagController {
     status: 200,
     description: 'Tag deleted successfully',
   })
-  async deleteTag() {}
+  @HttpCode(HttpStatus.OK)
+  async deleteTag(@Body() deleteTagDto: DeleteTagDto) {
+    const result = await this.tagService.deleteTag(deleteTagDto);
+    return {
+      message: 'Tag deleted successfully',
+      result,
+    };
+  }
 }

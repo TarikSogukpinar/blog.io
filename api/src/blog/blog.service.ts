@@ -47,6 +47,7 @@ export class BlogService {
       if (!user) throw new UserNotFoundException();
 
       let content = data.content;
+
       let encryptionKey = null;
       if (data.encrypted) {
         encryptionKey = await this.encryptionService.generateEncryptionKey();
@@ -98,6 +99,7 @@ export class BlogService {
             : undefined,
           encryptionKey: encryptionKey,
           encrypted: data.encrypted || false,
+          expireAt: data.expireAt, // expireAt alanı isteğe bağlı
         },
         select: {
           uuid: true,

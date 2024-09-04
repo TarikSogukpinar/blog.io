@@ -8,6 +8,7 @@ import { CreateTagDto } from './dto/createTag.dto';
 import { TagResponseDto } from './dto/tagResponse.dto';
 import { UpdateTagDto } from './dto/updateTag.dto';
 import { DeleteTagDto } from './dto/deleteTag.dto';
+import { GetTagByIdDto } from './dto/getTagById.dto';
 
 @Injectable()
 export class TagService {
@@ -39,11 +40,11 @@ export class TagService {
 
   async getAllTags(): Promise<TagResponseDto[]> {
     try {
-      const tags = await this.prisma.tag.findMany();
+      const getAllTags = await this.prisma.tag.findMany();
 
-      if (!tags) throw new NotFoundException('No tags found');
+      if (!getAllTags) throw new NotFoundException('No tags found');
 
-      return tags.map((tag) => ({
+      return getAllTags.map((tag) => ({
         id: tag.id,
         name: tag.name,
         createdAt: tag.createdAt,
@@ -57,14 +58,14 @@ export class TagService {
     }
   }
 
-  async getTagById(id: number): Promise<TagResponseDto> {
+  async getTagById(getTagById: GetTagByIdDto): Promise<TagResponseDto> {
     try {
       const tags = await this.prisma.tag.findUnique({
-        where: { id },
+        where: { id: getTagById.id },
       });
 
       if (!tags) {
-        throw new NotFoundException(`Tag with ID ${id} not found`);
+        throw new NotFoundException(`Tag with ID ${getTagById.id} not found`);
       }
 
       return tags;

@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsDate, IsOptional, IsString } from 'class-validator';
 
 export class CreatePostResponseDto {
   @IsString()
@@ -9,4 +9,8 @@ export class CreatePostResponseDto {
 
   @IsString()
   slug: string;
+
+  @IsDate()
+  @IsOptional()
+  expireAt?: Date;
 }
