@@ -12,6 +12,18 @@ export class InvalidCredentialsException extends HttpException {
   }
 }
 
+export class PassportCannotBeTheSameException extends HttpException {
+  constructor() {
+    super('Passport cannot be the same', HttpStatus.BAD_REQUEST);
+  }
+}
+
+export class FailedToLocationUserException extends HttpException {
+  constructor() {
+    super('Failed to locate user', HttpStatus.NOT_FOUND);
+  }
+}
+
 export class UserAlreadyExistsException extends HttpException {
   constructor() {
     super('User already exists', HttpStatus.CONFLICT);
@@ -30,9 +42,39 @@ export class CategoryNotFoundException extends HttpException {
   }
 }
 
+export class CategoryNotCreatedException extends HttpException {
+  constructor() {
+    super('Category not created', HttpStatus.NOT_FOUND);
+  }
+}
+
+export class CategoryAlreadyExistsException extends HttpException {
+  constructor() {
+    super('Category already exists', HttpStatus.CONFLICT);
+  }
+}
+
+export class CategoryNotUpdatedException extends HttpException {
+  constructor() {
+    super('Category not updated', HttpStatus.NOT_FOUND);
+  }
+}
+
+export class CategoryNotDeletedException extends HttpException {
+  constructor() {
+    super('Category not deleted', HttpStatus.NOT_FOUND);
+  }
+}
+
 export class TagNotFoundException extends HttpException {
   constructor() {
     super('Tag not found', HttpStatus.NOT_FOUND);
+  }
+}
+
+export class TagNotCreatedException extends HttpException {
+  constructor() {
+    super('Tag not created', HttpStatus.NOT_FOUND);
   }
 }
 
@@ -71,4 +113,3 @@ export class NoActiveSessionsFoundException extends HttpException {
     super('No active sessions found', HttpStatus.NOT_FOUND);
   }
 }
-

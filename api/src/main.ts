@@ -19,18 +19,19 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   setupGracefulShutdown({ app });
 
-  const logger = app.get(Logger);
-
-  app.useLogger(logger);
-
   const configService = app.get(ConfigService);
+
+  const logger = app.get(Logger);
+  app.useLogger(logger);
 
   app.setGlobalPrefix(
     configService.get<string>('API_GLOBAL_PREFIX', { infer: true }),
   );
+
   app.enableVersioning({
     type: VersioningType.URI,
   });
+  
   app.use(
     helmet({
       contentSecurityPolicy: false,

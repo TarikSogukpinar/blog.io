@@ -59,17 +59,17 @@ import { LoggerModule } from 'nestjs-pino';
     }),
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (config: ConfigService) => {
+      useFactory: async (configService: ConfigService) => {
         return {
           pinoHttp: {
             transport:
-              process.env.NODE_ENV !== 'production'
+              configService.get<string>('NODE_ENV') !== 'production'
                 ? { target: 'pino-pretty' }
                 : undefined,
           },
         };
       },
+      inject: [ConfigService],
     }),
   ],
   controllers: [],

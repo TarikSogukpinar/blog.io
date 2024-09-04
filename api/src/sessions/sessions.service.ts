@@ -12,10 +12,12 @@ import { lastValueFrom } from 'rxjs';
 import { timeout, catchError, retry } from 'rxjs/operators';
 import { GetUserSessionResponseDto } from './dto/getUserSessionsResponse.dto';
 import {
+  FailedToLocationUserException,
   NoActiveSessionsFoundException,
   UserNotFoundException,
 } from 'src/core/handler/exceptions/custom-expection';
 import { RedisService } from 'src/core/cache/cache.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class SessionsService {
@@ -23,6 +25,7 @@ export class SessionsService {
     private readonly prismaService: PrismaService,
     private readonly httpService: HttpService,
     private readonly redisService: RedisService,
+    private readonly configService: ConfigService,
   ) {}
 
   async createSession(
@@ -30,7 +33,7 @@ export class SessionsService {
     userUuid: string,
     token: string,
     req: Request,
-  ) {
+  ): Promise<any> {
     try {
       const clientIp = requestIp.getClientIp(req);
       const userAgent = req.headers['user-agent'] || 'unknown';
@@ -76,21 +79,13 @@ export class SessionsService {
       return createSession;
     } catch (error) {
       console.log(error);
-      console.error('Error in createSession:', error.message, {
-        userId,
-        userUuid,
-        token,
-        ip: requestIp.getClientIp(req),
-        userAgent: req.headers['user-agent'],
-      });
-
       throw new InternalServerErrorException(
         'An error occurred, please try again later',
       );
     }
   }
 
-  async terminateSession(userUuid: string, token: string) {
+  async terminateSession(userUuid: string, token: string): Promise<any> {
     try {
       const session = await this.prismaService.session.findFirst({
         where: {
@@ -177,15 +172,15 @@ export class SessionsService {
 
   private async getLocationData(ipAddress: string): Promise<any> {
     try {
+      const baseUrl = this.configService.get<string>('IP_API_URL');
+
       const response = await lastValueFrom(
-        this.httpService.get(`https://ipapi.co/${ipAddress}/json/`).pipe(
+        this.httpService.get(`${baseUrl}/${ipAddress}/json/`).pipe(
           timeout(5000),
           retry(2),
           catchError((error) => {
             console.error('Failed to fetch location data:', error.message);
-            throw new InternalServerErrorException(
-              'Failed to fetch location data',
-            );
+            throw new FailedToLocationUserException();
           }),
         ),
       );
@@ -195,11 +190,6 @@ export class SessionsService {
         country: response.data.country_name,
       };
     } catch (error) {
-      console.error(
-        `Error fetching location data for IP ${ipAddress}:`,
-        error.message,
-        error.response?.data,
-      );
       console.error('Error fetching location data:', error);
       throw new InternalServerErrorException(
         'An error occurred, please try again later',

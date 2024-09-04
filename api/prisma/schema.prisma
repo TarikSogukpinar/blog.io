@@ -49,9 +49,10 @@ model User {
   linkedinUrl       String?
   isActiveAccount   Boolean           @default(true)
 
+  @@index([uuid])
   @@index([email])
-  @@index([role])
   @@index([name])
+  @@index([accountType])
 }
 
 model AccountTier {
@@ -75,6 +76,7 @@ model ProfileImage {
   createdAt DateTime @default(now())
 
   @@index([userId])
+  @@index([imageUrl])
 }
 
 model PasswordHistory {
@@ -108,6 +110,9 @@ model Post {
   @@index([slug])
   @@index([authorUuid])
   @@index([categoryId])
+  @@index([published])
+  @@index([content])
+  @@index([title])
 }
 
 model Category {
@@ -155,4 +160,5 @@ model BlacklistedToken {
   createdAt DateTime @default(now())
 
   @@index([expiresAt])
+  @@index([token])
 }

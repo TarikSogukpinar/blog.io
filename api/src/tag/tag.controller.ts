@@ -22,7 +22,6 @@ import {
 import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
 import { TagService } from './tag.service';
 import { CreateTagDto } from './dto/createTag.dto';
-import { CustomRequest } from 'src/core/request/customRequest';
 import { UpdateTagDto } from './dto/updateTag.dto';
 import { DeleteTagDto } from './dto/deleteTag.dto';
 

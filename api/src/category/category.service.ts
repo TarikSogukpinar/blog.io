@@ -13,6 +13,13 @@ import { UpdateCategoryResponseDto } from './dto/updateCategoryResponse.dto';
 import { DeleteCategoryDto } from './dto/deleteCategory.dto';
 import { DeleteCategoryResponseDto } from './dto/deleteCategoryResponse.dto';
 import { RedisService } from 'src/core/cache/cache.service';
+import {
+  CategoryAlreadyExistsException,
+  CategoryNotCreatedException,
+  CategoryNotDeletedException,
+  CategoryNotFoundException,
+  CategoryNotUpdatedException,
+} from 'src/core/handler/exceptions/custom-expection';
 
 @Injectable()
 export class CategoryService {
@@ -33,9 +40,8 @@ export class CategoryService {
 
       const categories = await this.prismaService.category.findMany();
 
-      if (!categories || categories.length === 0) {
-        throw new InternalServerErrorException('No categories found');
-      }
+      if (!categories || categories.length === 0)
+        throw new CategoryNotFoundException();
 
       const categoryResponse: CategoryResponseDto[] = categories.map(
         (category) => ({
@@ -59,6 +65,7 @@ export class CategoryService {
     }
   }
 
+  //refactor this method
   async getPostsByCategory(categoryId: number) {
     try {
       return this.prismaService.post.findMany({
@@ -87,11 +94,7 @@ export class CategoryService {
         },
       });
 
-      if (!category) {
-        throw new InternalServerErrorException(
-          'Category creation failed, please try again later',
-        );
-      }
+      if (!category) throw new CategoryNotCreatedException();
 
       return category;
     } catch (error) {
@@ -111,9 +114,7 @@ export class CategoryService {
         where: { id: categoryId },
       });
 
-      if (!existingCategory) {
-        throw new NotFoundException('Category not found');
-      }
+      if (!existingCategory) throw new CategoryNotFoundException();
 
       if (updateCategoryDto.name) {
         const duplicateCategory = await this.prismaService.category.findFirst({
@@ -123,11 +124,7 @@ export class CategoryService {
           },
         });
 
-        if (duplicateCategory) {
-          throw new ConflictException(
-            'A category with this name already exists.',
-          );
-        }
+        if (duplicateCategory) throw new CategoryAlreadyExistsException();
       }
 
       const updatedCategory = await this.prismaService.category.update({
@@ -135,11 +132,7 @@ export class CategoryService {
         data: updateCategoryDto,
       });
 
-      if (!updatedCategory) {
-        throw new InternalServerErrorException(
-          'Category update failed, please try again later',
-        );
-      }
+      if (!updatedCategory) throw new CategoryNotUpdatedException();
 
       return updatedCategory as UpdateCategoryResponseDto;
     } catch (error) {
@@ -158,19 +151,13 @@ export class CategoryService {
         where: { id: deleteCategoryDto.id },
       });
 
-      if (!existingCategory) {
-        throw new NotFoundException('Category not found');
-      }
+      if (!existingCategory) throw new CategoryNotFoundException();
 
       const relatedPosts = await this.prismaService.post.findMany({
         where: { id: deleteCategoryDto.id },
       });
 
-      if (relatedPosts.length > 0) {
-        throw new ConflictException(
-          'This category cannot be deleted because it has related posts.',
-        );
-      }
+      if (relatedPosts.length > 0) throw new CategoryNotDeletedException();
 
       const deletedCategory = await this.prismaService.category.delete({
         where: { id: deleteCategoryDto.id },

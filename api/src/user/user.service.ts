@@ -3,7 +3,6 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/database/database.service';
@@ -14,6 +13,8 @@ import { UuidService } from 'src/utils/uuid/uuid.service';
 import { GetUserUUIDResponseDto } from './dto/getUserUuidResponse.dto';
 import {
   AccountIsAlreadyDeactivatedException,
+  InvalidCredentialsException,
+  PassportCannotBeTheSameException,
   UserNotFoundException,
 } from 'src/core/handler/exceptions/custom-expection';
 import { UpdateUserAccountStatusResponseDto } from './dto/updateUserAccountStatusResponse.dto';
@@ -111,7 +112,7 @@ export class UsersService {
       !user.resetTokenExpires ||
       user.resetTokenExpires < new Date()
     ) {
-      throw new Error('Token is invalid or has expired');
+      throw new InvalidCredentialsException();
     }
 
     const hashedPassword = await this.hashingService.hashPassword(newPassword);
@@ -240,25 +241,19 @@ export class UsersService {
       throw new NotFoundException(ErrorCodes.UserNotFound);
     }
 
-    const isMatch = await this.hashingService.comparePassword(
+    const isMatchPassword = await this.hashingService.comparePassword(
       changePasswordDto.currentPassword,
       user.password,
     );
 
-    if (!isMatch) {
-      throw new UnauthorizedException('Current password is incorrect');
-    }
+    if (!isMatchPassword) throw new InvalidCredentialsException();
 
     for (const history of user.PasswordHistory) {
       const isOldPassword = await this.hashingService.comparePassword(
         changePasswordDto.newPassword,
         history.password,
       );
-      if (isOldPassword) {
-        throw new BadRequestException(
-          'New password cannot be the same as the last two passwords',
-        );
-      }
+      if (isOldPassword) throw new PassportCannotBeTheSameException();
     }
 
     const hashedPassword = await this.hashingService.hashPassword(

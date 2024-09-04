@@ -1,6 +1,5 @@
 import {
   Injectable,
-  NotFoundException,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/database/database.service';
@@ -9,6 +8,10 @@ import { TagResponseDto } from './dto/tagResponse.dto';
 import { UpdateTagDto } from './dto/updateTag.dto';
 import { DeleteTagDto } from './dto/deleteTag.dto';
 import { GetTagByIdDto } from './dto/getTagById.dto';
+import {
+  TagNotCreatedException,
+  TagNotFoundException,
+} from 'src/core/handler/exceptions/custom-expection';
 
 @Injectable()
 export class TagService {
@@ -16,19 +19,17 @@ export class TagService {
 
   async createTag(createTagDto: CreateTagDto): Promise<TagResponseDto> {
     try {
-      const tag = await this.prisma.tag.create({
+      const createTag = await this.prisma.tag.create({
         data: createTagDto,
       });
 
-      if (!tag) {
-        throw new InternalServerErrorException('Error creating tag');
-      }
+      if (!createTag) throw new TagNotCreatedException();
 
       return {
-        name: tag.name,
-        id: tag.id,
-        createdAt: tag.createdAt,
-        updatedAt: tag.updatedAt,
+        name: createTag.name,
+        id: createTag.id,
+        createdAt: createTag.createdAt,
+        updatedAt: createTag.updatedAt,
       };
     } catch (error) {
       console.log(error);
@@ -42,7 +43,7 @@ export class TagService {
     try {
       const getAllTags = await this.prisma.tag.findMany();
 
-      if (!getAllTags) throw new NotFoundException('No tags found');
+      if (!getAllTags) throw new TagNotFoundException();
 
       return getAllTags.map((tag) => ({
         id: tag.id,
@@ -64,9 +65,7 @@ export class TagService {
         where: { id: getTagById.id },
       });
 
-      if (!tags) {
-        throw new NotFoundException(`Tag with ID ${getTagById.id} not found`);
-      }
+      if (!tags) throw new TagNotFoundException();
 
       return tags;
     } catch (error) {
@@ -84,9 +83,7 @@ export class TagService {
         data: { name: updateTagDto.name },
       });
 
-      if (!updatedTag) {
-        throw new NotFoundException('Tag not found');
-      }
+      if (!updatedTag) throw new TagNotFoundException();
 
       return updatedTag;
     } catch (error) {
@@ -103,7 +100,7 @@ export class TagService {
         where: { id: deleteTagDto.id },
       });
 
-      if (!deletedTag) throw new NotFoundException('Tag not found');
+      if (!deletedTag) throw new TagNotFoundException();
 
       return deletedTag;
     } catch (error) {
