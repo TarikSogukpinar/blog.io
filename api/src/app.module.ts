@@ -14,6 +14,7 @@ import { join } from 'path';
 import { RedisModule } from '@nestjs-modules/ioredis';
 import { GracefulShutdownModule } from 'nestjs-graceful-shutdown';
 import { CategoryModule } from './category/category.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -52,6 +53,9 @@ import { CategoryModule } from './category/category.module';
     SessionsModule,
     CategoryModule,
     RedisModule,
+    ScheduleModule.forRoot({
+      cronJobs: true,
+    }),
   ],
   controllers: [],
   providers: [],

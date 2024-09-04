@@ -12,11 +12,10 @@ export class CronController {
   async handleExpiredPosts() {
     const now = new Date();
     try {
-      // Süresi dolmuş postları sil
       const deletedPosts = await this.prismaService.post.deleteMany({
         where: {
           expireAt: {
-            lte: now, // expireAt şimdiki zamandan küçük veya eşit olan postlar
+            lte: now,
           },
         },
       });
