@@ -15,6 +15,7 @@ import { RedisModule } from '@nestjs-modules/ioredis';
 import { GracefulShutdownModule } from 'nestjs-graceful-shutdown';
 import { CategoryModule } from './category/category.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
@@ -55,6 +56,20 @@ import { ScheduleModule } from '@nestjs/schedule';
     RedisModule,
     ScheduleModule.forRoot({
       cronJobs: true,
+    }),
+    LoggerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => {
+        return {
+          pinoHttp: {
+            transport:
+              process.env.NODE_ENV !== 'production'
+                ? { target: 'pino-pretty' }
+                : undefined,
+          },
+        };
+      },
     }),
   ],
   controllers: [],
