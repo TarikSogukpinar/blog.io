@@ -388,7 +388,7 @@ export class BlogService {
 
       return posts;
     } catch (error) {
-      console.error(error);
+      console.log(error);
       throw new InternalServerErrorException(
         'An error occurred, please try again later',
       );

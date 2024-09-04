@@ -6,6 +6,8 @@ import {
 import { PrismaService } from 'src/database/database.service';
 import { CreateTagDto } from './dto/createTag.dto';
 import { TagResponseDto } from './dto/tagResponse.dto';
+import { UpdateTagDto } from './dto/updateTag.dto';
+import { DeleteTagDto } from './dto/deleteTag.dto';
 
 @Injectable()
 export class TagService {
@@ -21,7 +23,6 @@ export class TagService {
         throw new InternalServerErrorException('Error creating tag');
       }
 
-      
       return {
         name: tag.name,
         id: tag.id,
@@ -29,62 +30,86 @@ export class TagService {
         updatedAt: tag.updatedAt,
       };
     } catch (error) {
-      throw new InternalServerErrorException('Error creating tag');
+      console.log(error);
+      throw new InternalServerErrorException(
+        'An error occurred, please try again later',
+      );
     }
   }
 
-  async getAllTags() {
+  async getAllTags(): Promise<TagResponseDto[]> {
     try {
       const tags = await this.prisma.tag.findMany();
-      return tags;
+
+      if (!tags) throw new NotFoundException('No tags found');
+
+      return tags.map((tag) => ({
+        id: tag.id,
+        name: tag.name,
+        createdAt: tag.createdAt,
+        updatedAt: tag.updatedAt,
+      }));
     } catch (error) {
-      throw new InternalServerErrorException('Error fetching tags');
+      console.log(error);
+      throw new InternalServerErrorException(
+        'An error occurred, please try again later',
+      );
     }
   }
 
-  async getTagById(id: number) {
+  async getTagById(id: number): Promise<TagResponseDto> {
     try {
-      const tag = await this.prisma.tag.findUnique({
+      const tags = await this.prisma.tag.findUnique({
         where: { id },
       });
-      if (!tag) {
+
+      if (!tags) {
         throw new NotFoundException(`Tag with ID ${id} not found`);
       }
-      return tag;
+
+      return tags;
     } catch (error) {
-      throw new InternalServerErrorException('Error fetching tag');
+      console.log(error);
+      throw new InternalServerErrorException(
+        'An error occurred, please try again later',
+      );
     }
   }
 
-  async updateTag(id: number, name: string) {
+  async updateTag(updateTagDto: UpdateTagDto): Promise<TagResponseDto> {
     try {
-      const tag = await this.prisma.tag.update({
-        where: { id },
-        data: { name },
+      const updatedTag = await this.prisma.tag.update({
+        where: { id: updateTagDto.id },
+        data: { name: updateTagDto.name },
       });
-      return tag;
+
+      if (!updatedTag) {
+        throw new NotFoundException('Tag not found');
+      }
+
+      return updatedTag;
     } catch (error) {
-      throw new NotFoundException(`Tag with ID ${id} not found`);
+      console.log(error);
+      throw new InternalServerErrorException(
+        'An error occurred, please try again later',
+      );
     }
   }
 
-  async deleteTag(id: number) {
+  async deleteTag(deleteTagDto: DeleteTagDto): Promise<TagResponseDto> {
     try {
-      const tag = await this.prisma.tag.delete({
-        where: { id },
+      const deletedTag = await this.prisma.tag.delete({
+        where: { id: deleteTagDto.id },
       });
-      return tag;
+
+      if (!deletedTag) throw new NotFoundException('Tag not found');
+
+      return deletedTag;
     } catch (error) {
-      throw new NotFoundException(`Tag with ID ${id} not found`);
+      console.log(error);
+      throw new InternalServerErrorException(
+        'An error occurred, please try again later',
+      );
     }
   }
-
-  //   private toResponseDto(tag:string): TagResponseDto {
-  //     return {
-  //       id: tag.id,
-  //       name: tag.name,
-  //       createdAt: tag.createdAt,
-  //       updatedAt: tag.updatedAt,
-  //     };
-  //   }
 }
