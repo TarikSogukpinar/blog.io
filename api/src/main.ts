@@ -63,6 +63,6 @@ async function bootstrap() {
     '0.0.0.0',
   );
 
-  logger.debug(`🚀 Application is running on: http://localhost:${PORT}/`);
+  logger.log(`🚀 Application is running on: http://localhost:${PORT}/`);
 }
 void bootstrap();

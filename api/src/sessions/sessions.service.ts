@@ -175,7 +175,7 @@ export class SessionsService {
       const baseUrl = this.configService.get<string>('IP_API_URL');
 
       const response = await lastValueFrom(
-        this.httpService.get(`${baseUrl}/${ipAddress}/json/`).pipe(
+        this.httpService.get(`https://ipapi.co/${ipAddress}/json/`).pipe(
           timeout(5000),
           retry(2),
           catchError((error) => {

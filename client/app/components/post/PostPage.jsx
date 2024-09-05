@@ -41,6 +41,8 @@ import TaskItem from "@tiptap/extension-task-item";
 import Color from "@tiptap/extension-color";
 import TextStyle from "@tiptap/extension-text-style";
 import LoadingSpinner from "../elements/LoadingSpinner";
+import { IoWarningOutline } from "react-icons/io5";
+import { RiAlarmWarningLine } from "react-icons/ri";
 
 const MenuBar = ({ editor }) => {
   if (!editor) return null;
@@ -202,13 +204,16 @@ export default function PostPage() {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [categoryId, setCategoryId] = useState(1);
-  const [categories, setCategories] = useState();
+  const [categories, setCategories] = useState([]);
   const [tagIds, setTagIds] = useState([1]);
   const [encrypted, setEncrypted] = useState(false);
+  const [expireAt, setExpireAt] = useState("");
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showEncryptedAlert, setShowEncryptedAlert] = useState(false);
+  const [showExpireAlert, setShowExpireAlert] = useState(false);
   const router = useRouter();
 
   const editor = useEditor({
@@ -257,6 +262,15 @@ export default function PostPage() {
     },
   });
 
+  const handleExpireChange = (e) => {
+    const selectedDate = e.target.value;
+    setExpireAt(selectedDate);
+
+    if (selectedDate) {
+      setShowExpireAlert(true);
+    }
+  };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -281,6 +295,11 @@ export default function PostPage() {
     fetchCategories();
   }, []);
 
+  const handleEncryptedChange = () => {
+    setEncrypted(!encrypted);
+    setShowEncryptedAlert(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -294,6 +313,7 @@ export default function PostPage() {
         categoryId: parseInt(categoryId),
         tagIds: tagIds.map((id) => parseInt(id)),
         encrypted,
+        expireAt, // expireAt eklendi
       };
 
       console.log("Sending data:", postData);
@@ -327,6 +347,7 @@ export default function PostPage() {
     setCategoryId(1);
     setTagIds([1]);
     setEncrypted(false);
+    setExpireAt("");
     editor?.commands.setContent("");
   };
 
@@ -339,28 +360,70 @@ export default function PostPage() {
         </div>
       ) : (
         <form onSubmit={handleSubmit}>
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-medium flex items-center">
+          <div className="mb-6">
+            <h1 className="text-2xl font-medium flex items-center mb-4">
               <FaFileAlt className="mr-2" />
               New Post
             </h1>
-            <button
-              type="button"
-              onClick={() => setEncrypted(!encrypted)}
-              className={`flex items-center px-4 py-2 rounded-lg ${
-                encrypted
-                  ? "bg-blue-600 text-white hover:bg-blue-700"
-                  : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-              }`}
-            >
-              {encrypted ? (
-                <FaLock className="mr-2" />
-              ) : (
-                <FaUnlock className="mr-2" />
-              )}
-              {encrypted ? "Encrypted" : "Not Encrypted"}
-            </button>
+
+            {/* Alert for Encrypted */}
+            {showEncryptedAlert && (
+              <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                <div className="flex items-center">
+                  <IoWarningOutline className="mr-2" />{" "}
+                  {/* İkonu hizalamak için flex container */}
+                  <strong>Warning!</strong>
+                </div>
+                This post is encrypted and this action cannot be undone.
+              </div>
+            )}
+
+            {/* Alert for Expire Date */}
+            {showExpireAlert && (
+              <div className="mb-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded">
+                <div className="flex items-center">
+                  <RiAlarmWarningLine className="mr-2" />{" "}
+                  <strong>Notice: </strong> An expiration date has been set for
+                  this post. Once it expires, it cannot be undone.
+                </div>
+              </div>
+            )}
+
+            {/* Encrypted Button */}
+            <div className="mb-4">
+              <button
+                type="button"
+                onClick={handleEncryptedChange}
+                className={`w-full flex justify-center items-center px-4 py-2 rounded-lg ${
+                  encrypted
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                }`}
+              >
+                {encrypted ? (
+                  <FaLock className="mr-2" />
+                ) : (
+                  <FaUnlock className="mr-2" />
+                )}
+                {encrypted ? "Encrypted" : "Not Encrypted"}
+              </button>
+            </div>
+
+            {/* Expire Date Field */}
+            <div className="mb-4">
+              <label htmlFor="expireAt" className="block text-sm font-medium">
+                Expiration Date (Optional)
+              </label>
+              <input
+                type="date"
+                id="expireAt"
+                value={expireAt}
+                onChange={handleExpireChange}
+                className="mt-1 block w-full px-3 py-2 border rounded-md"
+              />
+            </div>
           </div>
+
           <div className="mb-4">
             <label htmlFor="title" className="block text-sm font-medium">
               Title
