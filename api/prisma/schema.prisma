@@ -48,11 +48,14 @@ model User {
   twitterUrl        String?
   linkedinUrl       String?
   isActiveAccount   Boolean           @default(true)
+  Like              Like[]
+  Comment           Comment[]
 
   @@index([uuid])
   @@index([email])
   @@index([name])
   @@index([accountType])
+  @@map("users")
 }
 
 model AccountTier {
@@ -77,6 +80,32 @@ model ProfileImage {
 
   @@index([userId])
   @@index([imageUrl])
+  @@map("profileImages")
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+  @@map("likes")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([postId])
+  @@map("comments")
 }
 
 model PasswordHistory {
@@ -87,6 +116,7 @@ model PasswordHistory {
   user      User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
+  @@map("passwordHistory")
 }
 
 model Post {
@@ -106,6 +136,8 @@ model Post {
   encryptionKey String?
   encrypted     Boolean?  @default(false)
   expireAt      DateTime?
+  Like          Like[]
+  Comment       Comment[]
 
   @@index([slug])
   @@index([authorUuid])
@@ -113,6 +145,7 @@ model Post {
   @@index([published])
   @@index([content])
   @@index([title])
+  @@map("posts")
 }
 
 model Category {
@@ -121,6 +154,7 @@ model Category {
   posts Post[]
 
   @@index([name])
+  @@map("categories")
 }
 
 model Tag {
@@ -131,6 +165,7 @@ model Tag {
   updatedAt DateTime @updatedAt
 
   @@index([name])
+  @@map("tags")
 }
 
 model Session {
@@ -151,6 +186,7 @@ model Session {
 
   @@index([userId])
   @@index([token])
+  @@map("sessions")
 }
 
 model BlacklistedToken {
@@ -161,4 +197,5 @@ model BlacklistedToken {
 
   @@index([expiresAt])
   @@index([token])
+  @@map("blacklistedTokens")
 }

@@ -396,4 +396,137 @@ export class BlogService {
       );
     }
   }
+
+  async likeUserPost(postUuid: string, userUuid: string): Promise<any> {
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: { uuid: userUuid },
+      });
+
+      if (!user) throw new UserNotFoundException();
+
+      const post = await this.prismaService.post.findUnique({
+        where: { uuid: postUuid },
+      });
+
+      if (!post) throw new PostNotFoundException();
+
+      const like = await this.prismaService.like.create({
+        data: {
+          user: { connect: { id: user.id } },
+          post: { connect: { id: post.id } },
+        },
+      });
+
+      return like;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(
+        'An error occurred, please try again later',
+      );
+    }
+  }
+
+  async unlikeUserPost(postUuid: string, userUuid: string): Promise<any> {
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: { uuid: userUuid },
+      });
+
+      if (!user) throw new UserNotFoundException();
+
+      const post = await this.prismaService.post.findUnique({
+        where: { uuid: postUuid },
+      });
+
+      if (!post) throw new PostNotFoundException();
+
+      await this.prismaService.like.delete({
+        where: {
+          userId_postId: {
+            userId: user.id,
+            postId: post.id,
+          },
+        },
+      });
+
+      return { message: 'Post unliked successfully' };
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(
+        'An error occurred, please try again later',
+      );
+    }
+  }
+
+  async getLikesForPost(postUuid: string): Promise<any> {
+    try {
+      const post = await this.prismaService.post.findUnique({
+        where: { uuid: postUuid },
+        include: {
+          Like: true,
+        },
+      });
+
+      if (!post) throw new PostNotFoundException();
+
+      return post.Like.length;
+    } catch (error) {
+      throw new InternalServerErrorException('Unable to get post likes');
+    }
+  }
+
+  async addCommentPost(postUuid: string, userUuid: string, content: string) {
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: { uuid: userUuid },
+      });
+
+      if (!user) throw new UserNotFoundException();
+
+      const post = await this.prismaService.post.findUnique({
+        where: { uuid: postUuid },
+      });
+
+      if (!post) throw new PostNotFoundException();
+
+      const comment = await this.prismaService.comment.create({
+        data: {
+          user: { connect: { id: user.id } },
+          post: { connect: { id: post.id } },
+          content,
+        },
+      });
+
+      return comment;
+    } catch (error) {
+      throw new InternalServerErrorException('Unable to add comment');
+    }
+  }
+
+  async getCommentsForPost(postUuid: string) {
+    try {
+      const post = await this.prismaService.post.findUnique({
+        where: { uuid: postUuid },
+        include: {
+          Comment: {
+            include: {
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!post) throw new PostNotFoundException();
+
+      return post.Comment;
+    } catch (error) {
+      throw new InternalServerErrorException('Unable to get post comments');
+    }
+  }
 }
