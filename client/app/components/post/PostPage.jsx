@@ -313,7 +313,7 @@ export default function PostPage() {
         categoryId: parseInt(categoryId),
         tagIds: tagIds.map((id) => parseInt(id)),
         encrypted,
-        expireAt, // expireAt eklendi
+        expireAt,
       };
 
       console.log("Sending data:", postData);
@@ -360,18 +360,89 @@ export default function PostPage() {
         </div>
       ) : (
         <form onSubmit={handleSubmit}>
-          <div className="mb-6">
-            <h1 className="text-2xl font-medium flex items-center mb-4">
-              <FaFileAlt className="mr-2" />
-              New Post
-            </h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-6">
+            Create a New Post
+          </h1>
 
+          {/* Post Details */}
+          <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+            <div className="mb-4">
+              <label htmlFor="title" className="block text-sm font-medium">
+                Title
+              </label>
+              <input
+                type="text"
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border rounded-md"
+                required
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="slug" className="block text-sm font-medium">
+                Slug
+              </label>
+              <input
+                type="text"
+                id="slug"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border rounded-md"
+                required
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="categoryId" className="block text-sm font-medium">
+                Category
+              </label>
+              <select
+                id="categoryId"
+                value={categoryId}
+                onChange={(e) => setCategoryId(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border rounded-md"
+                required
+              >
+                <option value="" disabled>
+                  Select a category
+                </option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="tagIds" className="block text-sm font-medium">
+                Tag IDs
+              </label>
+              <input
+                type="text"
+                id="tagIds"
+                value={tagIds.join(", ")}
+                onChange={(e) =>
+                  setTagIds(e.target.value.split(",").map((id) => id.trim()))
+                }
+                className="mt-1 block w-full px-3 py-2 border rounded-md"
+                placeholder="Enter tag IDs separated by commas"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Post Settings */}
+          <h2 className="text-lg font-semibold mt-6 mb-4">Post Settings</h2>
+
+          <div className="bg-white shadow-md rounded-lg p-6 mb-6">
             {/* Alert for Encrypted */}
             {showEncryptedAlert && (
               <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
                 <div className="flex items-center">
-                  <IoWarningOutline className="mr-2" />{" "}
-                  {/* İkonu hizalamak için flex container */}
+                  <IoWarningOutline className="mr-2" />
                   <strong>Warning!</strong>
                 </div>
                 This post is encrypted and this action cannot be undone.
@@ -382,8 +453,8 @@ export default function PostPage() {
             {showExpireAlert && (
               <div className="mb-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded">
                 <div className="flex items-center">
-                  <RiAlarmWarningLine className="mr-2" />{" "}
-                  <strong>Notice: </strong> An expiration date has been set for
+                  <RiAlarmWarningLine className="mr-2" />
+                  <strong>Notice:</strong> An expiration date has been set for
                   this post. Once it expires, it cannot be undone.
                 </div>
               </div>
@@ -425,69 +496,6 @@ export default function PostPage() {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="title" className="block text-sm font-medium">
-              Title
-            </label>
-            <input
-              type="text"
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border rounded-md"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="slug" className="block text-sm font-medium">
-              Slug
-            </label>
-            <input
-              type="text"
-              id="slug"
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border rounded-md"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="categoryId" className="block text-sm font-medium">
-              Category
-            </label>
-            <select
-              id="categoryId"
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border rounded-md"
-              required
-            >
-              <option value="" disabled>
-                Select a category
-              </option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="mb-4">
-            <label htmlFor="tagIds" className="block text-sm font-medium">
-              Tag IDs
-            </label>
-            <input
-              type="text"
-              id="tagIds"
-              value={tagIds.join(", ")}
-              onChange={(e) =>
-                setTagIds(e.target.value.split(",").map((id) => id.trim()))
-              }
-              className="mt-1 block w-full px-3 py-2 border rounded-md"
-              placeholder="Enter tag IDs separated by commas"
-              required
-            />
-          </div>
-          <div className="mb-4">
             <label className="block text-sm font-medium">Content</label>
             <div className="p-4 border rounded-xl shadow-sm">
               <MenuBar editor={editor} />
@@ -524,6 +532,7 @@ export default function PostPage() {
               <EditorContent editor={editor} className="mb-48" />
             </div>
           </div>
+
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <button
             type="submit"
